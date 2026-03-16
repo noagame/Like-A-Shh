@@ -2,11 +2,16 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 /**
- * RegisterPage — Registro de nueva cuenta con aceptación de términos.
+ * RegisterPage — Registro con nombre, apellido, email, contraseña y aceptación de términos.
  */
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+
 const RegisterPage = () => {
   const navigate = useNavigate()
   const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -25,7 +30,11 @@ const RegisterPage = () => {
     e.preventDefault()
     setError('')
 
-    // Validaciones frontend
+    if (!form.firstName.trim() || !form.lastName.trim()) {
+      setError('Nombre y apellido son obligatorios')
+      return
+    }
+
     if (form.password.length < 8) {
       setError('La contraseña debe tener al menos 8 caracteres')
       return
@@ -44,10 +53,12 @@ const RegisterPage = () => {
     setLoading(true)
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/register', {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          firstName: form.firstName,
+          lastName: form.lastName,
           email: form.email,
           password: form.password,
           acceptedTerms: form.acceptedTerms,
@@ -66,13 +77,15 @@ const RegisterPage = () => {
       localStorage.setItem('token', data.data.token)
       localStorage.setItem('user', JSON.stringify(data.data.user))
 
-      // Redirigir al inicio
-      navigate('/')
+      // Redirigir al panel del usuario
+      navigate('/panel')
     } catch (err) {
       setError('Error de conexión con el servidor')
       setLoading(false)
     }
   }
+
+  const inputClass = 'w-full px-4 py-3 rounded-xl bg-brand-dark border border-brand-gray/30 text-white text-sm placeholder:text-brand-muted/50 focus:outline-none focus:border-brand-gold/50 focus:ring-1 focus:ring-brand-gold/20 transition-all'
 
   return (
     <div className="min-h-screen bg-brand-black flex items-center justify-center px-4 py-12 font-body">
@@ -112,6 +125,34 @@ const RegisterPage = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Name fields in a row */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-brand-muted mb-1.5">Nombre</label>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={form.firstName}
+                  onChange={handleChange}
+                  placeholder="Tu nombre"
+                  className={inputClass}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-brand-muted mb-1.5">Apellido</label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={form.lastName}
+                  onChange={handleChange}
+                  placeholder="Tu apellido"
+                  className={inputClass}
+                  required
+                />
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-brand-muted mb-1.5">
                 Correo electrónico
@@ -122,7 +163,7 @@ const RegisterPage = () => {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="tu@email.com"
-                className="w-full px-4 py-3 rounded-xl bg-brand-dark border border-brand-gray/30 text-white text-sm placeholder:text-brand-muted/50 focus:outline-none focus:border-brand-gold/50 focus:ring-1 focus:ring-brand-gold/20 transition-all"
+                className={inputClass}
                 required
               />
             </div>
@@ -137,7 +178,7 @@ const RegisterPage = () => {
                 value={form.password}
                 onChange={handleChange}
                 placeholder="Mínimo 8 caracteres"
-                className="w-full px-4 py-3 rounded-xl bg-brand-dark border border-brand-gray/30 text-white text-sm placeholder:text-brand-muted/50 focus:outline-none focus:border-brand-gold/50 focus:ring-1 focus:ring-brand-gold/20 transition-all"
+                className={inputClass}
                 required
               />
             </div>
@@ -152,7 +193,7 @@ const RegisterPage = () => {
                 value={form.confirmPassword}
                 onChange={handleChange}
                 placeholder="Repite tu contraseña"
-                className="w-full px-4 py-3 rounded-xl bg-brand-dark border border-brand-gray/30 text-white text-sm placeholder:text-brand-muted/50 focus:outline-none focus:border-brand-gold/50 focus:ring-1 focus:ring-brand-gold/20 transition-all"
+                className={inputClass}
                 required
               />
             </div>

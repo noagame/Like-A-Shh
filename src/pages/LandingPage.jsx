@@ -1,5 +1,6 @@
 import Navbar from '../components/Navbar'
 import Hero from '../components/Hero'
+import AboutUs from '../components/AboutUs'
 import Instructor from '../components/Instructor'
 import CourseDetails from '../components/CourseDetails'
 import Gallery from '../components/Gallery'
@@ -7,6 +8,7 @@ import Footer from '../components/Footer'
 
 /**
  * LandingPage — Public-facing page assembling all sections.
+ * Order: Hero → About Us → Instructor → Courses → Gallery → Footer
  */
 const LandingPage = () => {
   return (
@@ -14,6 +16,7 @@ const LandingPage = () => {
       <Navbar />
       <main>
         <Hero />
+        <AboutUs />
         <Instructor />
         <CourseDetails />
         <Gallery />

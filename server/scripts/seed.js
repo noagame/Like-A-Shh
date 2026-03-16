@@ -9,12 +9,10 @@
  *  1. Limpia todas las colecciones existentes
  *  2. Crea un usuario Administrador
  *  3. Crea un usuario Alumno de prueba
- *  4. Crea eventos de ejemplo para el calendario
- *  5. Crea comentarios de ejemplo en distintos estados
- *
- *  MongoDB creará automáticamente:
- *  - La base de datos 'likeashh' (definida en MONGO_URI)
- *  - Las colecciones: users, events, comments
+ *  4. Crea cursos de ejemplo
+ *  5. Crea eventos de ejemplo para el calendario
+ *  6. Crea comentarios de ejemplo en distintos estados
+ *  7. Crea la configuración del sitio (Settings singleton)
  */
 
 require('dotenv').config()
@@ -22,11 +20,17 @@ const mongoose = require('mongoose')
 const User = require('../models/User')
 const Event = require('../models/Event')
 const Comment = require('../models/Comment')
+const Course = require('../models/Course')
+const Settings = require('../models/Settings')
+const Gallery = require('../models/Gallery')
+const Rating = require('../models/Rating')
 const connectDB = require('../config/db')
 
 // ─── Datos Iniciales ─────────────────────────────────────────
 
 const ADMIN_DATA = {
+  firstName: 'Maximiliano',
+  lastName: 'Velásquez',
   email: 'admin@likeashh.com',
   password: 'Admin2024!',
   role: 'admin',
@@ -35,12 +39,53 @@ const ADMIN_DATA = {
 }
 
 const STUDENT_DATA = {
+  firstName: 'Valentina',
+  lastName: 'Rodríguez',
   email: 'alumno@likeashh.com',
   password: 'Alumno2024!',
   role: 'user',
   acceptedTerms: true,
   emailConfirmed: true,
 }
+
+const COURSES_DATA = [
+  {
+    name: 'Pole Dance Inicial',
+    level: 'Inicial',
+    description:
+      'Descubre el mundo del Pole Dance desde cero. Este curso te guiará paso a paso a través de los fundamentos esenciales: calentamiento adecuado, agarre seguro, giros básicos como Fireman y Chair Spin, y las primeras figuras de inversión. Ideal para quienes nunca han tocado un pole.',
+    link: 'https://hotmart.com/es/marketplace',
+    access: '30 días',
+    certificate: true,
+    icon: '🔥',
+    duration: '8 semanas',
+    version: 1,
+  },
+  {
+    name: 'Figuras & Transiciones',
+    level: 'Intermedio',
+    description:
+      'Lleva tu Pole Dance al siguiente nivel dominando figuras intermedias y el arte de las transiciones fluidas. Aprenderás combos dinámicos, figuras de fuerza como Shoulder Mount y Aysha, además de transiciones elegantes.',
+    link: 'https://hotmart.com/es/marketplace',
+    access: '45 días',
+    certificate: true,
+    icon: '⭐',
+    duration: '10 semanas',
+    version: 1,
+  },
+  {
+    name: 'Flexibilidad & Expresión',
+    level: 'Todos los niveles',
+    description:
+      'Un programa complementario centrado en la flexibilidad profunda y la expresión corporal. Incluye splits progresivos, back bends, apertura de caderas, y técnicas de movimiento contemporáneo aplicadas al Pole Dance.',
+    link: 'https://hotmart.com/es/marketplace',
+    access: '30 días',
+    certificate: false,
+    icon: '🧘',
+    duration: '6 semanas',
+    version: 1,
+  },
+]
 
 const EVENTS_DATA = [
   {
@@ -83,14 +128,6 @@ const EVENTS_DATA = [
     location: 'Centro Cultural — Auditorio',
     type: 'Competencia',
   },
-  {
-    title: 'Fortalecimiento Muscular',
-    description: 'Clase de acondicionamiento físico para mejorar fuerza de agarre, core y piernas.',
-    date: new Date('2026-04-08T20:00:00'),
-    time: '20:00',
-    location: 'Estudio Principal — Sala 2',
-    type: 'Clase',
-  },
 ]
 
 const COMMENTS_DATA = [
@@ -118,12 +155,6 @@ const COMMENTS_DATA = [
     status: 'Pendiente',
     adminReply: '',
   },
-  {
-    course: 'Pole Sport',
-    text: 'Excelente nivel técnico del instructor. Las progresiones están muy bien pensadas para avanzar sin lesionarse.',
-    status: 'Pendiente',
-    adminReply: '',
-  },
 ]
 
 // ─── Función Principal ───────────────────────────────────────
@@ -141,6 +172,11 @@ const seedDatabase = async () => {
     await User.deleteMany({})
     await Event.deleteMany({})
     await Comment.deleteMany({})
+    await Course.deleteMany({})
+    await Gallery.deleteMany({})
+    await Rating.deleteMany({})
+    // Don't delete settings — let getInstance handle it
+    await mongoose.connection.collection('settings').drop().catch(() => {})
     console.log('     ✓ Colecciones limpiadas\n')
 
     // 2. Crear usuarios
@@ -151,7 +187,20 @@ const seedDatabase = async () => {
     const student = await User.create(STUDENT_DATA)
     console.log(`     ✓ Alumno:  ${student.email} (${student.role})\n`)
 
-    // 3. Crear eventos (asignar createdBy al admin)
+    // 3. Crear cursos
+    console.log('  📚 Creando cursos...')
+    const courses = await Course.insertMany(COURSES_DATA)
+    courses.forEach((c) => {
+      console.log(`     ✓ ${c.icon} ${c.name} — ${c.level} (${c.duration})`)
+    })
+    console.log('')
+
+    // 4. Vincular cursos al alumno (simulación Hotmart)
+    student.purchasedCourses = [courses[0]._id, courses[2]._id]
+    await student.save()
+    console.log('  🔗 Cursos vinculados al alumno: Pole Dance Inicial, Flexibilidad & Expresión\n')
+
+    // 5. Crear eventos (asignar createdBy al admin)
     console.log('  📅 Creando eventos del calendario...')
     const eventsWithCreator = EVENTS_DATA.map((e) => ({
       ...e,
@@ -163,7 +212,7 @@ const seedDatabase = async () => {
     })
     console.log('')
 
-    // 4. Crear comentarios (asignar user al alumno)
+    // 6. Crear comentarios (asignar user al alumno)
     console.log('  💬 Creando comentarios de ejemplo...')
     const commentsWithUser = COMMENTS_DATA.map((c) => ({
       ...c,
@@ -174,6 +223,23 @@ const seedDatabase = async () => {
       const icon = c.status === 'Aprobado' ? '✅' : '⏳'
       console.log(`     ${icon} [${c.status}] ${c.course}: "${c.text.substring(0, 50)}..."`)
     })
+    console.log('')
+
+    // 7. Crear Settings (singleton)
+    console.log('  ⚙️  Creando configuración del sitio...')
+    await Settings.getInstance()
+    console.log('     ✓ Settings singleton creado')
+
+    // 8. Crear calificaciones de ejemplo
+    console.log('\n  ⭐ Creando calificaciones de ejemplo...')
+    await Rating.create({
+      user: student._id,
+      course: courses[0]._id,
+      stars: 5,
+      comment: 'Excelente curso, aprendí muchísimo desde el primer día. Maximiliano explica con una paciencia increíble.',
+      courseVersion: 1,
+    })
+    console.log('     ✓ Rating: Pole Dance Inicial — 5 estrellas')
 
     // Resumen
     console.log('\n═══════════════════════════════════════════')
@@ -181,8 +247,10 @@ const seedDatabase = async () => {
     console.log('═══════════════════════════════════════════')
     console.log(`  Base de datos:  likeashh`)
     console.log(`  Usuarios:       ${2} (1 admin + 1 alumno)`)
+    console.log(`  Cursos:         ${courses.length}`)
     console.log(`  Eventos:        ${events.length}`)
     console.log(`  Comentarios:    ${comments.length}`)
+    console.log(`  Calificaciones: 1`)
     console.log('')
     console.log('  Credenciales:')
     console.log('  ┌─────────────────────────────────────┐')

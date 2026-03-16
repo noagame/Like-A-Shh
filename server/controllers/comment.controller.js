@@ -60,7 +60,7 @@ const getAllComments = async (req, res) => {
 
     const comments = await Comment.find(filter)
       .sort({ createdAt: -1 })
-      .populate('user', 'email')
+      .populate('user', 'firstName lastName email')
 
     res.json({
       success: true,
@@ -86,7 +86,7 @@ const getApprovedComments = async (req, res) => {
     const comments = await Comment.find({ status: 'Aprobado' })
       .sort({ createdAt: -1 })
       .limit(20)
-      .populate('user', 'email')
+      .populate('user', 'firstName lastName email')
 
     res.json({
       success: true,

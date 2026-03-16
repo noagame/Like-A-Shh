@@ -4,6 +4,9 @@ import { Link, useNavigate } from 'react-router-dom'
 /**
  * LoginPage — Inicio de sesión con diseño premium dark.
  */
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+
 const LoginPage = () => {
   const navigate = useNavigate()
   const [form, setForm] = useState({ email: '', password: '' })
@@ -21,7 +24,7 @@ const LoginPage = () => {
     setError('')
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -43,7 +46,7 @@ const LoginPage = () => {
       if (data.data.user.role === 'admin') {
         navigate('/admin')
       } else {
-        navigate('/')
+        navigate('/panel')
       }
     } catch (err) {
       setError('Error de conexión con el servidor')

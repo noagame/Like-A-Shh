@@ -31,8 +31,8 @@ const getCourseById = async (req, res) => {
 
 const createCourse = async (req, res) => {
   try {
-    const { name, level, description, link, access, certificate } = req.body
-    const course = await Course.create({ name, level, description, link, access, certificate })
+    const { name, level, description, link, access, certificate, icon, duration } = req.body
+    const course = await Course.create({ name, level, description, link, access, certificate, icon, duration })
     res.status(201).json({ success: true, message: 'Curso creado.', data: course })
   } catch (error) {
     if (error.name === 'ValidationError') {
@@ -45,10 +45,13 @@ const createCourse = async (req, res) => {
 
 const updateCourse = async (req, res) => {
   try {
-    const { name, level, description, link, access, certificate } = req.body
+    const { name, level, description, link, access, certificate, icon, duration, version } = req.body
+    const updateData = { name, level, description, link, access, certificate, icon, duration }
+    if (version !== undefined) updateData.version = version
+
     const course = await Course.findByIdAndUpdate(
       req.params.id,
-      { name, level, description, link, access, certificate },
+      updateData,
       { new: true, runValidators: true }
     )
     if (!course) return res.status(404).json({ success: false, message: 'Curso no encontrado.' })

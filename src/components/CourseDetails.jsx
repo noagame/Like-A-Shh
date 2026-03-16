@@ -1,53 +1,16 @@
 import { useState, useEffect, useRef } from 'react'
 
 /**
- * Courses Section — Scalable course catalog with modal details.
+ * Courses Section — Dynamic course catalog from API with modal details.
  *
  * id="course-details" → smooth-scroll target from Hero CTA.
- *
- * Each course card shows name + "Comprar Ahora" button.
- * Clicking opens a modal with description + "Registrarse" CTA (→ Hotmart).
- *
- * To add a new course, simply add an object to the `courses` array below.
+ * Fetches courses from GET /api/courses?active=true
  */
 
-// ─── Course Data (easily extendable) ─────────────────────────────
-const courses = [
-  {
-    id: 1,
-    name: 'Pole Dance Inicial',
-    level: 'Principiante',
-    duration: '8 semanas',
-    icon: '🔥',
-    description:
-      'Descubre el mundo del Pole Dance desde cero. Este curso te guiará paso a paso a través de los fundamentos esenciales: calentamiento adecuado, agarre seguro, giros básicos como Fireman y Chair Spin, y las primeras figuras de inversión. Ideal para quienes nunca han tocado un pole y quieren comenzar con una base sólida y técnica. Incluye rutinas de acondicionamiento físico diseñadas específicamente para desarrollar la fuerza de agarre y del core desde el día uno.',
-    hotmartUrl: 'https://hotmart.com/es/marketplace',
-  },
-  {
-    id: 2,
-    name: 'Figuras & Transiciones',
-    level: 'Intermedio',
-    duration: '10 semanas',
-    icon: '⭐',
-    description:
-      'Lleva tu Pole Dance al siguiente nivel dominando figuras intermedias y el arte de las transiciones fluidas. Aprenderás combos dinámicos, figuras de fuerza como Shoulder Mount y Aysha, además de transiciones elegantes que conectan cada movimiento en una secuencia continua. Este programa está diseñado para alumnos que ya dominan los fundamentos y buscan expresión artística además de técnica.',
-    hotmartUrl: 'https://hotmart.com/es/marketplace',
-  },
-  {
-    id: 3,
-    name: 'Flexibilidad & Expresión',
-    level: 'Todos los niveles',
-    duration: '6 semanas',
-    icon: '🧘',
-    description:
-      'Un programa complementario centrado en la flexibilidad profunda y la expresión corporal. Incluye splits progresivos, back bends, apertura de caderas, y técnicas de movimiento contemporáneo aplicadas al Pole Dance. Perfecto para cualquier nivel: las progresiones están adaptadas para que cada alumno avance a su ritmo. Transforma no solo tu flexibilidad sino tu forma de comunicar a través del movimiento.',
-    hotmartUrl: 'https://hotmart.com/es/marketplace',
-  },
-]
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 // ─── Course Modal Component ──────────────────────────────────────
 const CourseModal = ({ course, isOpen, onClose }) => {
-  // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -86,7 +49,7 @@ const CourseModal = ({ course, isOpen, onClose }) => {
         {/* Header */}
         <div className="p-6 pb-4 border-b border-brand-gray/20">
           <div className="flex items-center gap-3 mb-3">
-            <span className="text-3xl">{course.icon}</span>
+            <span className="text-3xl">{course.icon || '🔥'}</span>
             <div>
               <h3 className="font-heading font-bold text-xl text-white">
                 {course.name}
@@ -96,7 +59,7 @@ const CourseModal = ({ course, isOpen, onClose }) => {
                   {course.level}
                 </span>
                 <span className="text-xs text-brand-muted">
-                  {course.duration}
+                  {course.duration || course.access}
                 </span>
               </div>
             </div>
@@ -115,7 +78,7 @@ const CourseModal = ({ course, isOpen, onClose }) => {
               <svg className="w-4 h-4 text-brand-gold/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              Acceso de por vida
+              Acceso: {course.access}
             </div>
             <div className="flex items-center gap-2 text-xs text-brand-muted">
               <svg className="w-4 h-4 text-brand-gold/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,30 +92,27 @@ const CourseModal = ({ course, isOpen, onClose }) => {
               </svg>
               Videos HD
             </div>
-            <div className="flex items-center gap-2 text-xs text-brand-muted">
-              <svg className="w-4 h-4 text-brand-gold/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Certificado
-            </div>
+            {course.certificate && (
+              <div className="flex items-center gap-2 text-xs text-brand-muted">
+                <svg className="w-4 h-4 text-brand-gold/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Certificado
+              </div>
+            )}
           </div>
         </div>
 
         {/* Footer — Registrarse CTA */}
         <div className="p-6 pt-2">
           <a
-            href={course.hotmartUrl}
+            href={course.link || 'https://hotmart.com/es/marketplace'}
             target="_blank"
             rel="noopener noreferrer"
             className="group flex items-center justify-center gap-2 w-full btn-shimmer py-3.5 rounded-xl text-brand-black font-heading font-bold text-base tracking-wide hover:scale-[1.02] transition-transform duration-300"
           >
             Registrarse
-            <svg
-              className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </a>
@@ -174,7 +134,7 @@ const CourseCard = ({ course, onOpenModal }) => (
     </span>
 
     {/* Icon */}
-    <span className="text-4xl block mb-4">{course.icon}</span>
+    <span className="text-4xl block mb-4">{course.icon || '🔥'}</span>
 
     {/* Name */}
     <h3 className="font-heading font-bold text-lg sm:text-xl text-white mb-2 group-hover:text-gradient-gold transition-colors duration-300">
@@ -186,7 +146,7 @@ const CourseCard = ({ course, onOpenModal }) => (
       <svg className="w-4 h-4 text-brand-gold/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
-      {course.duration}
+      {course.duration || course.access}
     </p>
 
     {/* CTA Button */}
@@ -195,23 +155,47 @@ const CourseCard = ({ course, onOpenModal }) => (
       className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-brand-gold/40 text-brand-gold font-heading font-semibold text-sm tracking-wide hover:bg-brand-gold/10 hover:border-brand-gold transition-all duration-300"
     >
       Comprar Ahora
-      <svg
-        className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
       </svg>
     </button>
   </div>
 )
 
+// ─── Loading Skeleton ────────────────────────────────────────────
+const SkeletonCard = () => (
+  <div className="p-6 sm:p-8 rounded-2xl bg-brand-dark/50 border border-brand-gray/20 animate-pulse">
+    <div className="w-10 h-10 bg-brand-gray/20 rounded-lg mb-4" />
+    <div className="h-5 bg-brand-gray/20 rounded w-3/4 mb-3" />
+    <div className="h-4 bg-brand-gray/20 rounded w-1/2 mb-6" />
+    <div className="h-10 bg-brand-gray/20 rounded-xl" />
+  </div>
+)
+
 // ─── Main Courses Section ────────────────────────────────────────
 const CourseDetails = () => {
+  const [courses, setCourses] = useState([])
+  const [loading, setLoading] = useState(true)
   const [selectedCourse, setSelectedCourse] = useState(null)
   const sectionRef = useRef(null)
 
+  // Fetch courses from API
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/courses?active=true`)
+        const data = await res.json()
+        if (data.success) setCourses(data.data)
+      } catch (error) {
+        console.error('Error fetching courses:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchCourses()
+  }, [])
+
+  // Reveal animation
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -224,7 +208,7 @@ const CourseDetails = () => {
     const elements = sectionRef.current?.querySelectorAll('.reveal')
     elements?.forEach((el) => observer.observe(el))
     return () => elements?.forEach((el) => observer.unobserve(el))
-  }, [])
+  }, [loading])
 
   return (
     <>
@@ -252,13 +236,25 @@ const CourseDetails = () => {
 
           {/* Course cards grid */}
           <div className="reveal grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {courses.map((course) => (
-              <CourseCard
-                key={course.id}
-                course={course}
-                onOpenModal={setSelectedCourse}
-              />
-            ))}
+            {loading ? (
+              <>
+                <SkeletonCard />
+                <SkeletonCard />
+                <SkeletonCard />
+              </>
+            ) : courses.length === 0 ? (
+              <div className="col-span-full text-center py-12 text-brand-muted">
+                No hay cursos disponibles en este momento.
+              </div>
+            ) : (
+              courses.map((course) => (
+                <CourseCard
+                  key={course._id}
+                  course={course}
+                  onOpenModal={setSelectedCourse}
+                />
+              ))
+            )}
           </div>
         </div>
       </section>

@@ -13,6 +13,20 @@ const validator = require('validator')
 
 const userSchema = new mongoose.Schema(
   {
+    firstName: {
+      type: String,
+      required: [true, 'El nombre es obligatorio'],
+      trim: true,
+      maxlength: [50, 'El nombre no puede exceder 50 caracteres'],
+    },
+
+    lastName: {
+      type: String,
+      required: [true, 'El apellido es obligatorio'],
+      trim: true,
+      maxlength: [50, 'El apellido no puede exceder 50 caracteres'],
+    },
+
     email: {
       type: String,
       required: [true, 'El email es obligatorio'],
@@ -49,6 +63,14 @@ const userSchema = new mongoose.Schema(
         message: 'Debes aceptar los términos y condiciones para registrarte',
       },
     },
+
+    // Cursos vinculados (simulación Hotmart)
+    purchasedCourses: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Course',
+      },
+    ],
 
     // Simulación de confirmación de email
     emailConfirmToken: {

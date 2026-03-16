@@ -1,14 +1,35 @@
-import { useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import instructorImg from '../assets/Foto_instructor.png'
 
 /**
- * Instructor Section — Two-column layout showcasing Maximiliano Velásquez.
- * Left: Professional photo.  Right: Bio & credentials.
+ * Instructor Section — Dynamic content from /api/settings.
+ * Bio, stats, and quote are all consumed from the database.
  */
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+
 const Instructor = () => {
+  const [instructor, setInstructor] = useState(null)
+  const [loading, setLoading] = useState(true)
   const sectionRef = useRef(null)
 
-  // Simple IntersectionObserver reveal
+  // Fetch settings
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/settings`)
+        const data = await res.json()
+        if (data.success) setInstructor(data.data.instructor)
+      } catch (error) {
+        console.error('Error fetching instructor:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchSettings()
+  }, [])
+
+  // Reveal animation
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -21,13 +42,12 @@ const Instructor = () => {
     const elements = sectionRef.current?.querySelectorAll('.reveal')
     elements?.forEach((el) => observer.observe(el))
     return () => elements?.forEach((el) => observer.unobserve(el))
-  }, [])
+  }, [loading])
 
-  const stats = [
-    { value: '10+', label: 'Años de experiencia' },
-    { value: '500+', label: 'Alumnos formados' },
-    { value: '15+', label: 'Competencias' },
-  ]
+  // Split name into first and last for gradient styling
+  const nameParts = instructor?.name?.split(' ') || ['', '']
+  const firstName = nameParts[0]
+  const lastName = nameParts.slice(1).join(' ')
 
   return (
     <section
@@ -42,10 +62,10 @@ const Instructor = () => {
         {/* Section label */}
         <div className="reveal text-center mb-16">
           <span className="text-brand-gold text-xs font-heading font-semibold tracking-[0.2em] uppercase">
-            Conoce a tu instructor
+            {instructor?.subtitle || 'Instructor'}
           </span>
           <h2 className="mt-3 font-heading font-black text-3xl sm:text-4xl md:text-5xl text-white">
-            Maximiliano <span className="text-gradient-gold">Velásquez</span>
+            {firstName} <span className="text-gradient-gold">{lastName}</span>
           </h2>
         </div>
 
@@ -60,7 +80,7 @@ const Instructor = () => {
               <div className="relative w-72 h-96 sm:w-80 sm:h-[28rem] rounded-2xl bg-brand-dark overflow-hidden">
                 <img
                   src={instructorImg}
-                  alt="Maximiliano Velásquez — Instructor de Pole Dance"
+                  alt={instructor?.name || 'Instructor de Pole Dance'}
                   className="w-full h-full object-cover object-top"
                 />
               </div>
@@ -69,38 +89,47 @@ const Instructor = () => {
 
           {/* ── Bio column ── */}
           <div className="reveal space-y-6">
-            <p className="text-brand-muted leading-relaxed text-base sm:text-lg">
-              Maximiliano Velásquez es más que un instructor de Pole Dance: es un artista
-              del movimiento que ha dedicado más de una década a perfeccionar la fusión entre
-              la fuerza atlética y la expresión artística.
-            </p>
-            <p className="text-brand-muted leading-relaxed text-base sm:text-lg">
-              Su método, desarrollado a través de años de competencia a nivel nacional e
-              internacional, combina técnica progresiva, entrenamiento funcional y un enfoque
-              profundo en la conexión mente-cuerpo. Cada clase está diseñada para que descubras
-              tu máximo potencial, sin importar tu nivel de experiencia.
-            </p>
+            {loading ? (
+              <div className="space-y-4 animate-pulse">
+                <div className="h-4 bg-brand-gray/20 rounded w-full" />
+                <div className="h-4 bg-brand-gray/20 rounded w-5/6" />
+                <div className="h-4 bg-brand-gray/20 rounded w-full" />
+                <div className="h-4 bg-brand-gray/20 rounded w-4/6" />
+              </div>
+            ) : (
+              <>
+                <p className="text-brand-muted leading-relaxed text-base sm:text-lg">
+                  {instructor?.bio || ''}
+                </p>
+                <p className="text-brand-muted leading-relaxed text-base sm:text-lg">
+                  {instructor?.bio2 || ''}
+                </p>
 
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 pt-6">
-              {stats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="text-center p-4 rounded-xl bg-brand-dark/60 border border-brand-gray/40"
-                >
-                  <span className="block text-2xl sm:text-3xl font-heading font-bold text-gradient-gold">
-                    {stat.value}
-                  </span>
-                  <span className="block text-xs text-brand-muted mt-1">{stat.label}</span>
-                </div>
-              ))}
-            </div>
+                {/* Stats */}
+                {instructor?.stats?.length > 0 && (
+                  <div className="grid grid-cols-3 gap-4 pt-6">
+                    {instructor.stats.map((stat, i) => (
+                      <div
+                        key={i}
+                        className="text-center p-4 rounded-xl bg-brand-dark/60 border border-brand-gray/40"
+                      >
+                        <span className="block text-2xl sm:text-3xl font-heading font-bold text-gradient-gold">
+                          {stat.value}
+                        </span>
+                        <span className="block text-xs text-brand-muted mt-1">{stat.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
-            {/* Quote */}
-            <blockquote className="border-l-2 border-brand-gold/50 pl-4 italic text-brand-muted/80 text-sm">
-              "El Pole Dance no es solo fuerza ni solo danza; es el arte de confiar en tu cuerpo
-              y desafiar la gravedad."
-            </blockquote>
+                {/* Quote */}
+                {instructor?.quote && (
+                  <blockquote className="border-l-2 border-brand-gold/50 pl-4 italic text-brand-muted/80 text-sm">
+                    "{instructor.quote}"
+                  </blockquote>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>

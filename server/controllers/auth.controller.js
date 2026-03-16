@@ -24,14 +24,21 @@ const generateToken = (user) => {
 /**
  * POST /api/auth/register
  *
- * Body: { email, password, acceptedTerms }
+ * Body: { firstName, lastName, email, password, acceptedTerms }
  * Response: { success, message, data: { user, token, emailConfirmToken } }
  */
 const register = async (req, res) => {
   try {
-    const { email, password, acceptedTerms } = req.body
+    const { firstName, lastName, email, password, acceptedTerms } = req.body
 
     // 1. Validaciones básicas
+    if (!firstName || !lastName) {
+      return res.status(400).json({
+        success: false,
+        message: 'Nombre y apellido son obligatorios.',
+      })
+    }
+
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -60,6 +67,8 @@ const register = async (req, res) => {
 
     // 4. Crear usuario (la contraseña se hashea en el pre-save hook)
     const user = await User.create({
+      firstName,
+      lastName,
       email,
       password,
       acceptedTerms,
@@ -76,6 +85,8 @@ const register = async (req, res) => {
       data: {
         user: {
           id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
           email: user.email,
           role: user.role,
           emailConfirmed: user.emailConfirmed,
@@ -152,6 +163,8 @@ const login = async (req, res) => {
       data: {
         user: {
           id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
           email: user.email,
           role: user.role,
           emailConfirmed: user.emailConfirmed,
@@ -172,11 +185,11 @@ const login = async (req, res) => {
  * GET /api/auth/me
  *
  * Protegido por verifyToken.
- * Devuelve el usuario autenticado.
+ * Devuelve el usuario autenticado con sus cursos comprados.
  */
 const getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id)
+    const user = await User.findById(req.user.id).populate('purchasedCourses')
 
     if (!user) {
       return res.status(404).json({

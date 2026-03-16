@@ -2,6 +2,7 @@
  * Course Model — Mongoose Schema
  * ═══════════════════════════════════════════
  * Modelo para el catálogo de cursos.
+ * Incluye icon, duration y version para sistema de reseñas.
  */
 
 const mongoose = require('mongoose')
@@ -38,6 +39,21 @@ const courseSchema = new mongoose.Schema(
     certificate: {
       type: Boolean,
       default: false,
+    },
+    icon: {
+      type: String,
+      trim: true,
+      default: '🔥',
+    },
+    duration: {
+      type: String,
+      trim: true,
+      default: '8 semanas',
+    },
+    version: {
+      type: Number,
+      default: 1,
+      min: 1,
     },
     active: {
       type: Boolean,

@@ -16,6 +16,7 @@
 require('dotenv').config()
 
 const express = require('express')
+const path = require('path')
 const helmet = require('helmet')
 const cors = require('cors')
 const rateLimit = require('express-rate-limit')
@@ -27,6 +28,10 @@ const connectDB = require('./config/db')
 const authRoutes = require('./routes/auth.routes')
 const eventRoutes = require('./routes/event.routes')
 const commentRoutes = require('./routes/comment.routes')
+const courseRoutes = require('./routes/course.routes')
+const settingsRoutes = require('./routes/settings.routes')
+const galleryRoutes = require('./routes/gallery.routes')
+const ratingRoutes = require('./routes/rating.routes')
 
 // ─── Inicializar Express ─────────────────────────────────────────
 const app = express()
@@ -91,14 +96,19 @@ const authLimiter = rateLimit({
 // ═════════════════════════════════════════════════════════════════
 //  CAPA 4 — Body parser con límite de payload
 // ═════════════════════════════════════════════════════════════════
-app.use(express.json({ limit: '10kb' }))
-app.use(express.urlencoded({ extended: true, limit: '10kb' }))
+app.use(express.json({ limit: '5mb' }))
+app.use(express.urlencoded({ extended: true, limit: '5mb' }))
 
 // ═════════════════════════════════════════════════════════════════
 //  CAPA 5 — Sanitización de datos (prevención NoSQL injection + XSS)
 // ═════════════════════════════════════════════════════════════════
 app.use(mongoSanitize())  // Remueve operadores $ de queries
 app.use(xss())            // Escapa HTML malicioso de inputs
+
+// ═════════════════════════════════════════════════════════════════
+//  ARCHIVOS ESTÁTICOS (uploads)
+// ═════════════════════════════════════════════════════════════════
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')))
 
 // ═════════════════════════════════════════════════════════════════
 //  RUTAS
@@ -117,11 +127,23 @@ app.get('/api/health', (req, res) => {
 // Auth (con rate-limit estricto)
 app.use('/api/auth', authLimiter, authRoutes)
 
+// Cursos
+app.use('/api/courses', courseRoutes)
+
 // Eventos / Calendario
 app.use('/api/events', eventRoutes)
 
 // Comentarios / Feedback
 app.use('/api/comments', commentRoutes)
+
+// Settings (aboutUs, instructor, socials)
+app.use('/api/settings', settingsRoutes)
+
+// Galerías
+app.use('/api/galleries', galleryRoutes)
+
+// Calificaciones / Reseñas
+app.use('/api/ratings', ratingRoutes)
 
 // ═════════════════════════════════════════════════════════════════
 //  MANEJO GLOBAL DE ERRORES (ISO 25010 — Fiabilidad)
@@ -139,6 +161,14 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   console.error('═══ ERROR ═══')
   console.error(err.stack)
+
+  // Multer errors
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).json({
+      success: false,
+      message: 'El archivo excede el tamaño máximo de 5MB.',
+    })
+  }
 
   // No exponer detalles del error en producción
   const isDev = process.env.NODE_ENV === 'development'
