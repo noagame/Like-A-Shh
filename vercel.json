@@ -1,0 +1,14 @@
+{
+  "version": 3,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
+    }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "https://TU_BACKEND_URL/$1" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}
