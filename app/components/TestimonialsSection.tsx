@@ -7,7 +7,7 @@ const testimonials = [
   {
     id: 1,
     name: "Valentina R.",
-    text: "Las clases con Max cambiaron mi vida. Encontré una forma de expresarme que nunca imaginé. La confianza que gané en mí misma es invaluable.",
+    text: "Las clases con Maxi cambiaron mi vida. Encontré una forma de expresarme que nunca imaginé. La confianza que gané en mí misma es invaluable.",
   },
   {
     id: 2,
@@ -63,23 +63,6 @@ export default function TestimonialsSection() {
               className="card-gold p-6 text-center"
               id={`testimonial-card-${testimonial.id}`}
             >
-              {/* Avatar placeholder */}
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-gold/20 to-gold/5 border border-gold/30 flex items-center justify-center">
-                <svg
-                  className="w-8 h-8 text-gold/50"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-              </div>
-
               {/* Stars */}
               <div className="flex justify-center gap-1 mb-3">
                 {[...Array(5)].map((_, idx) => (

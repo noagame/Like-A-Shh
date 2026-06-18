@@ -6,12 +6,17 @@ import { useRef, useState, FormEvent } from "react";
 export default function ContactSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  // 1. Agregamos "mensaje" al estado inicial
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
     email: "",
+    mensaje: "",
   });
+
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Estado para evitar doble envío
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const sanitize = (value: string): string => {
@@ -26,52 +31,70 @@ export default function ContactSection() {
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.nombre.trim()) {
-      newErrors.nombre = "El nombre es requerido";
-    } else if (formData.nombre.trim().length < 2) {
-      newErrors.nombre = "El nombre debe tener al menos 2 caracteres";
-    }
-
-    if (!formData.apellido.trim()) {
-      newErrors.apellido = "El apellido es requerido";
-    } else if (formData.apellido.trim().length < 2) {
-      newErrors.apellido = "El apellido debe tener al menos 2 caracteres";
-    }
-
+    if (!formData.nombre.trim()) newErrors.nombre = "El nombre es requerido";
+    if (!formData.apellido.trim()) newErrors.apellido = "El apellido es requerido";
     if (!formData.email.trim()) {
       newErrors.email = "El email es requerido";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
       newErrors.email = "Ingresa un email válido";
+    }
+    // Validación para el nuevo campo de mensaje
+    if (!formData.mensaje.trim()) {
+      newErrors.mensaje = "Por favor, escribe un mensaje";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (validate()) {
+      setIsSubmitting(true);
+
       const sanitizedData = {
         nombre: sanitize(formData.nombre),
         apellido: sanitize(formData.apellido),
         email: sanitize(formData.email),
+        mensaje: sanitize(formData.mensaje),
       };
-      console.log("Form submitted:", sanitizedData);
-      setSubmitted(true);
-      setFormData({ nombre: "", apellido: "", email: "" });
-      setTimeout(() => setSubmitted(false), 4000);
+
+      try {
+        // --- API DE FORMSPREE ---
+        // REEMPLAZA ESTA URL CON TU ENDPOINT REAL DE FORMSPREE
+        const response = await fetch("https://formspree.io/f/TU_ID_DE_FORMSPREE", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(sanitizedData),
+        });
+
+        if (response.ok) {
+          setSubmitted(true);
+          setFormData({ nombre: "", apellido: "", email: "", mensaje: "" });
+          setTimeout(() => setSubmitted(false), 5000);
+        } else {
+          alert("Hubo un error al enviar el mensaje. Intenta nuevamente.");
+        }
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        alert("Error de conexión. Intenta nuevamente.");
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
   return (
     <section id="contacto" className="py-16 md:py-24 section-spacing" ref={ref}>
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
-          <div className="card-gold p-6 md:p-10">
+          <div className="card-gold p-8 md:p-12">
             <h2
               className="text-3xl sm:text-4xl md:text-5xl font-bold text-gold mb-2 text-center gold-underline"
               style={{ fontFamily: "var(--font-serif)" }}
@@ -79,7 +102,7 @@ export default function ContactSection() {
               Ponerse en contacto
             </h2>
             <p
-              className="text-white/50 text-center mb-10 mt-6"
+              className="text-white/70 text-center mb-10 mt-8 text-lg"
               style={{ fontFamily: "var(--font-sans)" }}
             >
               ¿Tienes alguna consulta? Déjanos tus datos y te contactaremos.
@@ -89,84 +112,84 @@ export default function ContactSection() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-6 p-4 rounded-lg bg-gold/10 border border-gold/30 text-center"
+                className="mb-8 p-4 rounded-lg bg-gold/10 border border-gold/30 text-center"
               >
-                <p className="text-gold font-medium" style={{ fontFamily: "var(--font-sans)" }}>
+                <p className="text-gold font-medium text-lg" style={{ fontFamily: "var(--font-sans)" }}>
                   ✓ ¡Mensaje enviado con éxito! Te contactaremos pronto.
                 </p>
               </motion.div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-8" id="contact-form">
+            <form onSubmit={handleSubmit} className="space-y-6" id="contact-form">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="contact-nombre" className="sr-only">
-                    Nombre
-                  </label>
                   <input
                     type="text"
                     id="contact-nombre"
                     placeholder="Nombre"
                     value={formData.nombre}
-                    onChange={(e) =>
-                      setFormData({ ...formData, nombre: e.target.value })
-                    }
-                    className="form-input"
+                    onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                    className="form-input w-full"
                     maxLength={50}
+                    disabled={isSubmitting}
                   />
-                  {errors.nombre && (
-                    <p className="text-red-400 text-xs mt-2">{errors.nombre}</p>
-                  )}
+                  {errors.nombre && <p className="text-red-400 text-sm mt-2">{errors.nombre}</p>}
                 </div>
                 <div>
-                  <label htmlFor="contact-apellido" className="sr-only">
-                    Apellido
-                  </label>
                   <input
                     type="text"
                     id="contact-apellido"
                     placeholder="Apellido"
                     value={formData.apellido}
-                    onChange={(e) =>
-                      setFormData({ ...formData, apellido: e.target.value })
-                    }
-                    className="form-input"
+                    onChange={(e) => setFormData({ ...formData, apellido: e.target.value })}
+                    className="form-input w-full"
                     maxLength={50}
+                    disabled={isSubmitting}
                   />
-                  {errors.apellido && (
-                    <p className="text-red-400 text-xs mt-2">{errors.apellido}</p>
-                  )}
+                  {errors.apellido && <p className="text-red-400 text-sm mt-2">{errors.apellido}</p>}
                 </div>
               </div>
 
               <div>
-                <label htmlFor="contact-email" className="sr-only">
-                  Email
-                </label>
                 <input
                   type="email"
                   id="contact-email"
                   placeholder="Email"
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  className="form-input"
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="form-input w-full"
                   maxLength={100}
+                  disabled={isSubmitting}
                 />
-                {errors.email && (
-                  <p className="text-red-400 text-xs mt-2">{errors.email}</p>
-                )}
+                {errors.email && <p className="text-red-400 text-sm mt-2">{errors.email}</p>}
+              </div>
+
+              {/* 2. EL NUEVO CAMPO DE MENSAJE */}
+              <div>
+                <textarea
+                  id="contact-mensaje"
+                  placeholder="Escribe tu mensaje..."
+                  value={formData.mensaje}
+                  onChange={(e) => setFormData({ ...formData, mensaje: e.target.value })}
+                  className="form-input w-full min-h-[120px] resize-y"
+                  maxLength={500}
+                  disabled={isSubmitting}
+                ></textarea>
+                {errors.mensaje && <p className="text-red-400 text-sm mt-2">{errors.mensaje}</p>}
               </div>
 
               <motion.button
                 type="submit"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full py-4 border-2 border-gold text-gold font-bold text-sm tracking-widest uppercase rounded-lg hover:bg-gold hover:text-black transition-all duration-300"
+                disabled={isSubmitting}
+                whileHover={!isSubmitting ? { scale: 1.02 } : {}}
+                whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+                className={`w-full py-4 border-2 border-gold font-bold text-sm tracking-widest uppercase rounded-lg transition-all duration-300 mt-4 
+                  ${isSubmitting
+                    ? "bg-gold/50 text-black/50 cursor-not-allowed border-gold/50"
+                    : "text-gold hover:bg-gold hover:text-black"}`}
                 id="contact-submit-btn"
               >
-                Enviar
+                {isSubmitting ? "Enviando..." : "Enviar Mensaje"}
               </motion.button>
             </form>
           </div>

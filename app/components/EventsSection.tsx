@@ -40,68 +40,70 @@ export default function EventsSection() {
             <div className="aspect-square lg:aspect-auto bg-gradient-to-br from-dark-card via-black to-dark-card relative overflow-hidden">
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center p-8">
-                  <motion.div
-                    animate={{ rotate: [0, 5, -5, 0] }}
-                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                    className="w-28 h-28 mx-auto mb-4 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center"
-                  >
-                    <svg
-                      className="w-14 h-14 text-gold/50"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1}
-                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
-                      />
-                    </svg>
-                  </motion.div>
-                  <p
-                    className="text-gold/60 text-lg font-bold tracking-wider"
-                    style={{ fontFamily: "var(--font-serif)" }}
-                  >
-                    VOL. 5
-                  </p>
-                  <p className="text-gold/40 text-sm tracking-wider uppercase mt-1">
-                    Póster del evento
-                  </p>
+                  <img
+                    src="/assets/events/exotic_night.jpeg"
+                    alt="Frosted Desire"
+                    className="w-full h-full object-cover rounded-lg"
+                  />
                 </div>
               </div>
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/50 lg:block hidden" />
             </div>
 
             {/* Event Details */}
             <div className="p-6 md:p-10 flex flex-col justify-center">
               <span className="inline-flex items-center gap-2 text-gold text-xs tracking-widest uppercase mb-4">
                 <span className="w-2 h-2 bg-gold rounded-full animate-pulse" />
-                Próximamente
+                31 de Julio
               </span>
 
               <h3
                 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
-                Noche de Exotic
+                Noche de Exotic Vol. 5
               </h3>
               <h4
-                className="text-xl sm:text-2xl text-gold-gradient font-bold mb-6"
+                className="text-xl sm:text-2xl text-sky-300 mb-6"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
-                Vol. 5 — Frosted Desire
+                Frosted Desire
               </h4>
 
               <p
-                className="text-white/70 leading-relaxed mb-6"
+                className="text-white/70 leading-relaxed mb-6 text-justify"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
-                La quinta edición de nuestro evento insignia llega con más fuerza que
-                nunca. Una noche mágica de danza exotic, performances en vivo y una
-                experiencia inmersiva que celebra el arte del movimiento. Prepárate
-                para una velada inolvidable llena de elegancia, talento y pasión.
+                El invierno cae sobre la noche más sensual del año.
+              </p>
+              <p
+                className="text-white/70 leading-relaxed mb-6 text-justify"
+                style={{ fontFamily: "var(--font-sans)" }}
+              >
+                Una edición donde el hielo, la oscuridad y el deseo se encuentran bajo las luces.
+              </p>
+              <p
+                className="text-gold/70 leading-relaxed mb-6"
+                style={{ fontFamily: "var(--font-sans)" }}
+              >
+                ✧ Performance • Pole • Sensualidad • Ritual • Escarcha • Elegancia oscura ✧
+              </p>
+              <p
+                className="text-white/70 leading-relaxed mb-6 text-justify"
+                style={{ fontFamily: "var(--font-sans)" }}
+              >
+                Prepárate para una experiencia hipnótica inspirada en el frío, el misterio y la belleza de las noches eternas.
+              </p>
+              <p
+                className="text-white/70 leading-relaxed mb-6 text-justify"
+                style={{ fontFamily: "var(--font-sans)" }}
+              >
+                Cada escena, cada cuerpo y cada movimiento fueron creados para encender el invierno desde adentro.
+              </p>
+              <p
+                className="text-sky-300 leading-relaxed mb-6 text-justify"
+                style={{ fontFamily: "var(--font-sans)" }}
+              >
+                El frío nunca se vio tan seductor.
               </p>
 
               <div className="space-y-3 mb-8">
@@ -120,7 +122,7 @@ export default function EventsSection() {
                     />
                   </svg>
                   <span style={{ fontFamily: "var(--font-sans)" }}>
-                    Fecha por confirmar
+                    Viernes 31 de Julio
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-white/60">
@@ -143,13 +145,22 @@ export default function EventsSection() {
                     />
                   </svg>
                   <span style={{ fontFamily: "var(--font-sans)" }}>
-                    Ubicación por confirmar
+                    <motion.a
+                      href="https://www.google.com/maps/place/Cabaret+Pira%C3%B1a/@-33.4297585,-70.6384482,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c50062a9fe4d:0x1219dd351556ec9!8m2!3d-33.4297585!4d-70.6384482!16s%2Fg%2F11wftzr0kq?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D"
+                      className="text-gold/70"
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.98 }}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Cabaret Piraña - Bombero Núñez 365 - Recoleta - Santiago
+                    </motion.a>
                   </span>
                 </div>
               </div>
 
               <motion.a
-                href="#"
+                href="https://www.alltickets.cl/details.php?eve_id=824"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gold text-black font-bold text-sm tracking-widest uppercase rounded-full hover:bg-gold-light transition-colors duration-300 shadow-lg shadow-gold/20 w-full sm:w-auto text-center"

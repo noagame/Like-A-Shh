@@ -26,7 +26,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 0.08, y: 0 }}
             transition={{ delay: 0.5, duration: 1 }}
-            className="absolute inset-0 flex items-center justify-center text-[10rem] sm:text-[14rem] md:text-[18rem] font-black text-white select-none pointer-events-none"
+            className="absolute inset-0 mt-20 md:mt-24 flex items-center justify-center text-[10rem] sm:text-[14rem] md:text-[18rem] font-black text-white select-none pointer-events-none"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             SHH
@@ -36,7 +36,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.8 }}
-            className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight relative z-10"
+            className="text-5xl mt-20 md:mt-24 sm:text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight relative z-10"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             <span className="text-white">LIKE A </span>
@@ -49,7 +49,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 0.8 }}
-          className="text-gold text-lg sm:text-xl md:text-2xl tracking-[0.3em] uppercase mb-8"
+          className="text-gold text-lg sm:text-xl md:text-2xl tracking-[0.3em] uppercase mb-16"
           style={{ fontFamily: "var(--font-serif)" }}
         >
           Movimiento, Fuerza y Libertad
@@ -63,21 +63,11 @@ export default function HeroSection() {
           transition={{ delay: 1.5, duration: 0.6 }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.98 }}
-          className="inline-flex items-center gap-2 px-10 py-4 bg-gold text-black font-bold text-sm tracking-widest uppercase rounded-full hover:bg-gold-light transition-colors duration-300"
+          className="inline-flex items-center gap-2 mt-8 px-10 py-4 bg-gold text-black font-bold text-sm tracking-widest uppercase rounded-full hover:bg-gold-light transition-colors duration-300"
           style={{ fontFamily: "var(--font-sans)" }}
           id="hero-cta-acceso"
         >
           Acceso
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
         </motion.a>
 
         {/* Divider */}
@@ -118,7 +108,7 @@ export default function HeroSection() {
         </motion.div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll flotante UI/UX*/}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

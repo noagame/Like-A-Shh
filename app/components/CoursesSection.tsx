@@ -6,45 +6,29 @@ import { useRef } from "react";
 const courses = [
   {
     id: 1,
-    title: "Pole Dance Básico",
-    description:
-      "Aprende las bases del pole dance: giros, figuras y transiciones. Ideal para principiantes sin experiencia previa.",
-    level: "Principiante",
+    image: "/assets/courses/movilidad.jpeg",
+    title: "Flexibiliza tu Actitud by Maximiliano Velásquez",
+    description_1:
+      `Curso diseñado para mejorar tu flexibilidad y bienestar corporal a través de videos guiados paso a paso.`,
+    description_2:
+      `Accede a rutinas específicas por grupos articulares y a ejercicios globales de movilidad, cuidadosamente estructurados para ayudarte a ganar mayor rango de movimiento, agilidad y control corporal.`,
+    url: "https://hotmart.com/es/marketplace/productos/flexibiliza-tu-actitud-by-maximiliano-velasquez/A102579634L",
   },
   {
     id: 2,
-    title: "Exotic Flow",
+    image: "/assets/logo/logo_likeashh.jpg",
+    title: "Proximamente",
     description:
-      "Desarrolla tu expresión corporal y fluidez con coreografías sensuales y elegantes en tacones.",
-    level: "Intermedio",
+      "Exotic Pole Tricks",
+    url: "#",
   },
   {
     id: 3,
-    title: "Flexibilidad & Contorsión",
+    image: "/assets/logo/logo_likeashh.jpg",
+    title: "Proximamente",
     description:
-      "Programa completo de flexibilidad con clases grabadas para mejorar tu rango de movimiento de forma segura.",
-    level: "Todos los niveles",
-  },
-  {
-    id: 4,
-    title: "Pole Intermedio",
-    description:
-      "Perfecciona tu técnica con combos avanzados, inversiones y transiciones fluidas en la barra.",
-    level: "Intermedio",
-  },
-  {
-    id: 5,
-    title: "Exotic Heels",
-    description:
-      "Domina el arte de bailar en tacones con rutinas de alto impacto visual y expresión artística.",
-    level: "Intermedio",
-  },
-  {
-    id: 6,
-    title: "Acondicionamiento Corporal",
-    description:
-      "Fortalece tu cuerpo con ejercicios específicos para pole dance: fuerza, resistencia y control.",
-    level: "Todos los niveles",
+      "Exotic Pole Transicion",
+    url: "#",
   },
 ];
 
@@ -92,59 +76,42 @@ export default function CoursesSection() {
               className="card-gold overflow-hidden group"
               id={`course-card-${course.id}`}
             >
-              {/* Image placeholder */}
-              <div className="aspect-video bg-gradient-to-br from-dark-card via-black to-dark-card relative overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors">
-                    <svg
-                      className="w-8 h-8 text-gold/50"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                {/* Level badge */}
-                <span className="absolute top-3 right-3 px-3 py-1 bg-black/80 text-gold text-xs tracking-wider uppercase rounded-full border border-gold/20">
-                  {course.level}
-                </span>
-              </div>
-
+              <img
+                src={course.image}
+                alt={course.title}
+                className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+              />
               {/* Content */}
               <div className="p-5 md:p-6">
                 <h3
-                  className="text-xl font-bold text-white mb-2 group-hover:text-gold transition-colors"
+                  className="text-xl font-bold text-gold mb-2 group-hover:text-gold transition-colors"
                   style={{ fontFamily: "var(--font-serif)" }}
                 >
                   {course.title}
                 </h3>
                 <p
-                  className="text-white/60 text-sm leading-relaxed mb-5"
+                  className="text-white/60 text-sm leading-relaxed mb-5 text-justify"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
-                  {course.description}
+                  {course.description_1}
                 </p>
-                <motion.button
+                <p
+                  className="text-white/60 text-sm leading-relaxed mb-5 text-justify"
+                  style={{ fontFamily: "var(--font-sans)" }}
+                >
+                  {course.description_2}
+                </p>
+                <motion.a
+                  href={course.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full py-3 border border-gold text-gold text-sm font-semibold tracking-widest uppercase rounded-lg hover:bg-gold hover:text-black transition-all duration-300"
+                  className="w-full block text-center py-3 border border-gold text-black bg-gold text-sm font-semibold tracking-widest uppercase rounded-lg hover:bg-gold hover:text-black transition-all duration-300"
                   id={`ver-curso-btn-${course.id}`}
                 >
                   Ver Curso
-                </motion.button>
+                </motion.a>
               </div>
             </motion.div>
           ))}

@@ -12,12 +12,6 @@
   --color-white-muted: #B0B0B0;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 html {
   scroll-behavior: smooth;
 }
@@ -47,6 +41,7 @@ body {
   background: #E8C252;
 }
 
+
 /* Gold gradient text utility */
 .text-gold-gradient {
   background: linear-gradient(135deg, #D4AF37 0%, #E8C252 50%, #D4AF37 100%);
@@ -57,27 +52,37 @@ body {
 
 /* Gold shimmer animation */
 .gold-shimmer {
-  background: linear-gradient(
-    110deg,
-    #D4AF37 0%,
-    #E8C252 25%,
-    #D4AF37 50%,
-    #E8C252 75%,
-    #D4AF37 100%
-  );
+  background: linear-gradient(110deg,
+      #D4AF37 0%,
+      #E8C252 25%,
+      #D4AF37 50%,
+      #E8C252 75%,
+      #D4AF37 100%);
   background-size: 200% 100%;
   animation: shimmer 3s ease-in-out infinite;
 }
 
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* Floating animation */
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .animate-float {
@@ -86,9 +91,12 @@ body {
 
 /* Pulse glow for WhatsApp button */
 @keyframes pulse-glow {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 10px rgba(37, 211, 102, 0.5), 0 0 20px rgba(37, 211, 102, 0.3);
   }
+
   50% {
     box-shadow: 0 0 20px rgba(37, 211, 102, 0.8), 0 0 40px rgba(37, 211, 102, 0.5);
   }
