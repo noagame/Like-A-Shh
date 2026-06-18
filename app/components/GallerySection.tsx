@@ -150,12 +150,12 @@ export default function GallerySection() {
   ];
 
   const bunnysSeasonImages = [
-    "/assets/Vol4/foto1.jpeg",
-    "/assets/Vol4/foto2.jpeg",
-    "/assets/Vol4/foto3.jpeg",
-    "/assets/Vol4/foto4.jpeg",
-    "/assets/Vol4/foto5.jpeg",
-    "/assets/Vol4/foto6.jpeg",
+    "/assets/volumen4/foto1.jpeg",
+    "/assets/volumen4/foto2.jpeg",
+    "/assets/volumen4/foto3.jpeg",
+    "/assets/volumen4/foto4.jpeg",
+    "/assets/volumen4/foto5.jpeg",
+    "/assets/volumen4/foto6.jpeg",
   ];
 
   return (
