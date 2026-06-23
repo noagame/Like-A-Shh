@@ -122,17 +122,17 @@ export default function CoursesSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center mt-10 md:mt-14"
+          className="pt-10 mt-10 md:mt-14"
         >
           <motion.a
             href="#contacto"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center gap-3 px-10 py-4 bg-gold text-black font-bold text-sm tracking-widest uppercase rounded-full hover:bg-gold-light transition-colors duration-300 shadow-lg shadow-gold/20"
+            className="w-full inline-flex items-center justify-center gap-3 px-10 py-4 bg-gold text-black font-bold text-sm tracking-widest uppercase rounded-full hover:bg-gold-light transition-colors duration-300 shadow-lg shadow-gold/20"
             id="agendar-clases-btn"
           >
             <svg
-              className="w-5 h-5"
+              className="w-10 h-10"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

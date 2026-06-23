@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter, Montserrat } from "next/font/google";
 import "./globals.css";
+import SecurityGuard from "./components/SecurityGard";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -50,7 +51,10 @@ export default function RootLayout({
       lang="es"
       className={`h-full antialiased ${playfair.variable} ${inter.variable} ${montserrat.variable}`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <SecurityGuard />
+        {children}
+      </body>
     </html>
   );
 }

@@ -122,35 +122,31 @@ export default function FAQSection() {
               >
                 <div className="px-5 pb-5 md:px-6 md:pb-6">
                   <div className="w-full h-px bg-gold/10 mb-4" />
-                  <p
+                  <div
                     className="text-white/70 leading-relaxed"
                     style={{ fontFamily: "var(--font-sans)" }}
                   >
                     {Array.isArray(faq.answer) ? (
-                      <ul>
+                      <ul className="space-y-1">
                         {faq.answer.map((item, index) => (
-                          <li key={index}>
-                            • {item}
-                            <br />
-                          </li>
+                          <li key={index}>• {item}</li>
                         ))}
                       </ul>
                     ) : (
                       <p>{faq.answer}</p>
                     )}
                     {faq.moreInfo && (
-                      <>
-                        <br />
-                        <p>{faq.moreInfo}</p>
-                      </>
+                      <p className="mt-3 text-white/50 text-sm italic">
+                        {faq.moreInfo}
+                      </p>
                     )}
-                  </p>
+                  </div>
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
       </div>
-    </section >
+    </section>
   );
 }

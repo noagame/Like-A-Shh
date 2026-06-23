@@ -62,7 +62,15 @@ export default function ContactSection() {
       try {
         // --- API DE FORMSPREE ---
         // REEMPLAZA ESTA URL CON TU ENDPOINT REAL DE FORMSPREE
-        const response = await fetch("https://formspree.io/f/TU_ID_DE_FORMSPREE", {
+        const formspreeUrl = process.env.NEXT_PUBLIC_FORMSPREE_URL;
+        if (!formspreeUrl) {
+          console.error("Falta la URL de Formspree en las variables de entorno (.env.local)");
+          alert("Error de configuración del formulario. Contacte al administrador.");
+          setIsSubmitting(false);
+          return;
+        }
+
+        const response = await fetch(formspreeUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
