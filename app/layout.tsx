@@ -52,7 +52,6 @@ export default function RootLayout({
       className={`h-full antialiased ${playfair.variable} ${inter.variable} ${montserrat.variable}`}
     >
       <body className="min-h-full flex flex-col">
-        <SecurityGuard />
         {children}
       </body>
     </html>
