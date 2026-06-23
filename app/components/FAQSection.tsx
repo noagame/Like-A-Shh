@@ -8,22 +8,40 @@ const faqData = [
     id: 1,
     question: "¿Qué formas de pago tenemos?",
     answer:
-      "Aceptamos múltiples formas de pago para tu comodidad: tarjetas de crédito y débito (Visa, Mastercard, American Express), transferencias bancarias nacionales, y pagos a través de plataformas digitales. Si necesitas un método de pago alternativo, no dudes en contactarnos y encontraremos la mejor solución para ti.",
+      `Nuestros cursos se gestionan a través de la plataforma Hotmart. Desde la misma te llevará a opciones de pago (tarjeta de crédito o debido).`,
+    moreInfo: "Tu suscripción dura un mes a partir de la compra.",
   },
   {
     id: 2,
     question: "¿Cómo acceder a nuestros cursos?",
     answer:
-      "Una vez realizado el pago, recibirás un enlace de acceso directamente en tu correo electrónico registrado. Este link te dará acceso inmediato a la plataforma de cursos donde podrás ver todo el contenido disponible. Revisa tu bandeja de entrada y carpeta de spam por si acaso.",
+      "Al ingresar a un curso te redireccionará a nuestra plataforma Hotmart donde podrás comprar nuestros cursos Online.",
   },
   {
     id: 3,
     question: "¿Qué modalidad son las clases?",
-    answer:
-      "Curso de Flexibilidad: clases grabadas que puedes ver a tu ritmo, las veces que quieras. Clases online: sesiones uno a uno en vivo, personalizadas según tu nivel y objetivos. Online presencial: clases grupales en tiempo real con interacción directa con el instructor.",
+    answer: [
+      "Cursos Online: Clases pregabadas",
+      "Clases Particulares Online: Clases sincrónicas uno a uno. 1 hora",
+      "Clases Particulares Presenciales: Organiza tus horarios de manera flexible y entrena presencial. 1 hora."
+    ],
+    moreInfo: "Valores sujetos a planes mensuales."
   },
   {
     id: 4,
+    question: "¿Qué tipo de clases particulares puedo agendar ?",
+    answer: [
+      "Exotic Pole",
+      "Pole Sport",
+      "Flexibilidad",
+      "Chair Dance",
+      "Fortalecimiento Musuclar",
+      "Floorwork"
+    ],
+    moreInfo: ""
+  },
+  {
+    id: 5,
     question: "¿Cuánto tiempo dura mi membresía?",
     answer:
       "La membresía tiene una duración de 1 mes desde la fecha de activación. Durante ese período tendrás acceso completo a todo el contenido incluido en tu plan. Al finalizar el mes, podrás renovar tu suscripción para continuar disfrutando de las clases.",
@@ -108,7 +126,24 @@ export default function FAQSection() {
                     className="text-white/70 leading-relaxed"
                     style={{ fontFamily: "var(--font-sans)" }}
                   >
-                    {faq.answer}
+                    {Array.isArray(faq.answer) ? (
+                      <ul>
+                        {faq.answer.map((item, index) => (
+                          <li key={index}>
+                            • {item}
+                            <br />
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>{faq.answer}</p>
+                    )}
+                    {faq.moreInfo && (
+                      <>
+                        <br />
+                        <p>{faq.moreInfo}</p>
+                      </>
+                    )}
                   </p>
                 </div>
               </div>
@@ -116,6 +151,6 @@ export default function FAQSection() {
           ))}
         </div>
       </div>
-    </section>
+    </section >
   );
 }

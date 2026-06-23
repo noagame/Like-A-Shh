@@ -63,13 +63,13 @@ export default function AboutSection() {
           >
             {/* Subtitulo "Sobre Nosotros" */}
             <h2
-              className="text-5xl pl-16 sm:text-6xl md:text-[5.2 rem] font-bold text-gold leading-[1.1]"
+              className="text-5xl sm:text-6xl md:text-[5.2 rem] font-bold text-gold leading-[1.1]"
               style={{ fontFamily: "var(--font-serif)" }}
             >
               Sobre<br />Nosotros
             </h2>
             {/* Párrafo */}
-            <div className="pl-16 pt-10">
+            <div className="pt-10">
               <p
                 className="text-white/80 leading-relaxed text-base sm:text-lg text-justify"
                 style={{ fontFamily: "var(--font-sans)" }}
@@ -82,7 +82,7 @@ export default function AboutSection() {
                 una herramienta de arte, narrativa y autenticidad.
               </p>
             </div>
-            <div className="pl-16 pt-10">
+            <div className="pt-10">
               <p
                 className="text-white/80 leading-relaxed text-base sm:text-lg text-justify"
                 style={{ fontFamily: "var(--font-sans)" }}
@@ -116,7 +116,7 @@ export default function AboutSection() {
           >
             {/* Titulo H3 "Fundador & Instructor"*/}
             <h3
-              className="text-gold/80 text-sm md:text-base tracking-widset mb-3"
+              className="text-gold/80 text-sm pt-10 lg:pt-20 md:text-base tracking-widest mb-3"
               style={{ fontFamily: "var(--font-sans)" }}
             >
               Fundador & Instructor Principal
@@ -125,14 +125,14 @@ export default function AboutSection() {
 
             {/* Titulo H2 "Maximiliano Velásquez"*/}
             <h2
-              className="text-4xl sm:text-5xl md:text-6xl font-bold text-gold mb-10 text-left leading-[1.1]"
+              className="text-4xl sm:text-5xl md:text-6xl font-bold text-gold leading-[1.1]"
               style={{ fontFamily: "var(--font-serif)" }}
             >
               Maximiliano Velásquez
             </h2>
 
             {/* Texto de la bio*/}
-            <div className="pl-16 pt-10">
+            <div className="pt-10">
               <p
                 className="text-white/80 leading-relaxed text-base sm:text-lg text-justify"
                 style={{ fontFamily: "var(--font-sans)" }}
@@ -144,7 +144,7 @@ export default function AboutSection() {
                 Presscripción Física para la Tercera Edad.
               </p>
             </div>
-            <div className="pl-16 pt-10">
+            <div className="pt-10">
               <p
                 className="text-white/80 leading-relaxed text-base sm:text-lg text-justify"
                 style={{ fontFamily: "var(--font-sans)" }}

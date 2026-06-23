@@ -96,16 +96,17 @@ export default function ContactSection() {
         >
           <div className="card-gold p-8 md:p-12">
             <h2
-              className="text-3xl sm:text-4xl md:text-5xl font-bold text-gold mb-2 text-center gold-underline"
+              className="text-3xl text-center sm:text-4xl md:text-5xl font-bold text-gold mb-2"
               style={{ fontFamily: "var(--font-serif)" }}
             >
               Ponerse en contacto
             </h2>
+            <div className="w-24 h-1 bg-gold mx-auto my-4"></div>
             <p
               className="text-white/70 text-center mb-10 mt-8 text-lg"
               style={{ fontFamily: "var(--font-sans)" }}
             >
-              ¿Tienes alguna consulta? Déjanos tus datos y te contactaremos.
+              ¿Tienes alguna consulta o quieres agendar una clase? Déjanos tus datos y te contactaremos.
             </p>
 
             {submitted && (

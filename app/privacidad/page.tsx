@@ -56,7 +56,7 @@ export default function PrivacidadPage() {
               className="text-white/40 text-sm tracking-wider uppercase"
               style={{ fontFamily: "var(--font-sans)" }}
             >
-              Última actualización: 18 de Junio de 2026
+              Última actualización: 23 de Junio de 2026
             </p>
           </div>
 

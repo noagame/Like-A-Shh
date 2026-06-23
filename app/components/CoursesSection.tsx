@@ -18,7 +18,7 @@ const courses = [
     id: 2,
     image: "/assets/logo/logo_likeashh.jpg",
     title: "Proximamente",
-    description:
+    description_1:
       "Exotic Pole Tricks",
     url: "#",
   },
@@ -26,7 +26,7 @@ const courses = [
     id: 3,
     image: "/assets/logo/logo_likeashh.jpg",
     title: "Proximamente",
-    description:
+    description_1:
       "Exotic Pole Transicion",
     url: "#",
   },
