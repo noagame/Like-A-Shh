@@ -1,7 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import MotionProvider from "./components/MotionProvider";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.likeashh.cl";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -22,23 +24,71 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Like a SHH | Noches De Exotic - Pole Dance & Bienestar",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Like a SHH | Pole Dance, Danza Exotic y Cursos Online",
+    template: "%s | Like a SHH",
+  },
   description:
-    "Descubre el arte del pole dance, danza exotic y bienestar corporal con Like a SHH. Cursos online, workshops y eventos exclusivos. Movimiento, Fuerza y Libertad.",
+    "Descubre Like a SHH: clases de pole dance, danza exotic, flexibilidad y bienestar corporal con cursos online, workshops y eventos exclusivos en Chile.",
   keywords: [
     "pole dance",
-    "exotic dance",
+    "danza exotic",
     "bienestar corporal",
     "cursos online",
     "like a shh",
-    "noches de exotic",
+    "workshops pole dance",
+    "clases de pole dance",
   ],
-  openGraph: {
-    title: "Like a SHH | Noches De Exotic",
-    description:
-      "Movimiento, Fuerza y Libertad. Pole Dance, Danza Exotic y Bienestar Corporal.",
-    type: "website",
+  applicationName: "Like a SHH",
+  authors: [{ name: "Like a SHH" }],
+  category: "artes escénicas",
+  alternates: {
+    canonical: "/",
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "es_CL",
+    url: siteUrl,
+    siteName: "Like a SHH",
+    title: "Like a SHH | Pole Dance, Danza Exotic y Cursos Online",
+    description:
+      "Clases de pole dance, danza exotic y bienestar corporal con cursos online, workshops y eventos exclusivos. Movimiento, fuerza y libertad.",
+    images: [
+      {
+        url: "/assets/logo/logo_likeashh.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Like a SHH",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Like a SHH | Pole Dance, Danza Exotic y Cursos Online",
+    description:
+      "Clases de pole dance, danza exotic y bienestar corporal con cursos online, workshops y eventos exclusivos.",
+    images: ["/assets/logo/logo_likeashh.jpg"],
+    creator: "@Likeashh1",
+    site: "@Likeashh1",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
