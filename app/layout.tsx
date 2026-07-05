@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import MotionProvider from "./components/MotionProvider";
+import StructuredData from "./components/StructuredData";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.likeashh.cl";
 
@@ -102,6 +103,7 @@ export default function RootLayout({
       className={`h-full antialiased ${playfair.variable} ${inter.variable} ${montserrat.variable}`}
     >
       <body className="min-h-full flex flex-col">
+        <StructuredData />
         <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
