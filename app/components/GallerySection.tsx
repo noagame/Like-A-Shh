@@ -1,13 +1,47 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { m, useInView } from "framer-motion";
 import { useRef, useState } from "react";
+import Image from "next/image";
 
 interface GalleryCarouselProps {
   title: string;
   images: string[];
   id: string;
 }
+
+const workshopImages = [
+  "/assets/workshop/Galeria 1/work_1.jpg",
+  "/assets/workshop/Galeria 1/work_2.jpg",
+  "/assets/workshop/Galeria 1/work_3.jpg",
+  "/assets/workshop/Galeria 1/work_4.jpg",
+  "/assets/workshop/Galeria 1/work_5.jpg",
+  "/assets/workshop/Galeria 1/work_6.png",
+  "/assets/workshop/Galeria 1/work_7.jpeg",
+  "/assets/workshop/Galeria 1/work_8.jpeg",
+  "/assets/workshop/Galeria 1/work_9.jpeg",
+  "/assets/workshop/Galeria 1/work_10.jpeg",
+  "/assets/workshop/Galeria 1/work_11.jpeg",
+  "/assets/workshop/Galeria 1/work_12.jpeg",
+];
+
+const mystiqueImages = [
+  "/assets/X_Mystique/Galeria_Like_a_Shh_1.jpeg",
+  "/assets/X_Mystique/Galeria_Like_a_Shh_2.jpeg",
+  "/assets/X_Mystique/Galeria_Like_a_Shh_3.jpeg",
+  "/assets/X_Mystique/Galeria_Like_a_Shh_4.jpeg",
+  "/assets/X_Mystique/Galeria_Like_a_Shh_5.jpeg",
+  "/assets/X_Mystique/Galeria_Like_a_Shh_6.jpeg",
+];
+
+const bunnysSeasonImages = [
+  "/assets/volumen4/foto1.jpeg",
+  "/assets/volumen4/foto2.jpeg",
+  "/assets/volumen4/foto3.jpeg",
+  "/assets/volumen4/foto4.jpeg",
+  "/assets/volumen4/foto5.jpeg",
+  "/assets/volumen4/foto6.jpeg",
+];
 
 function GalleryCarousel({ title, images, id }: GalleryCarouselProps) {
   const [current, setCurrent] = useState(0);
@@ -40,8 +74,8 @@ function GalleryCarousel({ title, images, id }: GalleryCarouselProps) {
           /* Grid que muestra 1 columna en móvil y 3 en pantallas medianas/grandes */
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {visibleIndices.map((index, i) => (
-              <motion.div
-                key={`${id}-img-${current}-${i}`} // La key dinámica fuerza la animación al cambiar
+              <m.div
+                key={`${id}-${images[index]}`} // Usa una identidad estable basada en la ruta de la imagen
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4 }}
@@ -50,13 +84,14 @@ function GalleryCarousel({ title, images, id }: GalleryCarouselProps) {
                 className={`relative aspect-[4/5] rounded-2xl overflow-hidden border border-gold/20 bg-dark-card shadow-lg shadow-gold/5 ${i > 0 ? "hidden md:block" : "block"
                   }`}
               >
-                <img
+                <Image
                   src={images[index]}
                   alt={`${title} - Imagen ${index + 1}`}
-                  // object-cover es lo que soluciona las dimensiones distintas sin deformarlas
-                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-700 hover:scale-105"
                 />
-              </motion.div>
+              </m.div>
             ))}
           </div>
         ) : (
@@ -79,6 +114,8 @@ function GalleryCarousel({ title, images, id }: GalleryCarouselProps) {
         {itemCount > 3 && (
           <>
             <button
+              
+              type="button"
               onClick={prev}
               // absolute left-0 las saca del grid para que floten a los costados
               className="absolute left-0 md:left-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-14 md:h-14 bg-black/80 backdrop-blur-md border border-gold/40 rounded-full flex items-center justify-center text-gold hover:bg-gold hover:text-black transition-all shadow-xl z-10"
@@ -89,6 +126,7 @@ function GalleryCarousel({ title, images, id }: GalleryCarouselProps) {
               </svg>
             </button>
             <button
+              type="button"
               onClick={next}
               className="absolute right-0 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 md:w-14 md:h-14 bg-black/80 backdrop-blur-md border border-gold/40 rounded-full flex items-center justify-center text-gold hover:bg-gold hover:text-black transition-all shadow-xl z-10"
               aria-label="Siguiente"
@@ -100,9 +138,10 @@ function GalleryCarousel({ title, images, id }: GalleryCarouselProps) {
 
             {/* Puntos de navegación (Dots) */}
             <div className="flex items-center justify-center gap-2 md:gap-3 mt-8 md:mt-12">
-              {images.map((_, idx) => (
+              {images.map((imagePath, idx) => (
                 <button
-                  key={idx}
+                  type="button"
+                  key={`${id}-${imagePath}`}
                   onClick={() => setCurrent(idx)}
                   className={`carousel-dot transition-all duration-300 ${idx === current ? "active bg-[#D4AF37] w-8 md:w-10 rounded-md" : "bg-[#D4AF37]/30"
                     }`}
@@ -121,43 +160,6 @@ export default function GallerySection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
-  // 2. AQUÍ DEFINES TUS LISTAS DE IMÁGENES
-  // Reemplaza estas rutas de ejemplo con las ubicaciones reales de tus fotos en la carpeta public/assets/...
-
-  const workshopImages = [
-    "/assets/workshop/Galeria 1/work_1.jpg",
-    "/assets/workshop/Galeria 1/work_2.jpg",
-    "/assets/workshop/Galeria 1/work_3.jpg",
-    "/assets/workshop/Galeria 1/work_4.jpg",
-    "/assets/workshop/Galeria 1/work_5.jpg",
-    "/assets/workshop/Galeria 1/work_6.png",
-    "/assets/workshop/Galeria 1/work_7.jpeg",
-    "/assets/workshop/Galeria 1/work_8.jpeg",
-    "/assets/workshop/Galeria 1/work_9.jpeg",
-    "/assets/workshop/Galeria 1/work_10.jpeg",
-    "/assets/workshop/Galeria 1/work_11.jpeg",
-    "/assets/workshop/Galeria 1/work_12.jpeg",
-  ];
-
-  const mystiqueImages = [
-    "/assets/X_Mystique/Galeria_Like_a_Shh_1.jpeg",
-    "/assets/X_Mystique/Galeria_Like_a_Shh_2.jpeg",
-    "/assets/X_Mystique/Galeria_Like_a_Shh_3.jpeg",
-    "/assets/X_Mystique/Galeria_Like_a_Shh_4.jpeg",
-    "/assets/X_Mystique/Galeria_Like_a_Shh_5.jpeg",
-    "/assets/X_Mystique/Galeria_Like_a_Shh_6.jpeg",
-    // Agrega más separadas por comas
-  ];
-
-  const bunnysSeasonImages = [
-    "/assets/volumen4/foto1.jpeg",
-    "/assets/volumen4/foto2.jpeg",
-    "/assets/volumen4/foto3.jpeg",
-    "/assets/volumen4/foto4.jpeg",
-    "/assets/volumen4/foto5.jpeg",
-    "/assets/volumen4/foto6.jpeg",
-  ];
-
   return (
     <section
       id="galeria"
@@ -165,7 +167,7 @@ export default function GallerySection() {
       ref={ref}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
@@ -198,7 +200,7 @@ export default function GallerySection() {
             images={bunnysSeasonImages}
             id="gallery-bunnys"
           />
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

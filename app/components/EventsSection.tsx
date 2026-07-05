@@ -1,7 +1,8 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { m, useInView } from "framer-motion";
 import { useRef } from "react";
+import Image from "next/image";
 
 export default function EventsSection() {
   const ref = useRef(null);
@@ -14,7 +15,7 @@ export default function EventsSection() {
       ref={ref}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
@@ -26,9 +27,9 @@ export default function EventsSection() {
           >
             Próximos Eventos
           </h2>
-        </motion.div>
+        </m.div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
@@ -37,15 +38,15 @@ export default function EventsSection() {
         >
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Event Image */}
-            <div className="aspect-square lg:aspect-auto bg-gradient-to-br from-dark-card via-black to-dark-card relative overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center p-8">
-                  <img
-                    src="/assets/events/exotic_night.jpeg"
-                    alt="Frosted Desire"
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                </div>
+            <div className="aspect-square lg:aspect-auto bg-gradient-to-br from-dark-card via-black to-dark-card relative overflow-hidden flex items-center justify-center p-4 md:p-6 lg:p-8">
+              <div className="relative w-full h-full max-w-[22rem] lg:max-w-[24rem]">
+                <Image
+                  src="/assets/events/exotic_night.jpeg"
+                  alt="Frosted Desire"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-contain rounded-2xl"
+                />
               </div>
             </div>
 
@@ -145,7 +146,7 @@ export default function EventsSection() {
                     />
                   </svg>
                   <span style={{ fontFamily: "var(--font-sans)" }}>
-                    <motion.a
+                    <m.a
                       href="https://www.google.com/maps/place/Cabaret+Pira%C3%B1a/@-33.4297585,-70.6384482,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c50062a9fe4d:0x1219dd351556ec9!8m2!3d-33.4297585!4d-70.6384482!16s%2Fg%2F11wftzr0kq?entry=ttu&g_ep=EgoyMDI2MDYxMy4wIKXMDSoASAFQAw%3D%3D"
                       className="text-gold/70"
                       whileHover={{ scale: 1.03 }}
@@ -154,12 +155,12 @@ export default function EventsSection() {
                       rel="noopener noreferrer"
                     >
                       Cabaret Piraña - Bombero Núñez 365 - Recoleta - Santiago
-                    </motion.a>
+                    </m.a>
                   </span>
                 </div>
               </div>
 
-              <motion.a
+              <m.a
                 href="https://www.alltickets.cl/details.php?eve_id=824"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
@@ -180,10 +181,10 @@ export default function EventsSection() {
                   />
                 </svg>
                 Compra tu Entrada
-              </motion.a>
+              </m.a>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

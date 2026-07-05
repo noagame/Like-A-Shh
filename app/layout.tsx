@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter, Montserrat } from "next/font/google";
 import "./globals.css";
-import SecurityGuard from "./components/SecurityGard";
+import MotionProvider from "./components/MotionProvider";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -52,7 +52,7 @@ export default function RootLayout({
       className={`h-full antialiased ${playfair.variable} ${inter.variable} ${montserrat.variable}`}
     >
       <body className="min-h-full flex flex-col">
-        {children}
+        <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
   );

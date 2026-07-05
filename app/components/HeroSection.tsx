@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 export default function HeroSection() {
   return (
@@ -16,13 +16,13 @@ export default function HeroSection() {
 
       <div className="relative z-10 flex flex-col items-center text-center max-w-5xl mx-auto">
         {/* SHH Logo Animation */}
-        <motion.div
+        <m.div
           initial={{ scale: 2, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="relative mb-4"
         >
-          <motion.span
+          <m.span
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 0.08, y: 0 }}
             transition={{ delay: 0.5, duration: 1 }}
@@ -30,9 +30,9 @@ export default function HeroSection() {
             style={{ fontFamily: "var(--font-serif)" }}
           >
             SHH
-          </motion.span>
+          </m.span>
 
-          <motion.h1
+          <m.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.8 }}
@@ -41,11 +41,11 @@ export default function HeroSection() {
           >
             <span className="text-white">LIKE A </span>
             <span className="text-gold-gradient">SHH</span>
-          </motion.h1>
-        </motion.div>
+          </m.h1>
+        </m.div>
 
         {/* Subtitle */}
-        <motion.p
+        <m.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 0.8 }}
@@ -53,10 +53,10 @@ export default function HeroSection() {
           style={{ fontFamily: "var(--font-serif)" }}
         >
           Movimiento, Fuerza y Libertad
-        </motion.p>
+        </m.p>
 
         {/* CTA Button */}
-        <motion.a
+        <m.a
           href="#cursos"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -68,10 +68,10 @@ export default function HeroSection() {
           id="hero-cta-acceso"
         >
           Acceso
-        </motion.a>
+        </m.a>
 
         {/* Divider */}
-        <motion.div
+        <m.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ delay: 1.8, duration: 0.8 }}
@@ -79,7 +79,7 @@ export default function HeroSection() {
         />
 
         {/* Stats */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 2, duration: 0.8 }}
@@ -105,24 +105,24 @@ export default function HeroSection() {
               </p>
             </div>
           ))}
-        </motion.div>
+        </m.div>
       </div>
 
       {/* Scroll flotante UI/UX*/}
-      <motion.div
+      <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2.5, duration: 1 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-float"
       >
         <div className="w-6 h-10 border-2 border-gold/40 rounded-full flex justify-center pt-2">
-          <motion.div
+          <m.div
             animate={{ y: [0, 12, 0] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             className="w-1.5 h-1.5 bg-gold rounded-full"
           />
         </div>
-      </motion.div>
+      </m.div>
     </section>
   );
 }

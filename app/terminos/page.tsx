@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
 
 export default function TerminosPage() {
@@ -38,7 +38,7 @@ export default function TerminosPage() {
         </Link>
 
         {/* Content Box */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
@@ -91,7 +91,7 @@ export default function TerminosPage() {
                 2. Adquisición de Cursos y Derivación a Hotmart
               </h2>
               <p>
-                El usuario declara conocer y aceptar que la compra de nuestros cursos online (como <em>"Flexibiliza tu Actitud"</em>) se gestiona de forma externa.
+                El usuario declara conocer y aceptar que la compra de nuestros cursos online (como <em>&quot;Flexibiliza tu Actitud&quot;</em>) se gestiona de forma externa.
               </p>
               <ul className="list-disc pl-6 space-y-2 text-white/70">
                 <li>Al hacer clic en los enlaces de compra de cursos, el usuario será redirigido al portal oficial de Hotmart, que actúa como procesador de pagos exclusivo y distribuidor digital autorizado de los cursos.</li>
@@ -113,7 +113,7 @@ export default function TerminosPage() {
               <ul className="list-disc pl-6 space-y-2 text-white/70">
                 <li><strong className="text-white">Sesiones de Workshop</strong></li>
                 <li><strong className="text-white">X Mystique - Castro, Chiloé</strong></li>
-                <li><strong className="text-white">Vol. 4 - Bunny's Season</strong></li>
+                <li><strong className="text-white">Vol. 4 - Bunny&apos;s Season</strong></li>
               </ul>
               <p className="mt-3">
                 son de exclusiva propiedad de <strong className="text-gold">Like a SHH</strong> y de su creador, Maximiliano Velásquez, o bien han sido incluidos con la correspondiente autorización de sus titulares. Queda estrictamente prohibida la copia, reproducción, distribución, comunicación pública o transformación de dicho contenido sin una autorización previa y por escrito de los administradores.
@@ -163,7 +163,7 @@ export default function TerminosPage() {
               Volver al Inicio
             </Link>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </main>
   );

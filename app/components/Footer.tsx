@@ -1,7 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
+import { useSyncExternalStore } from "react";
 
 const socialLinks = [
   {
@@ -70,27 +72,37 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+  const currentYear = useSyncExternalStore(
+    () => () => {},
+    () => new Date().getFullYear(),
+    () => new Date().getFullYear(),
+  );
+
   return (
     <footer className="border-t border-gold/10 bg-dark">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
         {/* Top Row */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-8">
           {/* Logo */}
-          <motion.a
+          <m.a
             href="#inicio"
             whileHover={{ scale: 1.05 }}
             className="text-2xl md:text-3xl font-bold text-gold-gradient"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            <img src="/assets/logo/logo_likeashh.jpg" alt="Logo"
+            <Image 
+              src="/assets/logo/logo_likeashh.jpg" 
+              alt="Logo"
+                width={96}
+              height={96}
               className="w-24 h-24 border border-black rounded-full"
             />
-          </motion.a>
+          </m.a>
 
           {/* Social Icons */}
           <div className="flex items-center gap-4">
             {socialLinks.map((social) => (
-              <motion.a
+              <m.a
                 key={social.name}
                 href={social.href}
                 whileHover={{ scale: 1.2, y: -3 }}
@@ -100,7 +112,7 @@ export default function Footer() {
                 id={`footer-social-${social.name.toLowerCase()}`}
               >
                 {social.icon}
-              </motion.a>
+              </m.a>
             ))}
           </div>
         </div>
@@ -114,7 +126,7 @@ export default function Footer() {
             className="text-white/40 text-sm"
             style={{ fontFamily: "var(--font-sans)" }}
           >
-            © {new Date().getFullYear()} Like a SHH. Todos los derechos reservados.
+            © {currentYear} Like a SHH. Todos los derechos reservados.
           </p>
 
           <div className="flex items-center gap-6">
@@ -138,7 +150,7 @@ export default function Footer() {
         </div>
 
         {/* Hashtag */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 1 }}
@@ -150,7 +162,7 @@ export default function Footer() {
           >
             #ActitudLikeashh
           </p>
-        </motion.div>
+        </m.div>
       </div>
     </footer>
   );

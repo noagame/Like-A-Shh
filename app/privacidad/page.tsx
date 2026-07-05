@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
 
 export default function PrivacidadPage() {
@@ -38,7 +38,7 @@ export default function PrivacidadPage() {
         </Link>
 
         {/* Content Box */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
@@ -121,7 +121,7 @@ export default function PrivacidadPage() {
                   <strong className="text-white">Formspree:</strong> El procesamiento y envío de los datos recolectados en el formulario de contacto se realiza a través de la plataforma Formspree, la cual opera bajo estrictos protocolos de cifrado y seguridad de la información.
                 </li>
                 <li>
-                  <strong className="text-white">Hotmart:</strong> La venta, facturación, almacenamiento y reproducción de nuestros cursos online (tales como <em>"Flexibiliza tu Actitud"</em>) se gestiona íntegramente a través de Hotmart. En consecuencia, toda información transaccional, de pago y credenciales de acceso se rige por los términos y las políticas de seguridad propias de la plataforma Hotmart.
+                  <strong className="text-white">Hotmart:</strong> La venta, facturación, almacenamiento y reproducción de nuestros cursos online (tales como <em>&quot;Flexibiliza tu Actitud&quot;</em>) se gestiona íntegramente a través de Hotmart. En consecuencia, toda información transaccional, de pago y credenciales de acceso se rige por los términos y las políticas de seguridad propias de la plataforma Hotmart.
                 </li>
               </ul>
             </section>
@@ -172,7 +172,7 @@ export default function PrivacidadPage() {
               Volver al Inicio
             </Link>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </main>
   );

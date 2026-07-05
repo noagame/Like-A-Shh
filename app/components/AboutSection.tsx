@@ -1,8 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { m, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import Image from "next/image";
 
 const instructorImages = [
   { id: 1, src: "/assets/Perfil/IMG_8175.JPG", alt: "Maximiliano Velásquez" },
@@ -34,7 +34,7 @@ export default function AboutSection() {
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-center">
           {/* Imagen Equipo Like a Shh en la ruta /assets/Like Team/like_team.jpeg */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: -50 }}
             animate={isInView1 ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8 }}
@@ -44,18 +44,20 @@ export default function AboutSection() {
               <div className="w-full h-full">
                 <div className="text-center">
                   <div className="w-full max-w-md mx-auto lg:max-w-none">
-                    <img
+                    <Image
                       src="/assets/Like Team/like_team.jpeg"
                       alt="Equipo de Like a Shh"
-                      className="w-full h-full object-cover rounded-[2rem] shadow-2xl shadow-gold/5"
+                      className="object-cover rounded-[2rem] shadow-2xl shadow-gold/5"
+                      width={350}
+                      height={350}
                     />
                   </div>
                 </div>
               </div>
             </div>
-          </motion.div>
+          </m.div>
           {/* Texto Sobre nosotros */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: 50 }}
             animate={isInView1 ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -96,7 +98,7 @@ export default function AboutSection() {
                 espectáculo.
               </p>
             </div>
-          </motion.div>
+          </m.div>
 
         </div>
       </div>
@@ -108,7 +110,7 @@ export default function AboutSection() {
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 items-center">
           {/* Bio */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: -50 }}
             animate={isInView2 ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8 }}
@@ -169,37 +171,40 @@ export default function AboutSection() {
                 className="text-[#D4AF37] italic text-lg sm:text-xl font-medium tracking-wide"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
-                "El movimiento es la llave que desbloquea tu verdadero potencial."
+                &quot;El movimiento es la llave que desbloquea tu verdadero potencial.&quot;
               </h5>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Carrusel con fotos de Instructor */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: 50 }} // Entra desde la derecha
             animate={isInView2 ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="order-1"
+            className="order-1 pl-30"
           >
-            <img
+            <Image
               src={instructorImages[currentSlide].src}
               alt={instructorImages[currentSlide].alt}
-              className="w-full h-full object-cover rounded-[2rem] shadow-2xl shadow-gold/5"
+              className="object-cover rounded-[2rem] shadow-2xl shadow-gold/5"
+              width={400}
+              height={350}
             />
 
             {/* Controladores de Carrusel de Imagenes*/}
             <div className="flex items-center justify-center gap-3 mt-6">
-              {instructorImages.map((img, idx) => (
+              {instructorImages.map((img) => (
                 <button
-                  key={idx}
-                  onClick={() => setCurrentSlide(idx)}
-                  className={`carousel-dot ${idx === currentSlide ? "active bg-gold w-6 roundend-md" : "bg-gold/30"}`}
-                  aria-label={`Slide ${idx + 1}`}
-                  id={`instructor-carousel-dot-${idx}`}
+                  key={img.id}
+                  type="button"
+                  onClick={() => setCurrentSlide(img.id - 1)}
+                  className={`carousel-dot ${img.id - 1 === currentSlide ? "active bg-gold w-6 roundend-md" : "bg-gold/30"}`}
+                  aria-label={`Slide ${img.id}`}
+                  id={`instructor-carousel-dot-${img.id}`}
                 />
               ))}
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </section>

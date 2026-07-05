@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { m, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 
 const faqData = [
@@ -60,7 +60,7 @@ export default function FAQSection() {
   return (
     <section className="py-16 md:py-24 section-spacing" ref={ref}>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
@@ -72,11 +72,11 @@ export default function FAQSection() {
           >
             Preguntas Frecuentes
           </h2>
-        </motion.div>
+        </m.div>
 
         <div className="space-y-3">
           {faqData.map((faq, i) => (
-            <motion.div
+            <m.div
               key={faq.id}
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -85,6 +85,7 @@ export default function FAQSection() {
               id={`faq-item-${faq.id}`}
             >
               <button
+                type="button"
                 onClick={() => toggle(faq.id)}
                 className="w-full flex items-center justify-between p-5 md:p-6 text-left group"
                 aria-expanded={openId === faq.id}
@@ -96,7 +97,7 @@ export default function FAQSection() {
                 >
                   {faq.question}
                 </span>
-                <motion.span
+                <m.span
                   animate={{ rotate: openId === faq.id ? 180 : 0 }}
                   transition={{ duration: 0.3 }}
                   className="flex-shrink-0 text-gold"
@@ -114,7 +115,7 @@ export default function FAQSection() {
                       d="M19 9l-7 7-7-7"
                     />
                   </svg>
-                </motion.span>
+                </m.span>
               </button>
 
               <div
@@ -128,8 +129,8 @@ export default function FAQSection() {
                   >
                     {Array.isArray(faq.answer) ? (
                       <ul className="space-y-1">
-                        {faq.answer.map((item, index) => (
-                          <li key={index}>• {item}</li>
+                        {faq.answer.map((item) => (
+                          <li key={`${faq.id}-${item}`}>• {item}</li>
                         ))}
                       </ul>
                     ) : (
@@ -143,7 +144,7 @@ export default function FAQSection() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </div>

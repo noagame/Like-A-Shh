@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { m, useInView } from "framer-motion";
 import { useRef } from "react";
 
 const testimonials = [
@@ -33,7 +33,7 @@ export default function TestimonialsSection() {
   return (
     <section className="py-8 md:py-16 section-spacing" ref={ref}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
@@ -51,11 +51,11 @@ export default function TestimonialsSection() {
           >
             Lo que dicen nuestras alumnas sobre su experiencia en Like a SHH
           </p>
-        </motion.div>
+        </m.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {testimonials.map((testimonial, i) => (
-            <motion.div
+            <m.div
               key={testimonial.id}
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -91,7 +91,7 @@ export default function TestimonialsSection() {
               >
                 {testimonial.name}
               </p>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </div>

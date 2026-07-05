@@ -1,7 +1,16 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { m, useInView } from "framer-motion";
 import { useRef, useState, FormEvent } from "react";
+
+const sanitize = (value: string): string => {
+    return value
+      .replace(/[<>]/g, "")
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#x27;")
+      .trim();
+};
 
 export default function ContactSection() {
   const ref = useRef(null);
@@ -18,15 +27,6 @@ export default function ContactSection() {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // Estado para evitar doble envío
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const sanitize = (value: string): string => {
-    return value
-      .replace(/[<>]/g, "")
-      .replace(/&/g, "&amp;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#x27;")
-      .trim();
-  };
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -97,7 +97,7 @@ export default function ContactSection() {
   return (
     <section id="contacto" className="py-16 md:py-24 section-spacing" ref={ref}>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
@@ -118,7 +118,7 @@ export default function ContactSection() {
             </p>
 
             {submitted && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-8 p-4 rounded-lg bg-gold/10 border border-gold/30 text-center"
@@ -126,12 +126,15 @@ export default function ContactSection() {
                 <p className="text-gold font-medium text-lg" style={{ fontFamily: "var(--font-sans)" }}>
                   ✓ ¡Mensaje enviado con éxito! Te contactaremos pronto.
                 </p>
-              </motion.div>
+              </m.div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6" id="contact-form">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
+                  <label htmlFor="contact-nombre" className="sr-only">
+                    Nombre
+                  </label>
                   <input
                     type="text"
                     id="contact-nombre"
@@ -141,10 +144,14 @@ export default function ContactSection() {
                     className="form-input w-full"
                     maxLength={50}
                     disabled={isSubmitting}
+                    aria-label="Nombre"
                   />
                   {errors.nombre && <p className="text-red-400 text-sm mt-2">{errors.nombre}</p>}
                 </div>
                 <div>
+                  <label htmlFor="contact-apellido" className="sr-only">
+                    Apellido
+                  </label>
                   <input
                     type="text"
                     id="contact-apellido"
@@ -154,12 +161,16 @@ export default function ContactSection() {
                     className="form-input w-full"
                     maxLength={50}
                     disabled={isSubmitting}
+                    aria-label="Apellido"
                   />
                   {errors.apellido && <p className="text-red-400 text-sm mt-2">{errors.apellido}</p>}
                 </div>
               </div>
 
               <div>
+                <label htmlFor="contact-email" className="sr-only">
+                  Email
+                </label>
                 <input
                   type="email"
                   id="contact-email"
@@ -169,12 +180,16 @@ export default function ContactSection() {
                   className="form-input w-full"
                   maxLength={100}
                   disabled={isSubmitting}
+                  aria-label="Email"
                 />
                 {errors.email && <p className="text-red-400 text-sm mt-2">{errors.email}</p>}
               </div>
 
               {/* 2. EL NUEVO CAMPO DE MENSAJE */}
               <div>
+                <label htmlFor="contact-mensaje" className="block text-sm font-medium text-gold/80 mb-2">
+                  Mensaje
+                </label>
                 <textarea
                   id="contact-mensaje"
                   placeholder="Escribe tu mensaje..."
@@ -187,7 +202,7 @@ export default function ContactSection() {
                 {errors.mensaje && <p className="text-red-400 text-sm mt-2">{errors.mensaje}</p>}
               </div>
 
-              <motion.button
+              <m.button
                 type="submit"
                 disabled={isSubmitting}
                 whileHover={!isSubmitting ? { scale: 1.02 } : {}}
@@ -199,10 +214,10 @@ export default function ContactSection() {
                 id="contact-submit-btn"
               >
                 {isSubmitting ? "Enviando..." : "Enviar Mensaje"}
-              </motion.button>
+              </m.button>
             </form>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

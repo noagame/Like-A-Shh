@@ -1,7 +1,8 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { m, useInView } from "framer-motion";
 import { useRef } from "react";
+import Image from "next/image";
 
 const courses = [
   {
@@ -44,7 +45,7 @@ export default function CoursesSection() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
@@ -63,12 +64,12 @@ export default function CoursesSection() {
             Accede a nuestro catálogo de cursos y transforma tu cuerpo y mente desde
             cualquier lugar del mundo.
           </p>
-        </motion.div>
+        </m.div>
 
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {courses.map((course, i) => (
-            <motion.div
+            <m.div
               key={course.id}
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -76,10 +77,12 @@ export default function CoursesSection() {
               className="card-gold overflow-hidden group"
               id={`course-card-${course.id}`}
             >
-              <img
+              <Image
                 src={course.image}
                 alt={course.title}
                 className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+                width={800}
+                height={600}
               />
               {/* Content */}
               <div className="p-5 md:p-6">
@@ -101,7 +104,7 @@ export default function CoursesSection() {
                 >
                   {course.description_2}
                 </p>
-                <motion.a
+                <m.a
                   href={course.url}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -111,20 +114,20 @@ export default function CoursesSection() {
                   id={`ver-curso-btn-${course.id}`}
                 >
                   Ver Curso
-                </motion.a>
+                </m.a>
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </div>
 
         {/* Agendar Button */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.8 }}
           className="pt-10 mt-10 md:mt-14"
         >
-          <motion.a
+          <m.a
             href="#contacto"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
@@ -145,8 +148,8 @@ export default function CoursesSection() {
               />
             </svg>
             Agendar Clases Online
-          </motion.a>
-        </motion.div>
+          </m.a>
+        </m.div>
       </div>
     </section>
   );

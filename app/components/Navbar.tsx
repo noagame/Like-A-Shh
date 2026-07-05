@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { m, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 const navLinks = [
   { label: "Inicio", href: "#inicio" },
@@ -13,7 +14,7 @@ const navLinks = [
 
 export default function Navbar() {
   const [visible, setVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollYRef = useRef(0);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -22,23 +23,24 @@ export default function Navbar() {
       const currentY = window.scrollY;
       setScrolled(currentY > 50);
 
-      if (currentY > lastScrollY && currentY > 100) {
+      const previousY = lastScrollYRef.current;
+      if (currentY > previousY && currentY > 100) {
         setVisible(false);
       } else {
         setVisible(true);
       }
-      setLastScrollY(currentY);
+      lastScrollYRef.current = currentY;
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  }, []);
 
   return (
     <div className="fixed top-6 left-0 w-full flex justify-center z-50 pointer-events-none">
       <AnimatePresence>
         {visible && (
-          <motion.nav
+          <m.nav
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             exit={{ y: -100 }}
@@ -51,10 +53,12 @@ export default function Navbar() {
             <div className="flex items-center justify-between h-16 md:h-20">
               {/* Logo */}
               <a href="#inicio" className="flex items-center gap-2">
-                <img
+                <Image
                   src="/assets/logo/logo_likeashh.jpg"
                   alt="Logo Likeash"
-                  className="w-19 h-19 object-contain rounded-full"
+                  className="object-contain rounded-full"
+                  width={75}
+                  height={30}
                 />
               </a>
 
@@ -74,20 +78,21 @@ export default function Navbar() {
 
               {/* Mobile hamburger */}
               <button
+                type="button"
                 id="nav-mobile-toggle"
                 onClick={() => setMobileOpen(!mobileOpen)}
                 className="md:hidden flex flex-col gap-1.5 p-2"
                 aria-label="Toggle menu"
               >
-                <motion.span
+                <m.span
                   animate={mobileOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
                   className="block w-6 h-0.5 bg-gold"
                 />
-                <motion.span
+                <m.span
                   animate={mobileOpen ? { opacity: 0 } : { opacity: 1 }}
                   className="block w-6 h-0.5 bg-gold"
                 />
-                <motion.span
+                <m.span
                   animate={mobileOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
                   className="block w-6 h-0.5 bg-gold"
                 />
@@ -97,7 +102,7 @@ export default function Navbar() {
             {/* Mobile Menu */}
             <AnimatePresence>
               {mobileOpen && (
-                <motion.div
+                <m.div
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
@@ -106,7 +111,7 @@ export default function Navbar() {
                 >
                   <div className="px-4 py-4 flex flex-col gap-4">
                     {navLinks.map((link, i) => (
-                      <motion.a
+                      <m.a
                         key={link.href}
                         href={link.href}
                         initial={{ x: -20, opacity: 0 }}
@@ -116,13 +121,13 @@ export default function Navbar() {
                         className="md:hidden bg-black/95 backdrop-blur-xl border-t border-gold/20 overflow-hidden rounded-b-3xl" style={{ fontFamily: "var(--font-sans)" }}
                       >
                         {link.label}
-                      </motion.a>
+                      </m.a>
                     ))}
                   </div>
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
-          </motion.nav>
+          </m.nav>
         )}
       </AnimatePresence>
     </div>
