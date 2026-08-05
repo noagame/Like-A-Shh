@@ -3,8 +3,18 @@
 import { m, useInView } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
+import { createClient } from "@/lib/supabase/server";
+
 
 export default function EventsSection() {
+  const supabase = await createClient();
+  const { data: events } = await supabase
+    .from("events")
+    .select("*, categories(name, color)")
+    .eq("status", "published")
+    .order("start_time", { ascending: true })
+    .limit(3);
+
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -166,6 +176,7 @@ export default function EventsSection() {
                 whileTap={{ scale: 0.98 }}
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gold text-black font-bold text-sm tracking-widest uppercase rounded-full hover:bg-gold-light transition-colors duration-300 shadow-lg shadow-gold/20 w-full sm:w-auto text-center"
                 id="event-buy-btn"
+                onClick={() => trackEvent("click_cta_compra_entrada", { event_id: event.id })}
               >
                 <svg
                   className="w-5 h-5"

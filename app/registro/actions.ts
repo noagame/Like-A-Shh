@@ -9,9 +9,7 @@ const signUpSchema = z.object({
   email: z.string().email("Email inválido"),
   password: z.string().min(8, "Mínimo 8 caracteres"),
   full_name: z.string().min(2, "Nombre demasiado corto"),
-  accepted_privacy: z.literal("on", {
-    errorMap: () => ({ message: "Debes aceptar la política de privacidad" }),
-  }),
+  accepted_privacy: z.literal("on", { error: "Debes aceptar la política de privacidad" }),
 });
 
 export async function signUp(formData: FormData) {

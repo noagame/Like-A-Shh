@@ -54,34 +54,34 @@ export default function RegistroPage() {
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6">Crear cuenta</h1>
+      <h1 className="text-2xl font-bold mb-6 text-black ">Crear cuenta</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium">Nombre completo</label>
+          <label className="block text-sm font-medium text-black">Nombre completo</label>
           <input
             {...register("full_name")}
             type="text"
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-black"
           />
           {errors.full_name && <p className="text-red-500 text-xs mt-1">{errors.full_name.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Email</label>
+          <label className="block text-sm font-medium text-black">Email</label>
           <input
             {...register("email")}
             type="email"
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-black"
           />
           {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Contraseña</label>
+          <label className="block text-sm font-medium text-black">Contraseña</label>
           <input
             {...register("password")}
             type="password"
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-black"
           />
           {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
         </div>
@@ -91,9 +91,9 @@ export default function RegistroPage() {
             <input 
               {...register("accepted_privacy")} 
               type="checkbox" 
-              className="mt-1"
+              className="mt-1 "
             />
-            <span>
+            <span className="text-black">
               He leído y acepto la{" "}
               <a href="/privacidad" target="_blank" className="underline text-blue-600">
                 política de privacidad
