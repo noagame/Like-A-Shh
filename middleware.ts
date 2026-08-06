@@ -54,7 +54,7 @@ export async function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
 
     if (!user && (pathname.startsWith("/admin") || pathname.startsWith("/"))) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      return NextResponse.redirect(new URL("/", request.url));
     }
   } catch (err) {
     console.error("[middleware] Error inesperado, se deja pasar la request:", err);
