@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
 
   // Si faltan las variables de entorno (typo, olvido al configurar Vercel,
@@ -53,8 +53,8 @@ export async function middleware(request: NextRequest) {
 
     const pathname = request.nextUrl.pathname;
 
-    if (!user && (pathname.startsWith("/admin") || pathname.startsWith("/"))) {
-      return NextResponse.redirect(new URL("/", request.url));
+    if (!user && (pathname.startsWith("/admin") || pathname.startsWith("/mi-cuenta"))) {
+      return NextResponse.redirect(new URL("/login", request.url));
     }
   } catch (err) {
     console.error("[middleware] Error inesperado, se deja pasar la request:", err);
