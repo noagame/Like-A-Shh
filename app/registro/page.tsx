@@ -6,14 +6,20 @@ import * as z from "zod";
 import { signUp } from "./actions";
 import { useState } from "react";
 
-const signUpSchema = z.object({
-  full_name: z.string().min(2, "El nombre es muy corto"),
-  email: z.string().email("Email inválido"),
-  password: z.string().min(8, "Mínimo 8 caracteres"),
-  accepted_privacy: z.boolean().refine(val => val === true, {
-    message: "Debes aceptar la política de privacidad",
-  }),
-});
+const signUpSchema = z
+  .object({
+    full_name: z.string().min(2, "El nombre es muy corto"),
+    email: z.string().email("Email inválido"),
+    password: z.string().min(8, "Mínimo 8 caracteres"),
+    confirm_password: z.string().min(8, "Mínimo 8 caracteres"),
+    accepted_privacy: z.boolean().refine(val => val === true, {
+      message: "Debes aceptar la política de privacidad",
+    }),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    message: "Las contraseñas no coinciden",
+    path: ["confirm_password"],
+  });
 
 type SignUpValues = z.infer<typeof signUpSchema>;
 
@@ -30,6 +36,7 @@ export default function RegistroPage() {
       full_name: "",
       email: "",
       password: "",
+      confirm_password: "",
       accepted_privacy: false,
     },
   });
@@ -86,6 +93,16 @@ export default function RegistroPage() {
           {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
         </div>
 
+        <div>
+          <label className="block text-sm font-medium text-black">Repetir contraseña</label>
+          <input
+            {...register("confirm_password")}
+            type="password"
+            className="w-full p-2 border rounded text-black"
+          />
+          {errors.confirm_password && <p className="text-red-500 text-xs mt-1">{errors.confirm_password.message}</p>}
+        </div>
+
         <div className="flex flex-col gap-1">
           <label className="flex items-start gap-2 text-sm">
             <input 
@@ -116,4 +133,3 @@ export default function RegistroPage() {
     </div>
   );
 }
-

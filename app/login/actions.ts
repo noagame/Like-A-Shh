@@ -1,18 +1,20 @@
 "use server";
-import { loginRateLimit } from "@/lib/rate-limit";
+
+import { checkLoginRateLimit } from "@/lib/rate-limit";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export async function signIn(formData: FormData) {
-  
   const ip = (await headers()).get("x-forwarded-for") ?? "unknown";
-  const { success } = await loginRateLimit.limit(ip);
-  
-  if (!success) redirect("/login?error=Demasiados intentos, espera un minuto");
-  
+  const { success } = await checkLoginRateLimit(ip);
+
+  if (!success) {
+    redirect("/login?error=Demasiados intentos, espera un minuto");
+  }
+
   const supabase = await createClient();
-  
+
   const { error } = await supabase.auth.signInWithPassword({
     email: formData.get("email") as string,
     password: formData.get("password") as string,

@@ -42,7 +42,7 @@ export default async function LoginPage({
         </button>
       </form>
 
-      <p className="text-sm mt-4 text-center">
+      <p className="text-sm mt-4 text-center text-black">
         ¿No tienes cuenta?{" "}
         <a href="/registro" className="underline text-blue-600">
           Regístrate
