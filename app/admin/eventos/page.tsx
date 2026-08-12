@@ -83,11 +83,10 @@ export default async function AdminEventosPage({
           <option value="published">Publicado</option>
           <option value="cancelled">Cancelado</option>
         </AutoSubmitSelect>
-        <select
+        <AutoSubmitSelect
           name="categoria"
           defaultValue={categoria ?? ""}
           className="bg-black/40 border border-white/20 rounded px-3 py-1.5"
-          onChange={(e) => e.currentTarget.form?.requestSubmit()}
         >
           <option value="">Todas las categorías</option>
           {categories?.map((c) => (
@@ -95,7 +94,7 @@ export default async function AdminEventosPage({
               {c.name}
             </option>
           ))}
-        </select>
+        </AutoSubmitSelect>
       </form>
 
       {!events || events.length === 0 ? (
