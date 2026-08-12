@@ -6,7 +6,12 @@ import { signOut } from "@/app/login/actions";
 const navLinks = [
   { href: "/admin", label: "Inicio" },
   { href: "/admin/eventos", label: "Gestión de Eventos" },
+  { href: "/admin/categorias", label: "Gestión de Categorías" },
+  { href: "admin/galeria", label: "Gestión de Galería de Fotos" },
   { href: "/admin/dashboard", label: "Panel Analitico" },
+  { href: "/admin/usuarios", label: "Gestión de Usuarios" },
+  { href: "/admin/ajustes", label: "Ajustes" },
+
 ];
 
 export default function Navbar (){ 
