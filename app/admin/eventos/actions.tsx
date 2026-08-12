@@ -40,3 +40,58 @@ export async function createEvent(formData: FormData) {
   revalidatePath("/admin/eventos");
   redirect("/admin/eventos");
 }
+
+export async function changeEventStatus(formData: FormData) {
+  const supabase = await createClient();
+  const event_id = formData.get("event_id") as string;
+  const status = formData.get("status") as string;
+
+  if (!event_id || !status) return;
+
+  const { error } = await supabase
+    .from("events")
+    .update({ status })
+    .eq("id", event_id);
+
+  if (error) {
+    console.error("Error al actualizar estado:", error.message);
+    return;
+  }
+
+  // Trazabilidad de la acción
+  const { data: { user } } = await supabase.auth.getUser();
+  await supabase.from("audit_log").insert({
+    actor_id: user?.id,
+    action: "change_event_status",
+    metadata: { event_id, status },
+  });
+
+  revalidatePath("/admin/eventos");
+}
+
+export async function deleteEvent(formData: FormData) {
+  const supabase = await createClient();
+  const event_id = formData.get("event_id") as string;
+
+  if (!event_id) return;
+
+  const { error } = await supabase
+    .from("events")
+    .delete()
+    .eq("id", event_id);
+
+  if (error) {
+    console.error("Error al eliminar evento:", error.message);
+    return;
+  }
+
+  // Trazabilidad de la acción
+  const { data: { user } } = await supabase.auth.getUser();
+  await supabase.from("audit_log").insert({
+    actor_id: user?.id,
+    action: "delete_event",
+    metadata: { event_id },
+  });
+
+  revalidatePath("/admin/eventos");
+}

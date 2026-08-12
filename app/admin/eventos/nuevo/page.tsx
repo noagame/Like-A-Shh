@@ -15,31 +15,31 @@ export default async function NuevoEventoPage({
 
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6">Nuevo evento / clase / workshop</h1>
+      <h1 className="text-2xl font-bold mb-6 text-black ">Nuevo evento / Clase / Workshop</h1>
 
       <form action={createEvent} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium">Título</label>
+          <label className="block text-sm font-medium text-black">Título</label>
           <input
             name="title"
             type="text"
             required
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-black"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Descripción</label>
+          <label className="block text-sm font-medium text-black">Descripción</label>
           <textarea
             name="description"
             rows={4}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-black"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Categoría</label>
-          <select name="category_id" className="w-full p-2 border rounded">
+          <label className="block text-sm font-medium text-black">Categoría</label>
+          <select name="category_id" className="w-full p-2 border rounded text-black">
             <option value="">Sin categoría</option>
             {categories?.map((c) => (
               <option key={c.id} value={c.id}>
@@ -58,47 +58,47 @@ export default async function NuevoEventoPage({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium">Inicio</label>
+            <label className="block text-sm font-medium text-blue-500">Inicio</label>
             <input
               name="start_time"
               type="datetime-local"
               required
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-black"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Término</label>
+            <label className="block text-sm font-medium text-blue-500 ">Término</label>
             <input
               name="end_time"
               type="datetime-local"
               required
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-black"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Ubicación</label>
+          <label className="block text-sm font-medium text-black">Ubicación</label>
           <input
             name="location"
             type="text"
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-black"
           />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium">Cupo (opcional)</label>
+            <label className="block text-sm font-medium text-black">Cupo (opcional)</label>
             <input
               name="capacity"
               type="number"
               min={1}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-black"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Estado</label>
-            <select name="status" defaultValue="draft" className="w-full p-2 border rounded">
+            <label className="block text-sm font-medium text-black">Estado</label>
+            <select name="status" defaultValue="draft" className="w-full p-2 border rounded text-black">
               <option value="draft">Borrador</option>
               <option value="published">Publicado</option>
               <option value="cancelled">Cancelado</option>

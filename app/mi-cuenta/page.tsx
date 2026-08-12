@@ -13,8 +13,6 @@ export default async function MiCuentaLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Defensa en profundidad: el middleware ya protege /mi-cuenta,
-  // pero validamos también aquí por si el layout se usa fuera de ese contexto.
   if (!user) redirect("/login");
 
   const { data: profile } = await supabase
@@ -33,25 +31,16 @@ export default async function MiCuentaLayout({
           </p>
         </div>
         <form action={signOut}>
-          <button
-            type="submit"
-            className="text-sm text-white/70 underline hover:text-gold transition-colors"
-          >
+          <button type="submit" className="text-sm text-white/70 underline hover:text-gold transition-colors">
             Cerrar sesión
           </button>
         </form>
       </header>
 
       <nav className="flex gap-6 px-4 sm:px-8 py-3 border-b border-white/10 text-sm">
-        <Link href="/mi-cuenta/clases" className="hover:text-gold transition-colors">
-          Mis clases
-        </Link>
-        <Link href="/mi-cuenta/perfil" className="hover:text-gold transition-colors">
-          Perfil
-        </Link>
-        <Link href="/mi-cuenta/privacidad" className="hover:text-gold transition-colors">
-          Mis datos
-        </Link>
+        <Link href="/mi-cuenta/clases" className="hover:text-gold transition-colors">Mis clases</Link>
+        <Link href="/mi-cuenta/perfil" className="hover:text-gold transition-colors">Perfil</Link>
+        <Link href="/mi-cuenta/privacidad" className="hover:text-gold transition-colors">Mis datos</Link>
       </nav>
 
       <main className="px-4 sm:px-8 py-8">{children}</main>

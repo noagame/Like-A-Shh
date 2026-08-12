@@ -1,9 +1,22 @@
 "use server";
 
+/**
+ * Librerias Usadas:
+ * @param {z} from "zod" - Para validación de datos.
+ * @param {createClient} from "@/lib/supabase/server" - Para crear un cliente de Supabase en el servidor.
+ * @param {redirect} from "next/navigation" - Para redirigir a otra página.
+ * @param {headers} from "next/headers" - Para obtener los headers de la request.
+ *
+*/
+
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+
+/**
+ * 
+ */
 
 const signUpSchema = z.object({
   email: z.string().email("Email inválido"),
