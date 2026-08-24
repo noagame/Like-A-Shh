@@ -1,5 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { createEvent } from "../actions";
+import CategorySelect from "./CategorySelect"; // <-- Importamos nuestro nuevo componente
+import DateInput from "./DateInput";
+import LocationInput from "./LocationInput";
 
 export default async function NuevoEventoPage({
   searchParams,
@@ -37,53 +40,22 @@ export default async function NuevoEventoPage({
           />
         </div>
 
+        {/* 
+          Aquí inyectamos el componente interactivo pasándole 
+          las categorías que trajimos de la base de datos 
+        */}
         <div>
-          <label className="block text-sm font-medium text-black">Categoría</label>
-          <select name="category_id" className="w-full p-2 border rounded text-black">
-            <option value="">Sin categoría</option>
-            {categories?.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-          <p className="text-xs text-gray-500 mt-1">
-            ¿No aparece la categoría que necesitas? Créala primero en{" "}
-            <a href="/admin/categorias" className="underline">
-              /admin/categorias
-            </a>
-            .
-          </p>
+          <label className="block text-sm font-medium text-black mb-1">Categoría</label>
+          <CategorySelect initialCategories={categories || []} />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-blue-500">Inicio</label>
-            <input
-              name="start_time"
-              type="datetime-local"
-              required
-              className="w-full p-2 border rounded text-black"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-blue-500 ">Término</label>
-            <input
-              name="end_time"
-              type="datetime-local"
-              required
-              className="w-full p-2 border rounded text-black"
-            />
-          </div>
+          <DateInput name="start_time" label="Inicio" />
+          <DateInput name="end_time" label="Término" />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-black">Ubicación</label>
-          <input
-            name="location"
-            type="text"
-            className="w-full p-2 border rounded text-black"
-          />
+          <LocationInput name="location" label="Ubicación" />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import DashboardCharts from "./DashboardCharts";
+import PanelInfo from "@/app/admin/components/PanelInfo";
 
 function KpiCard({ label, value, hint }: { label: string; value: string | number; hint?: string }) {
   return (
@@ -50,6 +51,11 @@ export default async function AdminDashboardPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+
+      <PanelInfo
+        title="¿Para qué sirve este panel?"
+        description="Muestra métricas clave del sitio: clases activas, usuarios totales y nuevos, comentarios pendientes de moderar, y gráficas de tendencia (usuarios nuevos por semana, clases con más inscritos, interacciones más frecuentes). Se actualiza en tiempo real con cada visita."
+      />
 
       {/* KPIs principales */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">

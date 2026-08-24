@@ -8,19 +8,25 @@ export async function createCategory(formData: FormData) {
   const name = formData.get("name") as string;
   const color = (formData.get("color") as string) || "#D4AF37";
 
-  const { error } = await supabase.from("categories").insert({ name, color });
+  // Agregamos .select().single() para que devuelva la fila recién creada
+  const { data, error } = await supabase
+    .from("categories")
+    .insert({ name, color })
+    .select()
+    .single();
+
   if (error) {
     return { error: error.message };
   }
+
   revalidatePath("/admin/categorias");
-  return { error: null };
+  // Retornamos la data para que el cliente la pueda usar inmediatamente
+  return { error: null, category: data };
 }
 
 export async function deleteCategory(formData: FormData) {
   const supabase = await createClient();
   const id = formData.get("id") as string;
-  // No se puede borrar si hay eventos usándola (FK sin cascade) — se deja
-  // que Postgres tire el error para no borrar categorías "en uso" sin querer.
   await supabase.from("categories").delete().eq("id", id);
   revalidatePath("/admin/categorias");
 }

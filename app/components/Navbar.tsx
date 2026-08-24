@@ -50,7 +50,7 @@ export default function Navbar() {
               : "bg-transparent"
               }`}
           >
-            <div className="flex items-center justify-between h-16 md:h-20">
+            <div className="flex items-center justify-between h-16 md:h-20 px-4 md:px-6">
               {/* Logo */}
               <a href="#inicio" className="flex items-center gap-2">
                 <Image
@@ -63,7 +63,7 @@ export default function Navbar() {
               </a>
 
               {/* Desktop Nav */}
-              <div className="hidden md:flex items-center gap-8">
+              <div className="hidden md:flex items-center gap-6 lg:gap-8">
                 {navLinks.map((link) => (
                   <a
                     key={link.href}
@@ -74,6 +74,15 @@ export default function Navbar() {
                     {link.label}
                   </a>
                 ))}
+
+                {/* Botón de Inicio de Sesión (Desktop) */}
+                <a
+                  href="/login"
+                  className="bg-gold text-black px-6 py-2 rounded-full text-sm font-bold tracking-wider uppercase hover:brightness-110 transition-all duration-300"
+                  style={{ fontFamily: "var(--font-sans)" }}
+                >
+                  Iniciar Sesión
+                </a>
               </div>
 
               {/* Mobile hamburger */}
@@ -107,9 +116,9 @@ export default function Navbar() {
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="md:hidden bg-black/95 backdrop-blur-xl border-t border-gold/10 overflow-hidden"
+                  className="md:hidden bg-black/95 backdrop-blur-xl border-t border-gold/10 overflow-hidden rounded-b-3xl"
                 >
-                  <div className="px-4 py-4 flex flex-col gap-4">
+                  <div className="px-6 py-6 flex flex-col gap-5">
                     {navLinks.map((link, i) => (
                       <m.a
                         key={link.href}
@@ -118,11 +127,25 @@ export default function Navbar() {
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ delay: i * 0.1 }}
                         onClick={() => setMobileOpen(false)}
-                        className="md:hidden bg-black/95 backdrop-blur-xl border-t border-gold/20 overflow-hidden rounded-b-3xl" style={{ fontFamily: "var(--font-sans)" }}
+                        className="text-sm font-medium text-gold/80 hover:text-gold uppercase tracking-wider block"
+                        style={{ fontFamily: "var(--font-sans)" }}
                       >
                         {link.label}
                       </m.a>
                     ))}
+
+                    {/* Botón de Inicio de Sesión (Mobile) */}
+                    <m.a
+                      href="/login"
+                      initial={{ x: -20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: navLinks.length * 0.1 }}
+                      onClick={() => setMobileOpen(false)}
+                      className="mt-4 text-center bg-gold text-black py-3 rounded-full text-sm font-bold tracking-wider uppercase hover:brightness-110 transition-all duration-300 shadow-lg shadow-gold/20"
+                      style={{ fontFamily: "var(--font-sans)" }}
+                    >
+                      Iniciar Sesión
+                    </m.a>
                   </div>
                 </m.div>
               )}

@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createGallery, deleteGallery } from "@/app/admin/medios/actions";
 import Link from "next/link";
+import PanelInfo from "@/app/admin/components/PanelInfo";
 
 export default async function GaleriasPage() {
   const supabase = await createClient();
@@ -27,6 +28,11 @@ export default async function GaleriasPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">Galerías</h1>
+
+      <PanelInfo
+        title="¿Para qué sirve este panel?"
+        description="Crea álbumes de fotos para organizar las imágenes que se muestran en la landing (ej. una galería por sesión o evento). Al entrar a una galería puedes arrastrar imágenes directamente sobre la pantalla para subirlas."
+      />
 
       {/* Crear */}
       <form

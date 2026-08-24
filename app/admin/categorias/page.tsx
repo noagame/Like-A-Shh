@@ -1,76 +1,71 @@
 import { createClient } from "@/lib/supabase/server";
 import { createCategory, deleteCategory } from "./actions";
+import PanelInfo from "../components/PanelInfo";
 
 export default async function CategoriasPage() {
   const supabase = await createClient();
-  const { data: categories } = await supabase
-    .from("categories")
-    .select("id, name, color")
-    .order("name");
+  const { data: categories } = await supabase.from("categories").select("*").order("name");
 
   return (
-    <div className="max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">Categorías</h1>
+    <div className="max-w-4xl p-6">
+      <h1 className="text-2xl font-bold mb-4 text-white">Categorías</h1>
 
-      <form
-        action={async (formData) => {
-          "use server";
-          await createCategory(formData);
-        }}
-        className="flex flex-wrap items-end gap-3 mb-8 bg-white/5 border border-white/10 rounded-lg p-4"
-      >
-        <div className="flex-1 min-w-[160px]">
-          <label className="block text-sm font-medium mb-1">Nombre</label>
-          <input
-            name="name"
-            type="text"
-            required
-            className="w-full p-2 border rounded bg-black/20 border-white/20"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Color</label>
-          <input
-            name="color"
-            type="color"
-            defaultValue="#D4AF37"
-            className="h-10 w-16 p-1 border rounded bg-black/20 border-white/20"
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-gold text-black font-bold px-4 py-2 rounded hover:bg-gold-light transition-colors"
-        >
-          Agregar
-        </button>
-      </form>
+      <PanelInfo
+        title="¿Para qué sirve este panel?"
+        description="Las categorías te permiten agrupar tus eventos por tipo (por ejemplo: Workshop, Sesión, Retiro). Se usan como filtro tanto en este panel de administración como en la landing pública, y son obligatorias al crear un nuevo evento — créalas antes de agregar eventos nuevos."
+      />
 
-      {!categories || categories.length === 0 ? (
-        <p className="text-white/50">Todavía no hay categorías creadas.</p>
-      ) : (
-        <ul className="space-y-2">
-          {categories.map((c) => (
-            <li
-              key={c.id}
-              className="flex items-center justify-between bg-white/5 border border-white/10 rounded-lg px-4 py-3"
-            >
-              <div className="flex items-center gap-3">
-                <span
-                  className="w-4 h-4 rounded-full inline-block"
-                  style={{ backgroundColor: c.color ?? "#D4AF37" }}
-                />
-                <span>{c.name}</span>
+      <div className="mt-6 bg-black border border-gray-800 p-4 rounded-lg max-w-2xl">
+        <form action={createCategory as any} className="flex items-end gap-4">
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-white mb-1">Nombre</label>
+            <input
+              type="text"
+              name="name"
+              required
+              className="w-full p-2 bg-transparent border border-gray-700 rounded text-white"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-white mb-1">Color</label>
+            <input
+              type="color"
+              name="color"
+              defaultValue="#D4AF37"
+              className="h-10 w-16 p-1 bg-transparent border border-gray-700 rounded cursor-pointer"
+            />
+          </div>
+          <button
+            type="submit"
+            className="bg-yellow-500 text-black px-4 py-2 rounded font-bold hover:bg-yellow-400 transition-colors"
+          >
+            Agregar
+          </button>
+        </form>
+      </div>
+
+      <div className="mt-8">
+        {categories && categories.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {categories.map((c) => (
+              <div key={c.id} className="flex justify-between items-center p-3 border border-gray-800 rounded bg-gray-900">
+                <div className="flex items-center gap-2">
+                  <span className="w-4 h-4 rounded-full" style={{ backgroundColor: c.color }}></span>
+                  <span className="text-white">{c.name}</span>
+                </div>
+                <form action={deleteCategory}>
+                  <input type="hidden" name="id" value={c.id} />
+                  <button type="submit" className="text-red-500 text-sm hover:underline">
+                    Borrar
+                  </button>
+                </form>
               </div>
-              <form action={deleteCategory}>
-                <input type="hidden" name="id" value={c.id} />
-                <button type="submit" className="text-red-400 hover:underline text-sm">
-                  Eliminar
-                </button>
-              </form>
-            </li>
-          ))}
-        </ul>
-      )}
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-400">Todavía no hay categorías creadas.</p>
+        )}
+      </div>
     </div>
   );
 }

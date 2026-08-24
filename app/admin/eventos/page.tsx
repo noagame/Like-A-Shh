@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { changeEventStatus, deleteEvent } from "./actions";
 import AutoSubmitSelect from "./AutoSubmitSelect"; // Ajusta la ruta según dónde lo guardes
+import PanelInfo from "@/app/admin/components/PanelInfo";
 
 const ESTADO_LABEL: Record<string, string> = {
   draft: "Borrador",
@@ -70,6 +71,11 @@ export default async function AdminEventosPage({
           + Nuevo evento
         </Link>
       </div>
+
+      <PanelInfo
+        title="¿Para qué sirve este panel?"
+        description="Acá administras todas las sesiones, clases y workshops del sitio: crea nuevos eventos, cambia su estado (borrador/publicado/cancelado), edítalos o elimínalos. Solo los eventos en estado 'Publicado' se muestran en la landing pública."
+      />
 
       {/* Filtros */}
       <form className="flex flex-wrap gap-3 mb-6 text-sm">
