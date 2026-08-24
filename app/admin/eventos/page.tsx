@@ -1,14 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { changeEventStatus, deleteEvent } from "./actions";
-import AutoSubmitSelect from "./AutoSubmitSelect"; // Ajusta la ruta según dónde lo guardes
+import AutoSubmitSelect from "./AutoSubmitSelect";
 import PanelInfo from "@/app/admin/components/PanelInfo";
-
-const ESTADO_LABEL: Record<string, string> = {
-  draft: "Borrador",
-  published: "Publicado",
-  cancelled: "Cancelado",
-};
+import EventModal from "./EventModal";
+import { revalidatePath } from "next/cache";
+import BackButton from "@/app/admin/components/BackButton"; // <--- 1. Importas el botón aquí
 
 const ESTADO_COLOR: Record<string, string> = {
   draft: "bg-white/10 text-white/60",
@@ -33,6 +30,25 @@ export default async function AdminEventosPage({
   const { estado, categoria } = await searchParams;
   const supabase = await createClient();
 
+  // Server action para crear el evento dentro de la misma vista
+  async function handleCreateEvent(formData: FormData) {
+    "use server";
+    const supabaseClient = await createClient();
+
+    await supabaseClient.from("events").insert({
+      title: formData.get("title"),
+      description: formData.get("description"),
+      category_id: formData.get("category_id") || null,
+      start_time: formData.get("start_time"),
+      end_time: formData.get("end_time"),
+      location: formData.get("location"),
+      capacity: formData.get("capacity") ? Number(formData.get("capacity")) : null,
+      status: formData.get("status") ?? "draft",
+    });
+
+    revalidatePath("/admin/eventos");
+  }
+
   let query = supabase
     .from("events")
     .select("id, title, start_time, end_time, location, capacity, status, categories(id, name)")
@@ -43,14 +59,13 @@ export default async function AdminEventosPage({
 
   const { data: events } = await query;
 
-  // Cupos ocupados por evento, en una sola consulta
   const eventIds = events?.map((e) => e.id) ?? [];
   const { data: attendanceCounts } = eventIds.length
     ? await supabase
-        .from("attendances")
-        .select("event_id")
-        .in("event_id", eventIds)
-        .eq("status", "registered")
+      .from("attendances")
+      .select("event_id")
+      .in("event_id", eventIds)
+      .eq("status", "registered")
     : { data: [] as { event_id: string }[] };
 
   const countByEvent = (attendanceCounts ?? []).reduce<Record<string, number>>((acc, row) => {
@@ -62,14 +77,12 @@ export default async function AdminEventosPage({
 
   return (
     <div>
+      <BackButton /> {/* <--- 2. Lo pones aquí arriba para que aparezca la flecha */}
+
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Eventos</h1>
-        <Link
-          href="/admin/eventos/nuevo"
-          className="bg-gold text-black font-bold px-4 py-2 rounded hover:bg-gold-light transition-colors text-sm"
-        >
-          + Nuevo evento
-        </Link>
+        {/* Usamos el Modal con fondo difuminado en lugar de un Link a otra ruta */}
+        <EventModal createAction={handleCreateEvent} />
       </div>
 
       <PanelInfo
@@ -159,7 +172,7 @@ export default async function AdminEventosPage({
                           <input type="hidden" name="event_id" value={event.id} />
                           <button
                             type="submit"
-                            className="text-red-400 hover:underline"
+                            className="text-red-400 hover:underline cursor-pointer"
                           >
                             Eliminar
                           </button>

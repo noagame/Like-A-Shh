@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createCategory, deleteCategory } from "./actions";
 import PanelInfo from "../components/PanelInfo";
+import BackButton from "@/app/admin/components/BackButton"; // 1. Importas el botón
 
 export default async function CategoriasPage() {
   const supabase = await createClient();
@@ -8,6 +9,8 @@ export default async function CategoriasPage() {
 
   return (
     <div className="max-w-4xl p-6">
+      <BackButton /> {/* 2. Pones la flecha para volver al inicio */}
+
       <h1 className="text-2xl font-bold mb-4 text-white">Categorías</h1>
 
       <PanelInfo
@@ -37,7 +40,7 @@ export default async function CategoriasPage() {
           </div>
           <button
             type="submit"
-            className="bg-yellow-500 text-black px-4 py-2 rounded font-bold hover:bg-yellow-400 transition-colors"
+            className="bg-yellow-500 text-black px-4 py-2 rounded font-bold hover:bg-yellow-400 transition-colors cursor-pointer"
           >
             Agregar
           </button>
@@ -55,7 +58,7 @@ export default async function CategoriasPage() {
                 </div>
                 <form action={deleteCategory}>
                   <input type="hidden" name="id" value={c.id} />
-                  <button type="submit" className="text-red-500 text-sm hover:underline">
+                  <button type="submit" className="text-red-500 text-sm hover:underline cursor-pointer">
                     Borrar
                   </button>
                 </form>

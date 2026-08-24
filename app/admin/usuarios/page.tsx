@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { deleteUser } from "./actions";
+import BackButton from "@/app/admin/components/BackButton"; // <--- 1. Importas el botón aquí
 
 export default async function UsuariosPage() {
     const supabase = await createClient();
@@ -11,6 +12,8 @@ export default async function UsuariosPage() {
 
     return (
         <div className="p-6 text-white">
+            <BackButton /> {/* <--- 2. Pones la flecha para volver al inicio */}
+
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Gestión de Usuarios</h1>
             </div>

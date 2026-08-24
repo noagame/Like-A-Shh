@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { uploadMedia } from "@/app/admin/medios/actions";
+import { uploadMedia } from "@/app/admin/medios/action";
 
 type UploadStatus = { fileName: string; status: "subiendo" | "ok" | "error"; error?: string };
 

@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
-import { updateGallery, deleteMedia } from "@/app/admin/medios/actions";
+import { updateGallery, deleteMedia } from "@/app/admin/medios/action";
 import { notFound } from "next/navigation";
-import GalleryDropzone from "./GalleryDropzone";
+import GalleryDropZone from "./GalleryDropZone";
 import Link from "next/link";
 
 export default async function GalleryDetailPage({
@@ -30,12 +30,12 @@ export default async function GalleryDetailPage({
 
   return (
     <div>
-      <Link href="/admin/galerias" className="text-sm text-white/50 hover:text-gold">
+      <Link href="/admin/galeria" className="text-sm text-white/50 hover:text-gold">
         ← Todas las galerías
       </Link>
 
       {/* Editar nombre/descripción */}
-      <form action={updateGalleryWithId} className="my-6 space-y-3 max-w-lg">
+      <form action={updateGalleryWithId as any} className="my-6 space-y-3 max-w-lg">
         <div>
           <label className="block text-sm font-medium mb-1">Nombre</label>
           <input
@@ -64,7 +64,7 @@ export default async function GalleryDetailPage({
       </form>
 
       {/* Drag & drop */}
-      <GalleryDropzone galleryId={id} />
+      <GalleryDropZone galleryId={id} />
 
       {/* Grid de imágenes de esta galería */}
       {!media || media.length === 0 ? (
@@ -80,7 +80,7 @@ export default async function GalleryDetailPage({
                 className="w-full aspect-square object-cover rounded-lg border border-white/10"
               />
               <form
-                action={deleteMedia}
+                action={deleteMedia as any}
                 className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <input type="hidden" name="media_id" value={item.id} />

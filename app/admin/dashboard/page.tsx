@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import DashboardCharts from "./DashboardCharts";
 import PanelInfo from "@/app/admin/components/PanelInfo";
+import BackButton from "@/app/admin/components/BackButton"; // <--- 1. Importas el botón aquí
 
 function KpiCard({ label, value, hint }: { label: string; value: string | number; hint?: string }) {
   return (
@@ -50,6 +51,8 @@ export default async function AdminDashboardPage() {
 
   return (
     <div>
+      <BackButton /> {/* <--- 2. Lo pones aquí arriba para que aparezca la flecha */}
+
       <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
 
       <PanelInfo
