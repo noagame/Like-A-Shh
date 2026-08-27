@@ -27,6 +27,12 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  transpilePackages: [
+    "@fullcalendar/common",
+    "@fullcalendar/core",
+    "@fullcalendar/react",
+    "@fullcalendar/daygrid",
+  ],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
