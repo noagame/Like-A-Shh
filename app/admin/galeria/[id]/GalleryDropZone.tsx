@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { uploadMedia } from "@/app/admin/medios/action";
+import { uploadMedia } from "@/app/admin/medios/actions";
 
 type UploadStatus = { fileName: string; status: "subiendo" | "ok" | "error"; error?: string };
 
@@ -28,10 +28,12 @@ export default function GalleryDropzone({ galleryId }: { galleryId: string }) {
 
         const result = await uploadMedia(formData);
 
+        const error = result.ok ? undefined : result.error;
+
         setUploads((prev) =>
           prev.map((u) =>
             u.fileName === file.name
-              ? { fileName: file.name, status: result.error ? "error" : "ok", error: result.error ?? undefined }
+              ? { fileName: file.name, status: error ? "error" : "ok", error }
               : u
           )
         );

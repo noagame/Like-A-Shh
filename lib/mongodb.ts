@@ -1,38 +1,28 @@
-import { MongoClient, GridFSBucket } from "mongodb";
-
-if (!process.env.MONGODB_URI) {
-  throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
-}
+import { GridFSBucket, MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
-const options = {};
+const databaseName = process.env.MONGODB_DB_NAME ?? "likeashh";
 
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
-
-if (process.env.NODE_ENV === "development") {
-  // En desarrollo, usamos una variable global para preservar la conexión a través de recargas (HMR)
-  const globalWithMongo = global as typeof globalThis & {
-    _mongoClientPromise?: Promise<MongoClient>;
-  };
-
-  if (!globalWithMongo._mongoClientPromise) {
-    client = new MongoClient(uri, options);
-    globalWithMongo._mongoClientPromise = client.connect();
-  }
-  clientPromise = globalWithMongo._mongoClientPromise;
-} else {
-  // En producción, no usamos variable global
-  client = new MongoClient(uri, options);
-  clientPromise = client.connect();
+declare global {
+  var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
-export default clientPromise;
+function getClientPromise() {
+  if (!uri) throw new Error("MISSING_ENV: MONGODB_URI");
+
+  return (globalThis._mongoClientPromise ??= new MongoClient(uri, {
+    serverSelectionTimeoutMS: 5000,
+    maxPoolSize: 10,
+    retryWrites: true,
+  }).connect());
+}
+
+export default getClientPromise();
 
 export async function getMediaBucket() {
-  const client = await clientPromise;
-  const db = client.db(); // Usa la DB por defecto que viene en la MONGODB_URI
+  const client = await getClientPromise();
+  const db = client.db(databaseName);
   return new GridFSBucket(db, {
-    bucketName: "media", // o el nombre que prefieras para tu bucket
+    bucketName: "media",
   });
 }

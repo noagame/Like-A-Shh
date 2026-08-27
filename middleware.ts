@@ -14,6 +14,18 @@ export async function middleware(request: NextRequest) {
   // página igual vuelve a validar el usuario del lado del servidor
   // (ver AdminLayout y MiCuentaLayout), así que no se expone data real,
   // solo se pierde el redirect automático a /login.
+  const requiredEnv = ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"];
+  for (const name of requiredEnv) {
+    if (!process.env[name]) {
+      throw new Error(`[middleware] Falta ${name}`);
+    }
+  }
+  const allowedOrigins = ["https://www.likeashh.cl", "http://localhost:3000"];
+  const origin = request.headers.get("origin");
+  if (origin && !allowedOrigins.includes(origin)) {
+    return NextResponse.json({ error: "Origin no autorizado" }, { status: 403 });
+  }
+
   if (
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
     !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
@@ -66,3 +78,4 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|assets/).*)"],
 };
+

@@ -9,8 +9,14 @@ export async function signIn(formData: FormData) {
   const ip = (await headers()).get("x-forwarded-for") ?? "unknown";
   const { success } = await checkLoginRateLimit(ip);
 
-  if (!success) {
+  try {
+    const { success } = await checkLoginRateLimit(ip);
+    if (!success) {
     redirect("/login?error=Demasiados intentos, espera un minuto");
+    } 
+  } catch (error) {
+    console.error("Rate limit failed", error);
+    redirect("/login?error=Servicio temporalmente no disponible");
   }
 
   const supabase = await createClient();
