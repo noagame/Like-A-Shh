@@ -8,10 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "doctor": "npx react-doctor@latest",
-    "test:run": "vitest run",
-    "test": "jest --runInBand",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:run": "vitest run"
   },
   "dependencies": {
     "@fullcalendar/core": "6.1.21",
