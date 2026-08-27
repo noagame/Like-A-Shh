@@ -16,12 +16,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="min-h-screen bg-black text-white">
       <NavBar />
-      {/* pl-8 (no pl-64): el nav está "fixed" y colapsado a 1rem de ancho,
-          así que el contenido no necesita ceder espacio permanente — el
-          nav se expande ENCIMA del contenido (overlay) al hacer hover,
-          no lo empuja. Si prefieres que empuje el contenido en vez de
-          superponerse, dímelo y cambiamos a un layout con margin dinámico. */}
-      <div className="admin-shell min-h-screen px-4 sm:px-8 py-8 pl-8">
+      <div className="admin-shell min-h-screen px-4 py-8 pl-20 sm:px-8 sm:pl-24">
         {children}
       </div>
     </div>

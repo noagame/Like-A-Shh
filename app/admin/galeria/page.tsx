@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { createGallery, deleteGallery } from "@/app/admin/medios/action";
+import { createGallery, deleteGallery } from "@/app/admin/medios/actions";
 import Link from "next/link";
 import PanelInfo from "@/app/admin/components/PanelInfo";
 import BackButton from "@/app/admin/components/BackButton";

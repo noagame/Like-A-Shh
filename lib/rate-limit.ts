@@ -20,8 +20,9 @@ export const loginRateLimit = hasUpstashConfig
  */
 export async function checkLoginRateLimit(ip: string) {
   if (!loginRateLimit) {
-       throw new Error("Rate limiter no configurado. Revisar UPSTASH_REDIS_REST_URL y UPSTASH_REDIS_REST_TOKEN");
-     }
+    console.warn("[rate-limit] UPSTASH_REDIS_REST_URL/TOKEN no configurados");
+    return { success: true };
+  }
 
-     return loginRateLimit.limit(ip);
+  return loginRateLimit.limit(ip);
 }
