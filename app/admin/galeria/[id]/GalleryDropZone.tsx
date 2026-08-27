@@ -12,33 +12,39 @@ export default function GalleryDropzone({ galleryId }: { galleryId: string }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  async function handleFiles(files: FileList | File[]) {
-    const fileArray = Array.from(files).filter((f) => f.type.startsWith("image/"));
-    if (fileArray.length === 0) return;
+  async function handleFiles(files: FileList | File[]) { 
+  const fileArray = Array.from(files).filter((f) => f.type.startsWith("image/")); 
+  if (fileArray.length === 0) return;
 
-    setUploads(fileArray.map((f) => ({ fileName: f.name, status: "subiendo" })));
+  // Actualizamos el estado visual a "subiendo"
+  const newUploads = fileArray.map((file) => ({
+    fileName: file.name,
+    status: "subiendo" as const,
+  }));
+  setUploads((prev) => [...prev, ...newUploads]);
 
-    // Subida en paralelo — cada llamada a uploadMedia es independiente
-    await Promise.all(
-      fileArray.map(async (file) => {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("gallery_id", galleryId);
-        formData.append("alt_text", file.name.replace(/\.[^.]+$/, ""));
+  for (const file of fileArray) {
+    const formData = new FormData();
+    formData.append("file", file);
 
-        const result = await uploadMedia(formData);
+    // 1. Solución al primer error: pasamos el galleryId y el formData
+    const result = await uploadMedia(galleryId, formData);
 
-        const error = result.ok ? undefined : result.error;
-
-        setUploads((prev) =>
-          prev.map((u) =>
-            u.fileName === file.name
-              ? { fileName: file.name, status: error ? "error" : "ok", error }
-              : u
-          )
-        );
+    setUploads((prev) =>
+      prev.map((upload) => {
+        if (upload.fileName === file.name) {
+          // 2. Solución al segundo error: evaluamos 'result.success' y no 'result.ok'
+          if (result?.success) {
+            return { ...upload, status: "ok" };
+          } else {
+            return { ...upload, status: "error", error: result?.error };
+          }
+        }
+        return upload;
       })
     );
+  }
+
 
     // uploadMedia ya revalida el path en el servidor, pero el grid de
     // imágenes lo pinta un Server Component padre — hay que decirle al
