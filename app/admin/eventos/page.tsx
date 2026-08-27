@@ -82,7 +82,7 @@ export default async function AdminEventosPage({
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Eventos</h1>
         {/* Usamos el Modal con fondo difuminado en lugar de un Link a otra ruta */}
-        <EventModal createAction={handleCreateEvent} />
+        <EventModal createAction={handleCreateEvent} categories={categories || []} />
       </div>
 
       <PanelInfo

@@ -2,22 +2,33 @@
 
 import { useState } from "react";
 import LocationInput from "./nuevo/LocationInput";
+import CategorySelect from "./nuevo/CategorySelect";
 
-export default function EventModal({ createAction }: { createAction: (formData: FormData) => Promise<void> }) {
+type Category = { id: string; name: string };
+
+export default function EventModal({ createAction, categories = [] }: { createAction: (formData: FormData) => Promise<void>, categories: Category[] }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const handleSubmit = async (formData: FormData) => {
+        setIsSubmitting(true);
+        await createAction(formData);
+        setIsSubmitting(false);
+        setIsOpen(false);
+    };
+    
     return (
         <>
             <button
                 onClick={() => setIsOpen(true)}
-                className="bg-gold text-black font-bold px-4 py-2 rounded hover:bg-gold-light transition-colors text-sm cursor-pointer"
+                className="bg-gold text-black font-semibold px-4 py-2 rounded hover:bg-gold-light transition-colors text-sm cursor-pointer"
             >
-                + Nuevo evento
+                + Nuevo Evento
             </button>
 
             {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
-                    <div className="bg-neutral-900 border border-neutral-800 rounded-lg text-white max-w-2xl w-full p-6 relative shadow-2xl my-8">
+                <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto pt-16 pb-16">
+                    <div className="bg-black/80 backdrop-blur-xl border border-white/10 rounded-2xl text-white max-w-2xl w-full p-6 md:p-8 relative shadow-2xl my-auto">
 
                         {/* Botón de cierre X */}
                         <button
@@ -29,10 +40,7 @@ export default function EventModal({ createAction }: { createAction: (formData: 
 
                         <h1 className="text-2xl font-bold mb-6">Nuevo evento / Clase / Workshop</h1>
 
-                        <form action={async (formData) => {
-                            await createAction(formData);
-                            setIsOpen(false);
-                        }} className="space-y-4">
+                        <form action={handleSubmit} className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-neutral-400 mb-1">Título</label>
                                 <input
@@ -42,6 +50,11 @@ export default function EventModal({ createAction }: { createAction: (formData: 
                                     placeholder="Ej. Clase de Pole Dance"
                                     className="w-full p-2 bg-neutral-800 border border-neutral-700 rounded text-white focus:outline-none focus:border-blue-500"
                                 />
+                            </div>
+
+                            <div className="z-10 relative">
+                                <label className="block text-sm text-white/70 mb-1">Categoría</label>
+                                <CategorySelect initialCategories={categories || []} />
                             </div>
 
                             <div>
