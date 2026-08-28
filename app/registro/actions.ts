@@ -85,5 +85,6 @@ export async function signUp(formData: FormData): Promise<{ error: string } | vo
     }
   }
 
-  redirect("/registro/completar-perfil");
+  // Al final de la función signUp exitosa, redirigir a la vista de espera:
+  redirect(`/auth/verificar-email?email=${encodeURIComponent(cleanEmail)}`);
 }

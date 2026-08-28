@@ -7,8 +7,9 @@ export default async function EventsSection() {
     .from("events")
     .select("id, title, description, start_time, end_time, location, categories(name, color)")
     .eq("status", "published")
-    .order("start_time", { ascending: true })
-    .limit(3);
+    .ilike("categories.name", "%evento%")
+    .gte("start_time", new Date().toISOString())
+    .order("start_time", { ascending: true });
 
   return (
     <section id="eventos" className="py-16 md:py-24 section-spacing">

@@ -2,100 +2,119 @@
 
 import { useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import AttendButton from "./explorar/AttendButton"; // Asegúrate de ajustar la ruta según tu estructura
 
-type EventWithCategory = {
-  id: string;
+type ClaseHistorial = {
+  attendanceId: string;
   title: string;
-  description: string | null;
   start_time: string;
-  end_time: string;
   location: string | null;
-  capacity: number | null;
-  categories: { name: string; color: string | null } | null;
+  categoryName: string | null;
+  categoryColor: string | null;
+  status: string;
 };
 
-export default function UserEventsCarousel({ 
-  events, 
-  userAttendances, 
-  attendanceCounts 
-}: { 
-  events: EventWithCategory[];
-  userAttendances: Set<string>;
-  attendanceCounts: Record<string, number>;
-}) {
+export default function ClasesTomadasCarousel({ clases }: { clases: ClaseHistorial[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  if (!events || events.length === 0) return null;
+  if (clases.length === 0) {
+    return (
+      <div className="mt-8 p-6 bg-white/5 border border-white/10 rounded-2xl text-center backdrop-blur-xl">
+        <p className="text-sm text-white/50">Aún no registras clases completadas o pasadas.</p>
+      </div>
+    );
+  }
 
-  const next = () => setCurrentIndex((prev) => (prev + 1 >= events.length ? 0 : prev + 1));
-  const prev = () => setCurrentIndex((prev) => (prev === 0 ? events.length - 1 : prev - 1));
+  const itemsPerPage = 2;
+  const totalPages = Math.ceil(clases.length / itemsPerPage);
+  const displayedClases = clases.slice(currentIndex * itemsPerPage, (currentIndex + 1) * itemsPerPage);
 
-  const currentEvent = events[currentIndex];
-  const yaInscrito = userAttendances.has(currentEvent.id);
-  const totalReg = attendanceCounts[currentEvent.id] || 0;
-  const cupoLleno = currentEvent.capacity ? totalReg >= currentEvent.capacity : false;
+  const next = () => setCurrentIndex((prev) => (prev + 1 >= totalPages ? 0 : prev + 1));
+  const prev = () => setCurrentIndex((prev) => (prev === 0 ? totalPages - 1 : prev - 1));
 
   return (
-    <div className="relative w-full max-w-3xl mx-auto my-8 p-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl">
-      <div className="flex justify-between items-center mb-4">
-        <span className="text-xs uppercase tracking-widest text-gold font-bold">
-          {currentEvent.categories?.name || "Clase Exclusiva"}
-        </span>
-        <span className="text-xs text-white/50">
-          {currentIndex + 1} de {events.length}
-        </span>
+    <div className="mt-10">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-xl font-bold text-white" style={{ fontFamily: "var(--font-serif)" }}>
+            Historial de Clases Tomadas
+          </h2>
+          <p className="text-xs text-white/50 mt-0.5">Sesiones y workshops completados</p>
+        </div>
+
+        {totalPages > 1 && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={prev}
+              className="p-2 bg-black/60 border border-white/10 rounded-full text-gold hover:bg-gold/20 transition-all text-xs"
+            >
+              ←
+            </button>
+            <span className="text-xs text-white/40 font-mono">
+              {currentIndex + 1} / {totalPages}
+            </span>
+            <button
+              onClick={next}
+              className="p-2 bg-black/60 border border-white/10 rounded-full text-gold hover:bg-gold/20 transition-all text-xs"
+            >
+              →
+            </button>
+          </div>
+        )}
       </div>
 
-      <div className="overflow-hidden min-h-[160px]">
-        <AnimatePresence mode="wait">
-          <m.div
-            key={currentEvent.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="flex flex-col gap-3"
-          >
-            <h3 className="text-xl font-bold text-white" style={{ fontFamily: "var(--font-serif)" }}>
-              {currentEvent.title}
-            </h3>
-            <p className="text-sm text-white/70 line-clamp-2">
-              {currentEvent.description || "Sin descripción detallada para esta sesión."}
-            </p>
-            <div className="text-xs text-gold/80 flex gap-4 mt-2">
-              <span>📅 {new Date(currentEvent.start_time).toLocaleDateString("es-CL", { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</span>
-              {currentEvent.location && <span>📍 {currentEvent.location}</span>}
+      <AnimatePresence mode="wait">
+        <m.div
+          key={currentIndex}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.25 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
+          {displayedClases.map((clase) => (
+            <div
+              key={clase.attendanceId}
+              className="p-5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl flex flex-col justify-between hover:border-gold/30 transition-all shadow-lg"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <span
+                    className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border"
+                    style={{
+                      color: clase.categoryColor || "#D4AF37",
+                      borderColor: `${clase.categoryColor || "#D4AF37"}40`,
+                      backgroundColor: `${clase.categoryColor || "#D4AF37"}10`,
+                    }}
+                  >
+                    {clase.categoryName || "Clase"}
+                  </span>
+                  <span className="text-[11px] text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded-full">
+                    Completada
+                  </span>
+                </div>
+
+                <h3 className="text-base font-semibold text-white mb-1 line-clamp-1">{clase.title}</h3>
+                <p className="text-xs text-white/60">
+                  {new Date(clase.start_time).toLocaleDateString("es-CL", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "short",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
+              </div>
+
+              {clase.location && (
+                <div className="mt-4 pt-3 border-t border-white/10 text-xs text-white/40 flex items-center gap-1.5">
+                  <span>📍</span>
+                  <span className="truncate">{clase.location}</span>
+                </div>
+              )}
             </div>
-          </m.div>
-        </AnimatePresence>
-      </div>
-
-      {/* Controles y Botón de Inscripción */}
-      <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/10">
-        <div className="flex gap-2">
-          <button 
-            onClick={prev}
-            className="p-2 bg-black/50 border border-white/10 rounded-full text-gold hover:bg-gold/20 transition-all"
-          >
-            ←
-          </button>
-          <button 
-            onClick={next}
-            className="p-2 bg-black/50 border border-white/10 rounded-full text-gold hover:bg-gold/20 transition-all"
-          >
-            →
-          </button>
-        </div>
-
-        <div className="w-48">
-          <AttendButton 
-            eventId={currentEvent.id} 
-            yaInscrito={yaInscrito} 
-            cupoLleno={cupoLleno} 
-          />
-        </div>
-      </div>
+          ))}
+        </m.div>
+      </AnimatePresence>
     </div>
   );
 }

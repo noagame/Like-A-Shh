@@ -4,20 +4,25 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export async function reenviarConfirmacion(formData: FormData) {
-  const email = formData.get("email") as string;
+  const email = (formData.get("email") as string)?.trim();
+  if (!email) {
+    redirect(`/auth/verificar-email?error=${encodeURIComponent("Ingresa un correo válido")}`);
+  }
+
   const supabase = await createClient();
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.likeashh.cl";
 
   const { error } = await supabase.auth.resend({
     type: "signup",
     email,
     options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      emailRedirectTo: `${siteUrl}/auth/callback`,
     },
   });
 
   if (error) {
-    redirect(`/auth/error?message=${encodeURIComponent(error.message)}&reenviado=0`);
+    redirect(`/auth/verificar-email?email=${encodeURIComponent(email)}&error=${encodeURIComponent(error.message)}`);
   }
 
-  redirect(`/auth/error?reenviado=1`);
+  redirect(`/auth/verificar-email?email=${encodeURIComponent(email)}&reenviado=1`);
 }

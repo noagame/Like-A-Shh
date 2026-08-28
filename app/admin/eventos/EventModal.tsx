@@ -113,6 +113,17 @@ export default function EventModal({ createAction, categories = [] }: { createAc
                                         <option value="cancelled">Cancelado</option>
                                     </select>
                                 </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-white/70 mb-1">
+                                        Flyer / Afiche del Evento
+                                    </label>
+                                    <input
+                                        name="flyer"
+                                        type="file"
+                                        accept="image/*"
+                                        className="w-full text-xs text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-gold file:text-black hover:file:bg-gold-light cursor-pointer bg-white/5 border border-white/10 rounded-lg p-2"
+                                    />
+                                </div>
                             </div>
 
                             <div className="flex justify-end gap-3 pt-4">

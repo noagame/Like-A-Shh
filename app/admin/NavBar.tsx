@@ -13,6 +13,7 @@ const navLinks = [
   { href: "/admin/galeria", label: "Gestión de Galería de Fotos" },
   { href: "/admin/dashboard", label: "Panel Analitico" },
   { href: "/admin/usuarios", label: "Gestión de Usuarios" },
+  { href: "/admin/cursos", label:"Gestión de Cursos Online"},
   { href: "/admin/ajustes", label: "Ajustes" },
 ];
 
