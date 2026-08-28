@@ -1,4 +1,5 @@
 import { signIn } from "./actions";
+import Link from "next/link"; // <--- Importamos Link de Next.js
 
 export default async function LoginPage({
   searchParams,
@@ -30,6 +31,16 @@ export default async function LoginPage({
             required
             className="w-full p-2 border rounded text-black"
           />
+        </div>
+
+        {/* Enlace de recuperación de contraseña */}
+        <div className="text-right">
+          <Link
+            href="/auth/recuperar"
+            className="text-xs text-blue-600 hover:underline"
+          >
+            ¿Olvidaste tu contraseña?
+          </Link>
         </div>
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
