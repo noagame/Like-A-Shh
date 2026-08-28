@@ -1,35 +1,32 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-function getRequiredEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`Falta la variable de entorno requerida: ${name}`);
-  }
-  return value;
-}
-
 export async function createClient() {
   const cookieStore = await cookies();
 
-  const supabaseUrl = getRequiredEnv("NEXT_PUBLIC_SUPABASE_URL");
-  const supabaseKey = getRequiredEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY");
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  return createServerClient( supabaseUrl, supabaseKey, {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // se llama desde un Server Component; el middleware refresca la sesión
-          }
-        },
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error("Faltan variables de entorno: NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY");
+  }
+
+  return createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
       },
-    }
-  );
+      setAll(cookiesToSet) {
+        try {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options)
+          );
+        } catch {
+          // Invocado desde Server Component
+        }
+      },
+    },
+  });
 }

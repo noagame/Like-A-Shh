@@ -7,7 +7,6 @@ import { redirect } from "next/navigation";
 
 export async function signIn(formData: FormData) {
   const ip = (await headers()).get("x-forwarded-for") ?? "unknown";
-  const { success } = await checkLoginRateLimit(ip);
 
   try {
     const { success } = await checkLoginRateLimit(ip);
@@ -19,12 +18,15 @@ export async function signIn(formData: FormData) {
     redirect("/login?error=Servicio temporalmente no disponible");
   }
 
-  const supabase = await createClient();
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
-  });
+  if (!email || !password) {
+    return { error: "Por favor ingresa tu correo y contraseña." };
+  }
+
+  const supabase = await createClient();
+ const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) redirect(`/login?error=${encodeURIComponent(error.message)}`);
   redirect("/mi-cuenta");
