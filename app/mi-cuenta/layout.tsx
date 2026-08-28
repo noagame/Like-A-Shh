@@ -43,8 +43,8 @@ export default async function MiCuentaLayout({
         <Link href="/mi-cuenta" className="hover:text-gold transition-colors whitespace-nowrap">Inicio</Link>
         <Link href="/mi-cuenta/clases" className="hover:text-gold transition-colors whitespace-nowrap">Mis clases</Link>
         <Link href="/mi-cuenta/explorar" className="hover:text-gold transition-colors whitespace-nowrap">Explorar</Link>
+        <Link href="/mi-cuenta/galeria" className="hover:text-gold transition-colors whitespace-nowrap">Galería</Link>
         <Link href="/mi-cuenta/perfil" className="hover:text-gold transition-colors whitespace-nowrap">Perfil</Link>
-        <Link href="/mi-cuenta/privacidad" className="hover:text-gold transition-colors whitespace-nowrap">Mis datos</Link>
       </nav>
 
       <main className="px-4 sm:px-8 py-8">{children}</main>

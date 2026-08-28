@@ -1,178 +1,91 @@
-"use client";
-
-import { m } from "framer-motion";
 import Link from "next/link";
 
 export default function PrivacidadPage() {
   return (
     <main className="min-h-screen bg-black text-white py-16 md:py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Ambient background glow */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gold/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-gold/3 rounded-full blur-[100px]" />
-      </div>
+      <div className="max-w-4xl mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 sm:p-10 shadow-2xl">
+        <div className="mb-8 border-b border-white/10 pb-6">
+          <Link href="/" className="text-gold text-xs uppercase tracking-widest hover:underline mb-3 inline-block">
+            ← Volver al inicio
+          </Link>
+          <h1 className="text-3xl sm:text-4xl font-bold text-gold" style={{ fontFamily: "var(--font-serif)" }}>
+            Términos de Servicio y Política de Privacidad
+          </h1>
+          <p className="text-white/50 text-xs mt-2 font-mono">
+            Versión: politica-privacidad-v2-ley21719-2026 | Cumplimiento Ley Nº 21.719 (Chile)
+          </p>
+        </div>
 
-      <div className="relative z-10 max-w-4xl mx-auto">
-        {/* Navigation Button */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-gold/80 hover:text-gold transition-colors mb-10 group"
-          id="back-to-home-privacidad"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 transform group-hover:-translate-x-1 transition-transform duration-300"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2.5}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          <span
-            className="font-bold text-sm tracking-widest uppercase"
-            style={{ fontFamily: "var(--font-sans)" }}
-          >
-            Volver al Inicio
-          </span>
-        </Link>
-
-        {/* Content Box */}
-        <m.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="card-gold p-8 md:p-12"
-        >
-          {/* Header */}
-          <div className="border-b border-gold/20 pb-8 mb-8 text-center">
-            <h1
-              className="text-4xl sm:text-5xl font-bold text-gold mb-4"
-              style={{ fontFamily: "var(--font-serif)" }}
-            >
-              Políticas de Privacidad
-            </h1>
-            <p
-              className="text-white/40 text-sm tracking-wider uppercase"
-              style={{ fontFamily: "var(--font-sans)" }}
-            >
-              Última actualización: 23 de Junio de 2026
-            </p>
-          </div>
-
-          {/* Legal Text body */}
-          <div className="space-y-8 text-justify text-white/80 leading-relaxed text-base sm:text-lg" style={{ fontFamily: "var(--font-sans)" }}>
+        <div className="space-y-8 text-sm text-white/80 leading-relaxed">
+          <section>
+            <h2 className="text-lg font-bold text-gold mb-2">1. Responsable del Tratamiento de Datos</h2>
             <p>
-              En <strong className="text-gold">Like a SHH</strong>, de propiedad de Maximiliano Velásquez, nos tomamos muy en serio la privacidad de nuestros usuarios y estudiantes. Esta política detalla cómo recopilamos, utilizamos y protegemos su información de conformidad con la legislación chilena vigente, específicamente la <strong className="text-gold">Ley N° 19.628 sobre Protección de la Vida Privada</strong>.
+              La plataforma <strong>Like a SHH</strong>, con operaciones en la República de Chile, actúa como Responsable del Tratamiento de sus datos personales, adoptando los estándares de seguridad técnicos, organizativos y legales establecidos en la <strong>Ley Nº 21.719</strong> sobre Protección de Datos Personales.
             </p>
+          </section>
 
-            {/* Sección 1 */}
-            <section className="space-y-3">
-              <h2
-                className="text-2xl sm:text-3xl font-bold text-gold"
-                style={{ fontFamily: "var(--font-serif)" }}
-              >
-                1. Información que recopilamos
-              </h2>
-              <p>
-                Recopilamos información personal únicamente cuando interactúa voluntariamente con nuestro sitio web. Esto incluye:
-              </p>
-              <ul className="list-disc pl-6 space-y-2 text-white/70">
-                <li>
-                  <strong className="text-white">Formulario de Contacto:</strong> Nombre, apellido, dirección de correo electrónico y el contenido del mensaje enviado. Esta información es procesada y resguardada de forma segura.
-                </li>
-                <li>
-                  <strong className="text-white">Datos de Navegación:</strong> Dirección IP, cookies y datos de uso del sitio con fines de análisis estadístico y mejora de la experiencia de usuario.
-                </li>
-              </ul>
-            </section>
+          <section>
+            <h2 className="text-lg font-bold text-gold mb-2">2. Finalidad del Tratamiento de Datos Personales</h2>
+            <p>Los datos recabados se tratan estrictamente para:</p>
+            <ul className="list-disc pl-5 mt-2 space-y-1.5 text-white/70">
+              <li>Autenticación, seguridad y administración de perfiles de usuario.</li>
+              <li>Gestión de membresías, reserva de cupos e inscripción a workshops y clases.</li>
+              <li>Comunicaciones directas sobre confirmaciones horarias, estados de cuenta y cancelaciones.</li>
+              <li>Acreditación de consentimiento y trazabilidad de accesos conforme a la ley.</li>
+            </ul>
+          </section>
 
-            {/* Sección 2 */}
-            <section className="space-y-3">
-              <h2
-                className="text-2xl sm:text-3xl font-bold text-gold"
-                style={{ fontFamily: "var(--font-serif)" }}
-              >
-                2. Uso de la información
-              </h2>
-              <p>
-                La información personal recopilada se utiliza exclusivamente para los siguientes fines:
-              </p>
-              <ul className="list-disc pl-6 space-y-2 text-white/70">
-                <li>Responder a consultas, solicitudes de soporte técnico o agendamiento de clases.</li>
-                <li>Proporcionar y gestionar el acceso a nuestros cursos online y contenidos adquiridos.</li>
-                <li>Enviar notificaciones importantes sobre cambios en nuestros servicios o eventos exclusivos, siempre contando con su consentimiento previo de suscripción.</li>
-              </ul>
-            </section>
+          <section className="bg-white/5 border border-gold/30 rounded-xl p-5">
+            <h2 className="text-lg font-bold text-gold mb-2">3. Panel de Análisis y Anonimización de Datos</h2>
+            <p>
+              Like a SHH dispone de un <strong>Panel Analítico y de Inteligencia de Negocio</strong> para optimizar la planificación de talleres, aforos y rendimiento de la plataforma. Respecto a este procesamiento se establece expresamente que:
+            </p>
+            <ul className="list-disc pl-5 mt-2 space-y-1.5 text-white/70">
+              <li>
+                <strong>Disociación y Anonimización Completa:</strong> Toda métrica visualizada en paneles de administración (como registros semanales, tasa de ocupación de clases y volumen de acciones) se procesa de forma agregada y anónima.
+              </li>
+              <li>
+                <strong>Imposibilidad de Reidentificación:</strong> Los algoritmos y vistas de base de datos no asocian nombres, correos ni datos identificables con las tendencias estadísticas globales.
+              </li>
+              <li>
+                <strong>Estándar Legal:</strong> Conforme al principio de limitación de la finalidad de la Ley 21.719, los datos con fines estadísticos o de medición técnica operan bajo mecanismos de desvinculación irreversible.
+              </li>
+            </ul>
+          </section>
 
-            {/* Sección 3 */}
-            <section className="space-y-3">
-              <h2
-                className="text-2xl sm:text-3xl font-bold text-gold"
-                style={{ fontFamily: "var(--font-serif)" }}
-              >
-                3. Integración y Plataformas de Terceros
-              </h2>
-              <p>
-                Para garantizar la operatividad de nuestros servicios y la seguridad de las transacciones comerciales, nos apoyamos en los siguientes proveedores especializados de servicios externos:
-              </p>
-              <ul className="list-disc pl-6 space-y-3 text-white/70">
-                <li>
-                  <strong className="text-white">Formspree:</strong> El procesamiento y envío de los datos recolectados en el formulario de contacto se realiza a través de la plataforma Formspree, la cual opera bajo estrictos protocolos de cifrado y seguridad de la información.
-                </li>
-                <li>
-                  <strong className="text-white">Hotmart:</strong> La venta, facturación, almacenamiento y reproducción de nuestros cursos online (tales como <em>&quot;Flexibiliza tu Actitud&quot;</em>) se gestiona íntegramente a través de Hotmart. En consecuencia, toda información transaccional, de pago y credenciales de acceso se rige por los términos y las políticas de seguridad propias de la plataforma Hotmart.
-                </li>
-              </ul>
-            </section>
+          <section>
+            <h2 className="text-lg font-bold text-gold mb-2">4. Datos Sensibles y Carácter Opcional</h2>
+            <p>
+              Conforme a la normativa chilena, los datos relativos al género u otros catalogados como sensibles son estrictamente <strong>facultativos</strong> y no condicionan el acceso a los servicios de la plataforma. El dato de fecha de nacimiento es solicitado exclusivamente para verificar el cumplimiento de mayoría de edad (18 años) requerido para la práctica física y contratación de servicios.
+            </p>
+          </section>
 
-            {/* Sección 4 */}
-            <section className="space-y-3">
-              <h2
-                className="text-2xl sm:text-3xl font-bold text-gold"
-                style={{ fontFamily: "var(--font-serif)" }}
-              >
-                4. Seguridad y Confidencialidad
-              </h2>
-              <p>
-                Nos comprometemos a no vender, alquilar, transferir ni divulgar sus datos personales a terceros sin su consentimiento expreso, excepto cuando sea requerido por mandatos legales vigentes. Mantenemos medidas técnicas y organizativas razonables para proteger los datos personales contra pérdida, uso indebido, acceso no autorizado o alteración.
-              </p>
-            </section>
+          <section>
+            <h2 className="text-lg font-bold text-gold mb-2">5. Ejercicio de Derechos del Titular (ARCO)</h2>
+            <p>Usted puede ejercer en cualquier momento y sin costo sus derechos de:</p>
+            <ul className="list-disc pl-5 mt-2 space-y-1.5 text-white/70">
+              <li><strong>Acceso:</strong> Conocer qué información personal se encuentra almacenada.</li>
+              <li><strong>Rectificación:</strong> Modificar datos desactualizados, erróneos o incompletos.</li>
+              <li><strong>Cancelación / Supresión:</strong> Solicitar la eliminación total de su cuenta y registros personales.</li>
+              <li><strong>Oposición y Bloqueo:</strong> Oponerse a tratamientos específicos o solicitar suspensión temporal.</li>
+            </ul>
+            <p className="mt-2 text-white/60">
+              Para canalizar solicitudes ARCO, puede comunicarse directamente mediante los canales de contacto oficiales o desde los ajustes de su cuenta de usuario.
+            </p>
+          </section>
 
-            {/* Sección 5 */}
-            <section className="space-y-3">
-              <h2
-                className="text-2xl sm:text-3xl font-bold text-gold"
-                style={{ fontFamily: "var(--font-serif)" }}
-              >
-                5. Derechos ARCO
-              </h2>
-              <p>
-                De acuerdo con la legislación chilena (Ley N° 19.628), usted es titular del control total sobre sus datos personales. Puede ejercer en cualquier momento sus derechos **ARCO** (Acceso, Rectificación, Cancelación y Oposición):
-              </p>
-              <ul className="list-disc pl-6 space-y-2 text-white/70">
-                <li><strong className="text-white">Acceso:</strong> Solicitar información sobre qué datos personales suyos poseemos.</li>
-                <li><strong className="text-white">Rectificación:</strong> Corregir o actualizar cualquier dato erróneo o desactualizado.</li>
-                <li><strong className="text-white">Cancelación:</strong> Solicitar la eliminación total de sus datos de nuestros registros.</li>
-                <li><strong className="text-white">Oposición:</strong> Oponerse al tratamiento de sus datos para ciertos fines específicos.</li>
-              </ul>
-              <p className="mt-4">
-                Para ejercer cualquiera de estos derechos, por favor póngase en contacto con nosotros escribiéndonos por medio de nuestro canal de WhatsApp o al correo electrónico de contacto oficial.
-              </p>
-            </section>
-          </div>
+          <section>
+            <h2 className="text-lg font-bold text-gold mb-2">6. Conservación y Registro de Trazabilidad</h2>
+            <p>
+              En cumplimiento del deber de acreditación de la Ley 21.719, la plataforma almacena registros inmutables de consentimiento (dirección IP de origen, versión de política aceptada, identificador de usuario y marca temporal) para garantizar certeza jurídica en cada interacción.
+            </p>
+          </section>
+        </div>
 
-          {/* Footer inside Card */}
-          <div className="border-t border-gold/20 pt-8 mt-12 flex justify-center">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 px-8 py-3 bg-gold text-black font-bold text-sm tracking-widest uppercase rounded-full hover:bg-gold-light transition-colors duration-300"
-              id="bottom-back-home-privacidad"
-            >
-              Volver al Inicio
-            </Link>
-          </div>
-        </m.div>
+        <div className="mt-10 pt-6 border-t border-white/10 flex justify-between items-center text-xs text-white/40">
+          <span>Like a SHH © 2026</span>
+          <span>Regulado por la legislación de la República de Chile</span>
+        </div>
       </div>
     </main>
   );
