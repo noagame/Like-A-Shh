@@ -6,7 +6,7 @@ import { cancelAttendance } from "@/app/mi-cuenta/actions";
 
 // QA ARQUITECTURA: Importamos dinámicamente NUESTRO wrapper, 
 // aislando por completo las clases de FullCalendar del servidor de Next.js
-const CalendarDynamic = dynamic(() => import("./CalendarWrapper"), { 
+const CalendarDynamic = dynamic(() => import("./CalendarWrapper"), {
   ssr: false,
   loading: () => <div className="p-10 text-center text-white/50 animate-pulse">Cargando calendario...</div>
 });
@@ -25,7 +25,7 @@ type Clase = {
 function formatFecha(iso: string) {
   if (!iso) return "";
   return new Date(iso).toLocaleDateString("es-CL", {
-    timeZone: "America/Santiago", 
+    timeZone: "America/Santiago",
     weekday: "short",
     day: "numeric",
     month: "short",
@@ -64,17 +64,15 @@ export default function ClasesView({ clases }: { clases: Clase[] }) {
         <div className="flex gap-2 p-1 rounded-full border border-white/10 w-fit bg-neutral-900/50">
           <button
             onClick={() => setVista("tabla")}
-            className={`px-4 py-1.5 rounded-full text-xs uppercase tracking-wide transition-colors ${
-              vista === "tabla" ? "bg-gold text-black font-semibold" : "text-white/60 hover:text-white"
-            }`}
+            className={`px-4 py-1.5 rounded-full text-xs uppercase tracking-wide transition-colors ${vista === "tabla" ? "bg-gold text-black font-semibold" : "text-white/60 hover:text-white"
+              }`}
           >
             Tabla
           </button>
           <button
             onClick={() => setVista("calendario")}
-            className={`px-4 py-1.5 rounded-full text-xs uppercase tracking-wide transition-colors ${
-              vista === "calendario" ? "bg-gold text-black font-semibold" : "text-white/60 hover:text-white"
-            }`}
+            className={`px-4 py-1.5 rounded-full text-xs uppercase tracking-wide transition-colors ${vista === "calendario" ? "bg-gold text-black font-semibold" : "text-white/60 hover:text-white"
+              }`}
           >
             Calendario
           </button>
@@ -100,7 +98,6 @@ export default function ClasesView({ clases }: { clases: Clase[] }) {
         ) : (
           <div className="card-gold overflow-x-auto rounded-2xl border border-white/10 bg-neutral-900/60">
             <table className="w-full text-sm">
-              {/* Contenido de tu tabla idéntico al anterior... */}
               <thead>
                 <tr className="border-b border-white/10 text-white/50 uppercase text-xs tracking-wide">
                   <th className="text-left px-4 py-4 font-semibold">Actividad</th>
@@ -115,7 +112,7 @@ export default function ClasesView({ clases }: { clases: Clase[] }) {
                   <tr key={clase.attendanceId} className="border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors">
                     <td className="px-4 py-4 text-white font-medium">{clase.title}</td>
                     <td className="px-4 py-4">
-                        {clase.categoryName ? (
+                      {clase.categoryName ? (
                         <span
                           className="px-2 py-1 rounded-full text-xs"
                           style={{
@@ -125,12 +122,28 @@ export default function ClasesView({ clases }: { clases: Clase[] }) {
                         >
                           {clase.categoryName}
                         </span>
-                        ) : (
-                            <span>---</span>
-                        )}
+                      ) : (
+                        <span>---</span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-white/70">{formatFecha(clase.start)}</td>
-                    <td className="px-4 py-3 text-white/70">{clase.location ?? "—"}</td>
+
+                    {/* Celda de Ubicación con detección de links de Maps */}
+                    <td className="px-4 py-3 text-white/70">
+                      {clase.location && (clase.location.includes("http") || clase.location.includes("maps") || clase.location.includes("goo.gl")) ? (
+                        <a
+                          href={clase.location.startsWith("http") ? clase.location : `https://${clase.location.trim()}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-xs bg-white/10 hover:bg-white/20 text-white py-1.5 px-3 rounded-lg transition-colors border border-white/10 font-medium"
+                        >
+                          Ver ubicación ↗
+                        </a>
+                      ) : (
+                        clase.location ?? "—"
+                      )}
+                    </td>
+
                     <td className="px-4 py-4 text-left">
                       <button
                         onClick={() => handleCancelar(clase.eventId)}
@@ -167,12 +180,25 @@ export default function ClasesView({ clases }: { clases: Clase[] }) {
           </div>
 
           {seleccionada && (
-            <div className="mt-6 pt-6 border-t border-white/10 bg-black/20 p-4 rounded-xl mt-4">
+            <div className="mt-6 pt-6 border-t border-white/10 bg-black/20 p-4 rounded-xl">
               <span className="text-[10px] uppercase tracking-widest text-gold mb-2 block">Clase Seleccionada</span>
               <h4 className="text-white font-bold text-lg mb-1">{seleccionada.title}</h4>
-              <p className="text-white/70 text-sm mb-1">{formatFecha(seleccionada.start)}</p>
+              <p className="text-white/70 text-sm mb-2">{formatFecha(seleccionada.start)}</p>
               {seleccionada.location && (
-                <p className="text-white/50 text-sm">Ubicación: {seleccionada.location}</p>
+                <div>
+                  {seleccionada.location.includes("http") || seleccionada.location.includes("maps") || seleccionada.location.includes("goo.gl") ? (
+                    <a
+                      href={seleccionada.location.startsWith("http") ? seleccionada.location : `https://${seleccionada.location.trim()}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs bg-white/10 hover:bg-white/20 text-white py-1.5 px-3 rounded-lg transition-colors border border-white/10 font-medium"
+                    >
+                      Ver ubicación ↗
+                    </a>
+                  ) : (
+                    <p className="text-white/50 text-sm">Ubicación: {seleccionada.location}</p>
+                  )}
+                </div>
               )}
             </div>
           )}

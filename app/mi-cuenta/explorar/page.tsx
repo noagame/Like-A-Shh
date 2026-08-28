@@ -87,11 +87,10 @@ export default async function ExplorarPage({
         <div className="flex gap-2 flex-wrap">
           <Link
             href="/mi-cuenta/explorar"
-            className={`px-4 py-1.5 rounded-full text-xs uppercase tracking-wide border transition-colors ${
-              !categoria
+            className={`px-4 py-1.5 rounded-full text-xs uppercase tracking-wide border transition-colors ${!categoria
                 ? "bg-gold text-black border-gold"
                 : "border-white/20 text-white/60 hover:border-gold/50"
-            }`}
+              }`}
           >
             Todas
           </Link>
@@ -99,11 +98,10 @@ export default async function ExplorarPage({
             <Link
               key={cat.id}
               href={`/mi-cuenta/explorar?categoria=${cat.id}`}
-              className={`px-4 py-1.5 rounded-full text-xs uppercase tracking-wide border transition-colors ${
-                categoria === cat.id
+              className={`px-4 py-1.5 rounded-full text-xs uppercase tracking-wide border transition-colors ${categoria === cat.id
                   ? "bg-gold text-black border-gold"
                   : "border-white/20 text-white/60 hover:border-gold/50"
-              }`}
+                }`}
             >
               {cat.name}
             </Link>
@@ -141,9 +139,38 @@ export default async function ExplorarPage({
                 <p className="text-white/60 text-sm mb-4 line-clamp-3">{evento.description}</p>
               )}
 
-              <div className="text-sm text-white/50 space-y-1 mb-4">
+              <div className="text-sm text-white/50 space-y-2 mb-4">
                 <p>{formatFecha(evento.start_time)}</p>
-                {evento.location && <p>{evento.location}</p>}
+
+                {evento.location && (
+                  evento.location.includes("http") || evento.location.includes("maps") || evento.location.includes("goo.gl") ? (
+                    <a
+                      href={evento.location.startsWith("http") ? evento.location : `https://${evento.location.trim()}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 w-full py-2 px-4 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold rounded-lg transition-colors border border-white/10"
+                    >
+                      Abrir ubicación
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-4 h-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M14 5l7 7m0 0l-7 7m7-7H3"
+                        />
+                      </svg>
+                    </a>
+                  ) : (
+                    <p>{evento.location}</p>
+                  )
+                )}
+
                 {evento.capacity != null && (
                   <p className={cupoLleno ? "text-red-400" : "text-white/50"}>
                     {inscritos}/{evento.capacity} cupos

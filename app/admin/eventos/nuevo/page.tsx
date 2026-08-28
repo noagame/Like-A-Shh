@@ -1,8 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createEvent } from "../actions";
-import CategorySelect from "./CategorySelect"; // <-- Importamos nuestro nuevo componente
+import CategorySelect from "./CategorySelect";
 import DateInput from "./DateInput";
-import LocationInput from "./LocationInput";
 
 export default async function NuevoEventoPage({
   searchParams,
@@ -40,10 +39,6 @@ export default async function NuevoEventoPage({
           />
         </div>
 
-        {/* 
-          Aquí inyectamos el componente interactivo pasándole 
-          las categorías que trajimos de la base de datos 
-        */}
         <div>
           <label className="block text-sm font-medium text-black mb-1">Categoría</label>
           <CategorySelect initialCategories={categories || []} />
@@ -55,7 +50,14 @@ export default async function NuevoEventoPage({
         </div>
 
         <div>
-          <LocationInput name="location" label="Ubicación" />
+          <label className="block text-sm font-medium text-black">Enlace de Google Maps</label>
+          <input
+            name="location"
+            type="url"
+            required
+            placeholder="Pega aquí el enlace de Google Maps (ej. https://maps.app.goo.gl/...)"
+            className="w-full p-2 border rounded text-black"
+          />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

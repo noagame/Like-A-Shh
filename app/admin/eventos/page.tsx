@@ -142,7 +142,20 @@ export default async function AdminEventosPage({
                       {event.categories?.name ?? "—"}
                     </td>
                     <td className="py-3 pr-4 text-white/60">{formatFecha(event.start_time)}</td>
-                    <td className="py-3 pr-4 text-white/60">{event.location ?? "—"}</td>
+                    <td className="py-3 pr-4 text-white/60">
+                      {event.location && event.location.startsWith("http") ? (
+                        <a
+                          href={event.location}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-xs bg-white/10 hover:bg-white/20 text-white py-1.5 px-3 rounded-lg transition-colors border border-white/10 font-medium"
+                        >
+                          Ver ubicación ↗
+                        </a>
+                      ) : (
+                        event.location ?? "—"
+                      )}
+                    </td>
                     <td className="py-3 pr-4 text-white/60">
                       {event.capacity ? `${ocupados} / ${event.capacity}` : `${ocupados} / ∞`}
                     </td>
