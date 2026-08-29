@@ -181,18 +181,21 @@ export default function AboutSection() {
             initial={{ opacity: 0, x: 50 }} // Entra desde la derecha
             animate={isInView2 ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="order-1 pl-30"
+            className="order-1 w-full lg:pl-30"
           >
-            <Image
-              src={instructorImages[currentSlide].src}
-              alt={instructorImages[currentSlide].alt}
-              className="object-cover rounded-[2rem] shadow-2xl shadow-gold/5"
-              width={400}
-              height={350}
-            />
+            <div className="mx-auto w-[88vw] max-w-[420px] sm:w-full sm:max-w-[500px] md:max-w-[520px] lg:max-w-[560px]">
+              <Image
+                src={instructorImages[currentSlide].src}
+                alt={instructorImages[currentSlide].alt}
+                className="h-auto w-full rounded-[2rem] object-cover shadow-2xl shadow-gold/5"
+                width={600}
+                height={720}
+                sizes="(max-width: 640px) 88vw, (max-width: 1024px) 50vw, 560px"
+              />
+            </div>
 
             {/* Controladores de Carrusel de Imagenes*/}
-            <div className="flex items-center justify-center gap-3 mt-6">
+            <div className="mt-6 flex items-center justify-center gap-3">
               {instructorImages.map((img) => (
                 <button
                   key={img.id}
