@@ -142,15 +142,15 @@ export default async function CoursesSection() {
   return (
     <section id="cursos" className="py-16 md:py-24 section-spacing">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12 md:mb-16">
+        <div className="mb-10 text-center sm:mb-12 md:mb-16">
           <h2
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-gold gold-underline"
+            className="text-3xl font-bold text-gold gold-underline sm:text-4xl md:text-5xl"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             Formación y Clases
           </h2>
-          <p className="text-white/60 mt-6 text-base sm:text-lg max-w-2xl mx-auto">
-            Accede a nuestros cursos formativos pregrabados y agenda tus clases en modalidad presencial u online[cite: 1].
+          <p className="mx-auto mt-4 max-w-2xl text-sm text-white/60 sm:mt-6 sm:text-base md:text-lg">
+            Accede a nuestros cursos formativos pregrabados y agenda tus clases en modalidad presencial u online.
           </p>
         </div>
         {/* 2. CARRUSEL 1: Solo Cursos Online Oficiales de Hotmart */}

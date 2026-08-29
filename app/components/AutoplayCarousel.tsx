@@ -58,39 +58,39 @@ export default function AutoplayCarousel({
 
   return (
     <div
-      className="my-10"
+      className="my-8 sm:my-10"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       {/* Encabezado */}
-      <div className="flex items-center justify-between mb-5 flex-wrap gap-2 px-1">
+      <div className="mb-4 flex flex-col gap-3 px-1 sm:mb-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3
-            className="text-xl sm:text-2xl md:text-3xl font-bold text-gold tracking-wide"
+            className="text-2xl font-bold tracking-wide text-gold sm:text-2xl md:text-3xl"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {title}
           </h3>
-          {subtitle && <p className="text-xs text-white/50 mt-1">{subtitle}</p>}
+          {subtitle && <p className="mt-1 text-[11px] text-white/50 sm:text-xs">{subtitle}</p>}
         </div>
 
         {total > 1 && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 self-start sm:self-auto">
             <button
               type="button"
               onClick={prev}
-              className="p-2 bg-black/60 border border-white/10 rounded-full text-gold hover:bg-gold/20 hover:border-gold/40 transition-all cursor-pointer text-xs"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-black/60 text-sm text-gold transition-all hover:border-gold/40 hover:bg-gold/10"
               aria-label="Anterior"
             >
               ←
             </button>
-            <span className="text-xs text-white/40 font-mono px-1">
+            <span className="min-w-10 text-center text-[10px] text-white/40 font-mono sm:text-xs">
               {startIndex + 1} / {total}
             </span>
             <button
               type="button"
               onClick={next}
-              className="p-2 bg-black/60 border border-white/10 rounded-full text-gold hover:bg-gold/20 hover:border-gold/40 transition-all cursor-pointer text-xs"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-black/60 text-sm text-gold transition-all hover:border-gold/40 hover:bg-gold/10"
               aria-label="Siguiente"
             >
               →
@@ -101,7 +101,7 @@ export default function AutoplayCarousel({
 
       {/* Contenedor del Carrusel (Swipe táctil en móvil) */}
       <div
-        className="relative overflow-hidden w-full touch-pan-y"
+        className="relative w-full overflow-hidden touch-pan-y"
         onTouchStart={(e) => {
           touchStartX.current = e.touches[0].clientX;
         }}
@@ -120,10 +120,10 @@ export default function AutoplayCarousel({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className={`grid gap-6 ${isMobile ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"}`}
+            className={`grid gap-3 sm:gap-5 ${isMobile ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"}`}
           >
             {visibleItems.map((item, idx) => (
-              <div key={idx} className="w-full h-full">
+              <div key={idx} className="h-full w-full">
                 {item}
               </div>
             ))}
@@ -133,13 +133,13 @@ export default function AutoplayCarousel({
 
       {/* Indicadores inferiores */}
       {total > 1 && (
-        <div className="flex justify-center gap-1.5 mt-5">
+        <div className="mt-4 flex justify-center gap-1.5 sm:mt-5">
           {items.map((_, idx) => (
             <button
               key={idx}
               type="button"
               onClick={() => setStartIndex(idx)}
-              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+              className={`h-1.5 rounded-full transition-all duration-300 ${
                 startIndex === idx ? "w-6 bg-gold" : "w-1.5 bg-white/20 hover:bg-white/40"
               }`}
               aria-label={`Ir a tarjeta ${idx + 1}`}
