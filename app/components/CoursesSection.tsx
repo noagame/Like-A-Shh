@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import AutoplayCarousel from "./AutoplayCarousel";
+import PricingTable from "./PricingTable";
+
 import {
   StandardProgramCard,
   CourseItem,
@@ -207,6 +209,7 @@ export default async function CoursesSection() {
             />
           ))}
         </AutoplayCarousel>
+        <PricingTable />
       </div>
     </section>
   );
