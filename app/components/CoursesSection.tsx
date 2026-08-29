@@ -174,7 +174,7 @@ export default async function CoursesSection() {
 
         {/* 3. CARRUSEL 2: Clases Planificadas Online */}
         <AutoplayCarousel
-          title="Clases Planificadas Online"
+          title="Clases Particulares Online"
           subtitle="Sesiones particulares sincrónicas vía Zoom"
           interval={4000}
         >
@@ -193,7 +193,7 @@ export default async function CoursesSection() {
 
         {/* 4. CARRUSEL 3: Clases Planificadas Presenciales */}
         <AutoplayCarousel
-          title="Clases Planificadas Presencial"
+          title="Clases Particulares Presencial"
           subtitle="Entrenamiento personalizado directo en estudio"
           interval={4000}
         >
