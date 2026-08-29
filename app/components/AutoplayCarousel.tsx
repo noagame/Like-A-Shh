@@ -18,42 +18,55 @@ export default function AutoplayCarousel({
 }: AutoplayCarouselProps) {
   const [startIndex, setStartIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const touchStartX = useRef<number | null>(null);
 
   const items = Array.isArray(children) ? children : [children];
   const total = items.length;
-  const itemsPerPage = 4;
+
+  // Detectar vista móvil para mostrar 1 tarjeta en celular o 4 en escritorio
+  useEffect(() => {
+    const checkViewport = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkViewport();
+    window.addEventListener("resize", checkViewport);
+    return () => window.removeEventListener("resize", checkViewport);
+  }, []);
+
+  const itemsPerPage = isMobile ? 1 : 4;
 
   useEffect(() => {
-    if (total <= itemsPerPage || isPaused) return;
+    if (total <= 1 || isPaused) return;
 
     const timer = setInterval(() => {
       setStartIndex((prev) => (prev + 1 >= total ? 0 : prev + 1));
     }, interval);
 
     return () => clearInterval(timer);
-  }, [total, interval, isPaused, itemsPerPage]);
+  }, [total, interval, isPaused]);
 
   if (!items || total === 0) return null;
 
   const prev = () => setStartIndex((c) => (c === 0 ? total - 1 : c - 1));
   const next = () => setStartIndex((c) => (c + 1 >= total ? 0 : c + 1));
 
-  // Genera la vista circular de 4 tarjetas
+  // Generar las tarjetas visibles
   const visibleItems = Array.from({ length: Math.min(total, itemsPerPage) }, (_, idx) => {
     return items[(startIndex + idx) % total];
   });
 
   return (
     <div
-      className="my-12"
+      className="my-10"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-2 px-1">
+      {/* Encabezado */}
+      <div className="flex items-center justify-between mb-5 flex-wrap gap-2 px-1">
         <div>
           <h3
-            className="text-2xl sm:text-3xl font-bold text-gold tracking-wide"
+            className="text-xl sm:text-2xl md:text-3xl font-bold text-gold tracking-wide"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {title}
@@ -61,7 +74,7 @@ export default function AutoplayCarousel({
           {subtitle && <p className="text-xs text-white/50 mt-1">{subtitle}</p>}
         </div>
 
-        {total > itemsPerPage && (
+        {total > 1 && (
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -86,27 +99,28 @@ export default function AutoplayCarousel({
         )}
       </div>
 
+      {/* Contenedor del Carrusel (Swipe táctil en móvil) */}
       <div
-        className="relative overflow-hidden"
+        className="relative overflow-hidden w-full touch-pan-y"
         onTouchStart={(e) => {
           touchStartX.current = e.touches[0].clientX;
         }}
         onTouchEnd={(e) => {
           if (touchStartX.current === null) return;
           const diff = touchStartX.current - e.changedTouches[0].clientX;
-          if (diff > 50) next();
-          if (diff < -50) prev();
+          if (diff > 40) next();
+          if (diff < -40) prev();
           touchStartX.current = null;
         }}
       >
         <AnimatePresence mode="wait">
           <m.div
-            key={startIndex}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.35, ease: "easeOut" }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+            key={startIndex + (isMobile ? "-mob" : "-desk")}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className={`grid gap-6 ${isMobile ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"}`}
           >
             {visibleItems.map((item, idx) => (
               <div key={idx} className="w-full h-full">
@@ -117,8 +131,9 @@ export default function AutoplayCarousel({
         </AnimatePresence>
       </div>
 
-      {total > itemsPerPage && (
-        <div className="flex justify-center gap-2 mt-6">
+      {/* Indicadores inferiores */}
+      {total > 1 && (
+        <div className="flex justify-center gap-1.5 mt-5">
           {items.map((_, idx) => (
             <button
               key={idx}
@@ -127,7 +142,7 @@ export default function AutoplayCarousel({
               className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
                 startIndex === idx ? "w-6 bg-gold" : "w-1.5 bg-white/20 hover:bg-white/40"
               }`}
-              aria-label={`Ir a la posición ${idx + 1}`}
+              aria-label={`Ir a tarjeta ${idx + 1}`}
             />
           ))}
         </div>
