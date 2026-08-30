@@ -21,7 +21,8 @@ export interface ClassItem {
 const WHATSAPP_AGENDA_URL =
   "https://wa.me/56971577711?text=Hola%20Maximiliano,%20vengo%20de%20la%20p%C3%A1gina%20web%20Like%20a%20Shh%20y%20me%20gustar%C3%ADa%20agendar%20una%20clase.";
 
-
+const FALLBACK_SUPABASE_IMAGE =
+  "https://ssgcrrblxmmqurjlwope.supabase.co/storage/v1/object/public/galerias/cursos/curso_b4285aab-184e-4534-9398-1869ac6dd017.jpg";
 
 // 2. Tarjetas para Carruseles
 export function StandardProgramCard({
@@ -48,14 +49,19 @@ export function StandardProgramCard({
   return (
     <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden flex flex-col justify-between h-full shadow-xl hover:border-gold/40 transition-all duration-300">
       <div>
-        <div className="relative aspect-[4/3] w-full bg-black/60 overflow-hidden flex items-center justify-center p-3 border-b border-white/5">
+        <div className="relative aspect-[4/3] w-full overflow-hidden border-b border-white/5 bg-[#0b0b0b]">
           <Image
-            src={imageUrl || "/assets/logo/logo_likeashh.jpg"}
+            src={imageUrl || FALLBACK_SUPABASE_IMAGE}
             alt={title}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            quality={95}
-            className={`${isLogo ? "object-contain p-4" : "object-cover"} transition-transform duration-500`}
+            loading="lazy"
+            sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 22vw"
+            quality={100}
+            className={`h-full w-full transition-transform duration-500 ${isLogo ? "object-contain p-4" : "object-cover object-center"}`}
+            style={{
+              objectFit: isLogo ? "contain" : "cover",
+              objectPosition: "center",
+            }}
           />
         </div>
 

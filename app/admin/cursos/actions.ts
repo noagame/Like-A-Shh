@@ -4,7 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-const DEFAULT_COURSE_IMAGE = "/assets/logo/logo_likeashh.jpg";
+const DEFAULT_COURSE_IMAGE =
+  "https://ssgcrrblxmmqurjlwope.supabase.co/storage/v1/object/public/galerias/cursos/curso_b4285aab-184e-4534-9398-1869ac6dd017.jpg";
 
 export async function createCourse(formData: FormData) {
   const supabase = await createClient();
@@ -59,7 +60,16 @@ export async function updateCourse(id: string, formData: FormData) {
   const status = formData.get("status") as string;
   const flyerFile = formData.get("flyer") as File | null;
 
-  const updatePayload: Record<string, any> = {
+  type CourseUpdatePayload = {
+    title: string;
+    description: string;
+    url: string;
+    status: string;
+    updated_at: string;
+    image_url?: string;
+  };
+
+  const updatePayload: CourseUpdatePayload = {
     title,
     description,
     url,

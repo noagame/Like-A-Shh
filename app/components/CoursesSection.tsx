@@ -8,6 +8,9 @@ import {
   ClassItem,
 } from "./CourseCards";
 
+const FALLBACK_SUPABASE_COURSE_IMAGE =
+  "https://ssgcrrblxmmqurjlwope.supabase.co/storage/v1/object/public/galerias/cursos/curso_b4285aab-184e-4534-9398-1869ac6dd017.jpg";
+
 export default async function CoursesSection() {
   const supabase = await createClient();
 
@@ -31,7 +34,7 @@ export default async function CoursesSection() {
       title: "Flexibiliza tu Actitud by Maximiliano Velásquez",
       description:
         "Curso diseñado para mejorar tu flexibilidad y bienestar corporal a través de videos guiados paso a paso. Accede a rutinas específicas por grupos articulares y a ejercicios globales de movilidad, cuidadosamente estructurados para ayudarte a ganar mayor rango de movimiento, agilidad y control corporal.",
-      image_url: "/assets/courses/movilidad.jpeg",
+      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
       url: "https://hotmart.com/es/marketplace/productos/flexibiliza-tu-actitud-by-maximiliano-velasquez/A102579634L",
     };
 
@@ -72,28 +75,28 @@ export default async function CoursesSection() {
       id: "cp-1",
       title: "Clase Presencial Pole Sport",
       description: "Agenda tu clase particular Presencial de Pole Sport multinivel. Duración: 1 hora.",
-      image_url: "/assets/logo/logo_likeashh.jpg",
+      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
       url: "#",
     },
     {
       id: "cp-2",
       title: "Clase Presencial Exotic Pole",
       description: "Entrena técnica de tacos, fluidez y secuencias coreográficas de forma presencial.",
-      image_url: "/assets/logo/logo_likeashh.jpg",
+      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
       url: "#",
     },
     {
       id: "cp-3",
       title: "Clase Presencial Flexibilidad Activa",
       description: "Sesión presencial asistida para aperturas y arcos corporales seguros.",
-      image_url: "/assets/logo/logo_likeashh.jpg",
+      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
       url: "#",
     },
     {
       id: "cp-4",
       title: "Clase Presencial Chair & Floorwork",
       description: "Explora la danza y musicalidad en estudio con elementos escénicos.",
-      image_url: "/assets/logo/logo_likeashh.jpg",
+      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
       url: "#",
     },
   ];
@@ -103,28 +106,28 @@ export default async function CoursesSection() {
       id: "co-1",
       title: "Clase Online Flexibilidad Sincrónica",
       description: "Agenda tu clase particular Online en vivo de Flexibilidad. Duración: 1 hora vía Zoom.",
-      image_url: "/assets/logo/logo_likeashh.jpg",
+      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
       url: "#",
     },
     {
       id: "co-2",
       title: "Clase Online Exotic Pole",
       description: "Agenda tu clase particular Online de Exotic Pole Multinivel vía Zoom.",
-      image_url: "/assets/logo/logo_likeashh.jpg",
+      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
       url: "#",
     },
     {
       id: "co-3",
       title: "Clase Online Fortalecimiento Muscular",
       description: "Acondicionamiento físico intensivo adaptado para practicar en casa.",
-      image_url: "/assets/logo/logo_likeashh.jpg",
+      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
       url: "#",
     },
     {
       id: "co-4",
       title: "Clase Online Articular Flow",
       description: "Movilidad y prevención de lesiones en sesiones sincrónicas guiadas.",
-      image_url: "/assets/logo/logo_likeashh.jpg",
+      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
       url: "#",
     },
   ];
@@ -183,7 +186,7 @@ export default async function CoursesSection() {
               key={clase.id}
               title={clase.title}
               description={clase.description || "Agenda tu clase particular online en vivo."}
-              imageUrl={clase.image_url || "/assets/logo/logo_likeashh.jpg"}
+              imageUrl={clase.image_url || FALLBACK_SUPABASE_COURSE_IMAGE}
               badgeText="Online en Vivo"
               buttonText="Agenda aquí"
               url={clase.url || "#"}
@@ -202,7 +205,7 @@ export default async function CoursesSection() {
               key={clase.id}
               title={clase.title}
               description={clase.description || "Agenda tu clase presencial personalizada."}
-              imageUrl={clase.image_url || "/assets/logo/logo_likeashh.jpg"}
+              imageUrl={clase.image_url || FALLBACK_SUPABASE_COURSE_IMAGE}
               badgeText="Presencial en Estudio"
               buttonText="Agenda aquí"
               url={clase.url || "#"}
