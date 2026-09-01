@@ -1,23 +1,28 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
-import LocationInput from "../../nuevo/LocationInput"; // <--- Importamos tu componente de mapa
+import LocationInput from "../../nuevo/LocationInput";
+import EventWhitelistManager from "../../EventWhitelistManager";
+import { validateEventDateRange } from "@/lib/event-date-validation";
 
 export default async function EditarEventoPage({
     params,
+    searchParams,
 }: {
     params: Promise<{ id: string }>;
+    searchParams?: Promise<{ error?: string }>;
 }) {
     const { id } = await params;
+    const { error: searchError } = searchParams ? await searchParams : { error: undefined };
     const supabase = await createClient();
 
     // 1. Buscamos el evento actual en la base de datos
-    const { data: event, error } = await supabase
+    const { data: event, error: fetchError } = await supabase
         .from("events")
         .select("*")
         .eq("id", id)
         .single();
 
-    if (error || !event) {
+    if (fetchError || !event) {
         notFound();
     }
 
@@ -25,6 +30,14 @@ export default async function EditarEventoPage({
     async function updateEvent(formData: FormData) {
         "use server";
         const supabase = await createClient();
+        const start_time = String(formData.get("start_time") ?? "").trim();
+        const end_time = String(formData.get("end_time") ?? "").trim();
+
+        try {
+            validateEventDateRange(start_time, end_time);
+        } catch (error) {
+            redirect(`/admin/eventos/${id}/editar?error=${encodeURIComponent((error as Error).message)}`);
+        }
 
         await supabase
             .from("events")
@@ -32,8 +45,8 @@ export default async function EditarEventoPage({
                 title: formData.get("title"),
                 description: formData.get("description"),
                 category_id: formData.get("category_id") || null,
-                start_time: formData.get("start_time"),
-                end_time: formData.get("end_time"),
+                start_time,
+                end_time,
                 location: formData.get("location"),
                 capacity: formData.get("capacity") ? Number(formData.get("capacity")) : null,
                 status: formData.get("status") ?? "draft",
@@ -44,8 +57,14 @@ export default async function EditarEventoPage({
     }
 
     return (
-        <div className="max-w-2xl mx-auto p-6 bg-neutral-900 border border-neutral-800 rounded-lg text-white mt-10">
+        <div className="max-w-3xl mx-auto p-6 bg-neutral-900 border border-neutral-800 rounded-lg text-white mt-10">
             <h1 className="text-2xl font-bold mb-6">Editar evento</h1>
+
+            {searchError ? (
+                <div className="mb-4 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                    {searchError}
+                </div>
+            ) : null}
 
             <form action={updateEvent} className="space-y-4">
                 <div>
@@ -135,6 +154,8 @@ export default async function EditarEventoPage({
                     </button>
                 </div>
             </form>
+
+            <EventWhitelistManager eventId={id} />
         </div>
     );
 }

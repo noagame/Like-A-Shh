@@ -3,6 +3,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { validateEventDateRange } from "@/lib/event-date-validation";
+import { CommandInvoker } from "@/lib/application/commands/CommandInvoker";
 
 export async function createEvent(formData: FormData) {
   const supabase = await createClient();
@@ -15,6 +17,12 @@ export async function createEvent(formData: FormData) {
   const category_id = formData.get("category_id") as string || null;
   const status = (formData.get("status") as string) || "published";
   const flyerFile = formData.get("flyer") as File | null;
+
+  try {
+    validateEventDateRange(start_time, end_time);
+  } catch (error) {
+    redirect(`/admin/eventos?error=${encodeURIComponent((error as Error).message)}`);
+  }
 
   let image_url: string | null = null;
 
@@ -36,29 +44,37 @@ export async function createEvent(formData: FormData) {
     }
   }
 
-  const { data, error } = await supabase.from("events").insert({
-    title,
-    description,
-    start_time,
-    end_time,
-    location,
-    capacity,
-    category_id,
-    status,
-    image_url,
-  }).select("id, title").single();
+  const commandInvoker = new CommandInvoker(supabase);
 
-  if (error) {
-    redirect(`/admin/eventos?error=${encodeURIComponent(error.message)}`);
-  }
+  const result = await commandInvoker.execute({
+    actionName: "create_event",
+    execute: async () => {
+      const { data, error } = await supabase.from("events").insert({
+        title,
+        description,
+        start_time,
+        end_time,
+        location,
+        capacity,
+        category_id,
+        status,
+        image_url,
+      }).select("id, title").single();
 
-  // Trazabilidad y auditoría
-  const { data: { user } } = await supabase.auth.getUser();
-  await supabase.from("audit_log").insert({
-    actor_id: user?.id,
-    action: "create_event",
-    metadata: { event_id: data.id, title: data.title, has_flyer: Boolean(image_url) },
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      return {
+        success: true,
+        data: { event_id: data.id, title: data.title, has_flyer: Boolean(image_url) },
+      };
+    },
   });
+
+  if (!result.success) {
+    redirect(`/admin/eventos?error=${encodeURIComponent(result.error ?? "No se pudo crear el evento.")}`);
+  }
 
   revalidatePath("/admin/eventos");
   revalidatePath("/");

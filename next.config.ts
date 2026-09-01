@@ -17,11 +17,15 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "img-src 'self' data: https:",
+      "base-uri 'self'",
+      "object-src 'none'",
+      "frame-ancestors 'none'",
+      "form-action 'self'",
+      "img-src 'self' data: https: https://*.supabase.co",
+      "font-src 'self' data:",
       scriptSrc,
       "style-src 'self' 'unsafe-inline'",
-      "connect-src 'self' https://*.supabase.co" + (isDev ? " ws://localhost:*" : ""),
-      "frame-ancestors 'none'",
+      "connect-src 'self' https://*.supabase.co https://*.googleapis.com" + (isDev ? " ws://localhost:*" : ""),
     ].join("; "),
   },
 ];

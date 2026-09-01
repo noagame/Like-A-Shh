@@ -1,4 +1,5 @@
 import Image from "next/image";
+import CourseHeartButton from "@/app/components/CourseHeartButton";
 
 export interface CourseItem {
   id: string;
@@ -32,6 +33,9 @@ export function StandardProgramCard({
   badgeText,
   buttonText = "Agenda aquí",
   url = "#",
+  courseId,
+  liked = false,
+  likesCount = 0,
 }: {
   title: string;
   description: string;
@@ -39,6 +43,9 @@ export function StandardProgramCard({
   badgeText: string;
   buttonText?: string;
   url?: string;
+  courseId?: string;
+  liked?: boolean;
+  likesCount?: number;
 }) {
   const isHotmart = url.includes("hotmart.com");
   const targetUrl =
@@ -81,7 +88,14 @@ export function StandardProgramCard({
         </div>
       </div>
 
-      <div className="p-5 pt-0">
+      <div className="p-5 pt-0 space-y-3">
+        {courseId && (
+          <div className="flex items-center justify-between gap-2">
+            <CourseHeartButton courseId={courseId} liked={liked} likesCount={likesCount} />
+            <span className="text-[10px] uppercase tracking-[0.14em] text-white/40">Curso</span>
+          </div>
+        )}
+
         <a
           href={targetUrl}
           target="_blank"

@@ -7,20 +7,18 @@ const hasUpstashConfig =
 export const loginRateLimit = hasUpstashConfig
   ? new Ratelimit({
       redis: Redis.fromEnv(),
-      limiter: Ratelimit.slidingWindow(5, "60 s"), // 5 intentos por minuto por IP
+      limiter: Ratelimit.slidingWindow(5, "60 s"),
     })
   : null;
 
-/**
- * Envuelve la llamada al rate limiter. Si Upstash no está configurado
- * (típico en desarrollo local antes de crear la base de datos en
- * upstash.com), deja pasar la request pero avisa por consola en vez de
- * romper el login. En producción SIEMPRE debe estar configurado Upstash;
- * no dependas de este "fail-open" fuera de desarrollo.
- */
 export async function checkLoginRateLimit(ip: string) {
   if (!loginRateLimit) {
-    console.warn("[rate-limit] UPSTASH_REDIS_REST_URL/TOKEN no configurados");
+    if (process.env.NODE_ENV === "production") {
+      console.error("[rate-limit] Upstash no configurado en producción. Bloqueando login por seguridad.");
+      return { success: false, retryAfter: 60 };
+    }
+
+    console.warn("[rate-limit] Upstash no configurado en desarrollo; permitiendo temporalmente.");
     return { success: true };
   }
 

@@ -9,6 +9,8 @@ type Category = { id: string; name: string };
 export default function EventModal({ createAction, categories = [] }: { createAction: (formData: FormData) => Promise<void>, categories: Category[] }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [startValue, setStartValue] = useState("");
+    const nowIso = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);
 
     const handleSubmit = async (formData: FormData) => {
         setIsSubmitting(true);
@@ -16,73 +18,82 @@ export default function EventModal({ createAction, categories = [] }: { createAc
         setIsSubmitting(false);
         setIsOpen(false);
     };
-    
+
     return (
         <>
             <button
+                type="button"
                 onClick={() => setIsOpen(true)}
-                className="bg-gold text-black font-semibold px-4 py-2 rounded hover:bg-gold-light transition-colors text-sm cursor-pointer"
+                className="bg-white/10 text-yellow-200 border-amber-500 px-4 py-2.5 rounded-xl border border-amber-300/40 text-[11px] font-bold uppercase tracking-[0.18em] text-white/10 shadow-lg shadow-amber-500/10 transition-all hover:brightness-110 active:scale-95"
             >
-                + Nuevo Evento
+                + Agregar Evento
             </button>
 
             {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto pt-16 pb-16">
-                    <div className="bg-black/80 backdrop-blur-xl border border-white/10 rounded-2xl text-white max-w-2xl w-full p-6 md:p-8 relative shadow-2xl my-auto">
-
-                        {/* Botón de cierre X */}
+                <div className="fixed inset-0 z-[70] flex items-start justify-center bg-black/70 backdrop-blur-sm p-4 overflow-y-auto pt-16 pb-16">
+                    <div className="relative my-8 w-full max-w-2xl rounded-2xl border border-white/10 bg-zinc-950/90 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.65)] backdrop-blur-xl md:p-8 max-h-[calc(100vh-4rem)] overflow-y-auto">
                         <button
+                            type="button"
                             onClick={() => setIsOpen(false)}
-                            className="absolute top-4 right-4 text-neutral-400 hover:text-white text-xl font-bold cursor-pointer"
+                            className="absolute right-4 top-4 text-xl font-bold text-white/50 transition hover:text-white"
+                            aria-label="Cerrar modal"
                         >
-                            ✕
+                            ×
                         </button>
 
-                        <h1 className="text-2xl font-bold mb-6">Nuevo evento / Clase / Workshop</h1>
+                        <div className="mb-6">
+                            <p className="text-[10px] uppercase tracking-[0.28em] text-amber-300/80">Evento</p>
+                            <h2 className="mt-2 text-2xl font-bold text-white">Nuevo evento / clase / workshop</h2>
+                        </div>
 
                         <form action={handleSubmit} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-neutral-400 mb-1">Título</label>
+                                <label className="mb-1 block text-sm font-medium text-white/70">Título</label>
                                 <input
                                     name="title"
                                     type="text"
                                     required
                                     placeholder="Ej. Clase de Pole Dance"
-                                    className="w-full p-2 bg-neutral-800 border border-neutral-700 rounded text-white focus:outline-none focus:border-blue-500"
+                                    className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
                                 />
                             </div>
 
                             <div className="z-10 relative">
-                                <label className="block text-sm text-white/70 mb-1">Categoría</label>
+                                <label className="mb-1 block text-sm text-white/70">Categoría</label>
                                 <CategorySelect initialCategories={categories || []} />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-neutral-400 mb-1">Descripción</label>
+                                <label className="mb-1 block text-sm font-medium text-white/70">Descripción</label>
                                 <textarea
                                     name="description"
+                                    rows={4}
                                     placeholder="Detalles de la clase..."
-                                    className="w-full p-2 bg-neutral-800 border border-neutral-700 rounded text-white h-24 focus:outline-none focus:border-blue-500"
+                                    className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="grid gap-4 sm:grid-cols-2">
                                 <div>
-                                    <label className="block text-sm font-medium text-neutral-400 mb-1">Inicio</label>
+                                    <label className="mb-1 block text-sm font-medium text-white/70">Inicio</label>
                                     <input
                                         name="start_time"
                                         type="datetime-local"
                                         required
-                                        className="w-full p-2 bg-neutral-800 border border-neutral-700 rounded text-white focus:outline-none focus:border-blue-500"
+                                        min={nowIso}
+                                        value={startValue}
+                                        onChange={(event) => setStartValue(event.target.value)}
+                                        className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-white focus:border-amber-400 focus:outline-none"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-neutral-400 mb-1">Término</label>
+                                    <label className="mb-1 block text-sm font-medium text-white/70">Término</label>
                                     <input
                                         name="end_time"
                                         type="datetime-local"
                                         required
-                                        className="w-full p-2 bg-neutral-800 border border-neutral-700 rounded text-white focus:outline-none focus:border-blue-500"
+                                        min={startValue || nowIso}
+                                        className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-white focus:border-amber-400 focus:outline-none"
                                     />
                                 </div>
                             </div>
@@ -91,37 +102,38 @@ export default function EventModal({ createAction, categories = [] }: { createAc
                                 <LocationInput name="location" label="Ubicación" />
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="grid gap-4 sm:grid-cols-2">
                                 <div>
-                                    <label className="block text-sm font-medium text-neutral-400 mb-1">Cupo (opcional)</label>
+                                    <label className="mb-1 block text-sm font-medium text-white/70">Cupo (opcional)</label>
                                     <input
                                         name="capacity"
                                         type="number"
+                                        min={1}
                                         placeholder="Ej. 20"
-                                        className="w-full p-2 bg-neutral-800 border border-neutral-700 rounded text-white focus:outline-none focus:border-blue-500"
+                                        className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-white placeholder:text-white/30 focus:border-amber-400 focus:outline-none"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-neutral-400 mb-1">Estado</label>
+                                    <label className="mb-1 block text-sm font-medium text-white/70">Estado</label>
                                     <select
                                         name="status"
                                         defaultValue="draft"
-                                        className="w-full p-2 bg-neutral-800 border border-neutral-700 rounded text-white focus:outline-none focus:border-blue-500"
+                                        className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 text-white focus:border-amber-400 focus:outline-none"
                                     >
                                         <option value="draft">Borrador</option>
                                         <option value="published">Publicado</option>
                                         <option value="cancelled">Cancelado</option>
                                     </select>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-white/70 mb-1">
-                                        Flyer / Afiche del Evento
+                                <div className="sm:col-span-2">
+                                    <label className="mb-1 block text-sm font-medium text-white/70">
+                                        Flyer / Afiche del evento
                                     </label>
                                     <input
                                         name="flyer"
                                         type="file"
                                         accept="image/*"
-                                        className="w-full text-xs text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-gold file:text-black hover:file:bg-gold-light cursor-pointer bg-white/5 border border-white/10 rounded-lg p-2"
+                                        className="block w-full rounded-xl border border-dashed border-white/15 bg-white/[0.02] p-2 text-xs text-white/70 file:mr-3 file:rounded file:border-0 file:bg-amber-400 file:px-3 file:py-2 file:font-semibold file:text-black"
                                     />
                                 </div>
                             </div>
@@ -130,15 +142,16 @@ export default function EventModal({ createAction, categories = [] }: { createAc
                                 <button
                                     type="button"
                                     onClick={() => setIsOpen(false)}
-                                    className="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 rounded text-sm text-white transition cursor-pointer"
+                                    className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white/80 transition hover:bg-white/10"
                                 >
                                     Cancelar
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-white text-black font-medium hover:bg-gray-200 rounded text-sm transition cursor-pointer"
+                                    disabled={isSubmitting}
+                                    className="rounded-xl bg-gradient-to-r from-amber-300 to-yellow-500 px-4 py-2 text-sm font-bold text-black shadow-lg shadow-amber-500/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
                                 >
-                                    Crear evento
+                                    {isSubmitting ? "Creando..." : "Crear evento"}
                                 </button>
                             </div>
                         </form>
