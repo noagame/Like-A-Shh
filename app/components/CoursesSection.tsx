@@ -21,6 +21,26 @@ export default async function CoursesSection() {
     .eq("status", "published")
     .order("order_index", { ascending: true });
 
+  const { data: likesByCourse } = await supabase
+    .from("course_likes")
+    .select("course_id, user_id");
+
+  const { data: userLikeRows } = await supabase.auth.getUser();
+  const userId = userLikeRows.user?.id ?? null;
+
+  const courseLikeMap = new Map<string, number>();
+  (likesByCourse ?? []).forEach((row: { course_id: string }) => {
+    courseLikeMap.set(row.course_id, (courseLikeMap.get(row.course_id) ?? 0) + 1);
+  });
+
+  const likedCourseIds = new Set(
+    userId
+      ? (likesByCourse ?? [])
+          .filter((row: { course_id: string; user_id?: string }) => row.user_id === userId)
+          .map((row: { course_id: string }) => row.course_id)
+      : []
+  );
+
   const allCourses: CourseItem[] = rawCourses ?? [];
 
   // 2. Curso Único Destacado de Flexibilidad (Hotmart)
@@ -171,6 +191,9 @@ export default async function CoursesSection() {
               badgeText="Curso Hotmart"
               buttonText="Acceder al Curso"
               url={curso.url}
+              courseId={curso.id}
+              liked={likedCourseIds.has(curso.id)}
+              likesCount={courseLikeMap.get(curso.id) ?? 0}
             />
           ))}
         </AutoplayCarousel>

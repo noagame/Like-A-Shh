@@ -1,15 +1,8 @@
-import { createClient } from "@/lib/supabase/server";
 import EventCard from "./EventCard";
+import { EventController } from "@/lib/application/controllers/EventController";
 
 export default async function EventsSection() {
-  const supabase = await createClient();
-  const { data: events } = await supabase
-    .from("events")
-    .select("id, title, description, start_time, end_time, location, categories(name, color)")
-    .eq("status", "published")
-    .ilike("categories.name", "%evento%")
-    .gte("start_time", new Date().toISOString())
-    .order("start_time", { ascending: true });
+  const events = await EventController.listPublicEvents();
 
   return (
     <section id="eventos" className="py-16 md:py-24 section-spacing">
@@ -24,8 +17,16 @@ export default async function EventsSection() {
         </div>
 
         {events && events.length > 0 ? (
-          events.map((event: any, index: number) => (
-            <EventCard key={event.id} event={event} index={index} />
+          events.map((event, index: number) => (
+            <EventCard key={event.id} event={{
+              id: event.id,
+              title: event.title,
+              description: event.description,
+              start_time: event.start_time,
+              end_time: event.end_time,
+              location: event.location,
+              categories: event.categoryName ? { name: event.categoryName, color: event.categoryColor } : null,
+            }} index={index} />
           ))
         ) : (
           <p className="text-center text-white/50">

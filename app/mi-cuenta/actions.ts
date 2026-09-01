@@ -9,11 +9,12 @@ export async function attendEvent(eventId: string) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
   if (!user) redirect("/login");
 
   const { data: event } = await supabase
     .from("events")
-    .select("capacity")
+    .select("capacity, title")
     .eq("id", eventId)
     .single();
 
@@ -24,16 +25,37 @@ export async function attendEvent(eventId: string) {
     .eq("status", "registered");
 
   if (event?.capacity && count !== null && count >= event.capacity) {
-    return { error: "Cupo lleno" };
+    return { error: "Lo sentimos, el cupo para esta clase está completo." };
   }
 
-  const { error } = await supabase.from("attendances").insert({
-    event_id: eventId,
-    user_id: user.id,
-  });
+  const { data: existingRecord } = await supabase
+    .from("attendances")
+    .select("id, status")
+    .eq("event_id", eventId)
+    .eq("user_id", user.id)
+    .maybeSingle();
 
+  if (existingRecord) {
+    const { error: updateError } = await supabase
+      .from("attendances")
+      .update({ status: "registered", created_at: new Date().toISOString() })
+      .eq("id", existingRecord.id);
+
+    if (updateError) return { error: updateError.message };
+  } else {
+    const { error: insertError } = await supabase.from("attendances").insert({
+      event_id: eventId,
+      user_id: user.id,
+      status: "registered",
+    });
+
+    if (insertError) return { error: insertError.message };
+  }
+
+  revalidatePath("/mi-cuenta");
   revalidatePath("/mi-cuenta/clases");
-  return { error: error?.message ?? null };
+  revalidatePath("/mi-cuenta/explorar");
+  return { error: null, success: true };
 }
 
 export async function cancelAttendance(eventId: string) {
@@ -41,6 +63,7 @@ export async function cancelAttendance(eventId: string) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
   if (!user) redirect("/login");
 
   const { error } = await supabase
@@ -49,6 +72,10 @@ export async function cancelAttendance(eventId: string) {
     .eq("event_id", eventId)
     .eq("user_id", user.id);
 
+  if (error) return { error: error.message };
+
+  revalidatePath("/mi-cuenta");
   revalidatePath("/mi-cuenta/clases");
-  return { error: error?.message ?? null };
+  revalidatePath("/mi-cuenta/explorar");
+  return { error: null, success: true };
 }

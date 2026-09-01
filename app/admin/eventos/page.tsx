@@ -4,13 +4,15 @@ import { changeEventStatus, deleteEvent } from "./actions";
 import AutoSubmitSelect from "./AutoSubmitSelect";
 import PanelInfo from "@/app/admin/components/PanelInfo";
 import EventModal from "./EventModal";
+import ClaseOnlineModal from "./ClaseOnlineModal";
+import ClasePresencialModal from "./ClasePresencialModal";
 import { revalidatePath } from "next/cache";
-import BackButton from "@/app/admin/components/BackButton"; // <--- 1. Importas el botón aquí
+import BackButton from "@/app/admin/components/BackButton";
 
 const ESTADO_COLOR: Record<string, string> = {
-  draft: "bg-white/10 text-white/60",
-  published: "bg-green-500/20 text-green-400",
-  cancelled: "bg-red-500/20 text-red-400",
+  draft: "border border-zinc-500/20 bg-zinc-500/10 text-zinc-300",
+  published: "border border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
+  cancelled: "border border-red-500/20 bg-red-500/10 text-red-400",
 };
 
 function formatFecha(iso: string) {
@@ -76,13 +78,36 @@ export default async function AdminEventosPage({
   const { data: categories } = await supabase.from("categories").select("id, name").order("name");
 
   return (
-    <div>
-      <BackButton /> {/* <--- 2. Lo pones aquí arriba para que aparezca la flecha */}
+    <div className="space-y-6">
+      <BackButton />
 
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Eventos</h1>
-        {/* Usamos el Modal con fondo difuminado en lugar de un Link a otra ruta */}
-        <EventModal createAction={handleCreateEvent} categories={categories || []} />
+      <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+        <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.28em] text-amber-300/80">Gestión</p>
+            <h1 className="mt-2 text-3xl font-bold text-white" style={{ fontFamily: "var(--font-serif)" }}>
+              Eventos y clases
+            </h1>
+          </div>
+
+          <div className="flex  gap-3">
+            <EventModal createAction={handleCreateEvent} categories={categories || []} />
+            <ClaseOnlineModal categories={categories || []} />
+            <ClasePresencialModal categories={categories || []} />
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-3">
+          <div className="rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-amber-200">
+            Landing page
+          </div>
+          <div className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-cyan-200">
+            Online
+          </div>
+          <div className="rounded-full border border-pink-500/30 bg-pink-500/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-pink-200">
+            Presencial
+          </div>
+        </div>
       </div>
 
       <PanelInfo
@@ -91,11 +116,11 @@ export default async function AdminEventosPage({
       />
 
       {/* Filtros */}
-      <form className="flex flex-wrap gap-3 mb-6 text-sm">
+      <form className="mb-6 flex flex-wrap gap-3 text-sm">
         <AutoSubmitSelect
           name="estado"
           defaultValue={estado ?? ""}
-          className="bg-black/40 border border-white/20 rounded px-3 py-1.5"
+          className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 backdrop-blur-xl"
         >
           <option value="">Todos los estados</option>
           <option value="draft">Borrador</option>
@@ -105,7 +130,7 @@ export default async function AdminEventosPage({
         <AutoSubmitSelect
           name="categoria"
           defaultValue={categoria ?? ""}
-          className="bg-black/40 border border-white/20 rounded px-3 py-1.5"
+          className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 backdrop-blur-xl"
         >
           <option value="">Todas las categorías</option>
           {categories?.map((c) => (
@@ -117,38 +142,38 @@ export default async function AdminEventosPage({
       </form>
 
       {!events || events.length === 0 ? (
-        <p className="text-white/50">No hay eventos que coincidan con el filtro.</p>
+        <p className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-white/55">
+          No hay eventos que coincidan con el filtro.
+        </p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm border-collapse">
+        <div className="overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl">
+          <table className="w-full border-collapse text-sm text-left">
             <thead>
-              <tr className="text-left border-b border-white/10 text-white/50">
-                <th className="py-2 pr-4">Título</th>
-                <th className="py-2 pr-4">Categoría</th>
-                <th className="py-2 pr-4">Fecha</th>
-                <th className="py-2 pr-4">Lugar</th>
-                <th className="py-2 pr-4">Cupo</th>
-                <th className="py-2 pr-4">Estado</th>
-                <th className="py-2 pr-4">Acciones</th>
+              <tr className="border-b border-white/10 text-[11px] uppercase tracking-[0.2em] text-white/45">
+                <th className="px-4 py-3">Título</th>
+                <th className="px-4 py-3">Categoría</th>
+                <th className="px-4 py-3">Fecha</th>
+                <th className="px-4 py-3">Lugar</th>
+                <th className="px-4 py-3">Cupo</th>
+                <th className="px-4 py-3">Estado</th>
+                <th className="px-4 py-3">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {events.map((event: any) => {
                 const ocupados = countByEvent[event.id] ?? 0;
                 return (
-                  <tr key={event.id} className="border-b border-white/5">
-                    <td className="py-3 pr-4 font-medium">{event.title}</td>
-                    <td className="py-3 pr-4 text-white/60">
-                      {event.categories?.name ?? "—"}
-                    </td>
-                    <td className="py-3 pr-4 text-white/60">{formatFecha(event.start_time)}</td>
-                    <td className="py-3 pr-4 text-white/60">
+                  <tr key={event.id} className="border-b border-white/5 text-white/80 last:border-none">
+                    <td className="px-4 py-3 font-medium text-white">{event.title}</td>
+                    <td className="px-4 py-3 text-white/60">{event.categories?.name ?? "—"}</td>
+                    <td className="px-4 py-3 text-white/60">{formatFecha(event.start_time)}</td>
+                    <td className="px-4 py-3 text-white/60">
                       {event.location && event.location.startsWith("http") ? (
                         <a
                           href={event.location}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-xs bg-white/10 hover:bg-white/20 text-white py-1.5 px-3 rounded-lg transition-colors border border-white/10 font-medium"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/10"
                         >
                           Ver ubicación ↗
                         </a>
@@ -156,16 +181,16 @@ export default async function AdminEventosPage({
                         event.location ?? "—"
                       )}
                     </td>
-                    <td className="py-3 pr-4 text-white/60">
+                    <td className="px-4 py-3 text-white/60">
                       {event.capacity ? `${ocupados} / ${event.capacity}` : `${ocupados} / ∞`}
                     </td>
-                    <td className="py-3 pr-4">
+                    <td className="px-4 py-3">
                       <form action={changeEventStatus} className="inline">
                         <input type="hidden" name="event_id" value={event.id} />
                         <AutoSubmitSelect
                           name="status"
                           defaultValue={event.status}
-                          className={`text-xs rounded px-2 py-1 border-0 ${ESTADO_COLOR[event.status]}`}
+                          className={`rounded-full px-2.5 py-1.5 text-[10px] uppercase tracking-[0.14em] ${ESTADO_COLOR[event.status]}`}
                         >
                           <option value="draft">Borrador</option>
                           <option value="published">Publicado</option>
@@ -173,11 +198,11 @@ export default async function AdminEventosPage({
                         </AutoSubmitSelect>
                       </form>
                     </td>
-                    <td className="py-3 pr-4">
-                      <div className="flex gap-3">
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap gap-3">
                         <Link
                           href={`/admin/eventos/${event.id}/editar`}
-                          className="text-gold hover:underline"
+                          className="font-medium text-amber-300 transition hover:text-amber-200"
                         >
                           Editar
                         </Link>
@@ -185,7 +210,7 @@ export default async function AdminEventosPage({
                           <input type="hidden" name="event_id" value={event.id} />
                           <button
                             type="submit"
-                            className="text-red-400 hover:underline cursor-pointer"
+                            className="font-medium text-red-400 transition hover:text-red-300"
                           >
                             Eliminar
                           </button>

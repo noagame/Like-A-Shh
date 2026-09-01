@@ -9,11 +9,13 @@ import { m, AnimatePresence } from "framer-motion";
 const navLinks = [
   { href: "/admin", label: "Inicio" },
   { href: "/admin/eventos", label: "Gestión de Eventos" },
+  { href: "/admin/clases-presenciales", label: "Clases Presenciales" },
+  { href: "/admin/clases-online", label: "Clases Online" },
   { href: "/admin/categorias", label: "Gestión de Categorías" },
   { href: "/admin/galeria", label: "Gestión de Galería de Fotos" },
   { href: "/admin/dashboard", label: "Panel Analitico" },
   { href: "/admin/usuarios", label: "Gestión de Usuarios" },
-  { href: "/admin/cursos", label:"Gestión de Cursos Online"},
+  { href: "/admin/cursos", label: "Gestión de Cursos Online" },
   { href: "/admin/ajustes", label: "Ajustes" },
 ];
 
@@ -31,7 +33,7 @@ export default function Navbar() {
                     scale: isOpen ? 0.9 : 1
                 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="fixed top-4 left-4 z-50 p-1 bg-black/50 backdrop-blur-md border border-gold/40 rounded-full shadow-lg hover:border-gold transition-colors focus:outline-none"
+                className="fixed top-4 left-4 z-40 p-1 bg-black/50 backdrop-blur-md border border-gold/40 rounded-full shadow-lg hover:border-gold transition-colors focus:outline-none"
                 arial-label="Abrir menú de administrador"
                 >
                     <Image 
