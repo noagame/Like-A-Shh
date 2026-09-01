@@ -68,12 +68,7 @@ export default async function MiCuentaLayout({
               </div>
             </div>
 
-            {/* Navegación Interna 
-            app/mi-cuenta/MiCuentaNav.tsx
-              { href: "/mi-cuenta/clases", label: "Mis Clases" },
-              { href: "/mi-cuenta/explorar", label: "Explorar" },
-              { href: "/mi-cuenta/galeria", label: "Galería" },
-              { href: "/mi-cuenta/perfil", label: "Mi Perfil" },*/}
+            {/* Navegación Interna */}
             <nav className="flex items-center gap-1 sm:gap-2">
               <Link
                 href="/mi-cuenta"
