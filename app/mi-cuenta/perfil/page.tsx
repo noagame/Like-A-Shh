@@ -27,7 +27,7 @@ export default async function PerfilPage() {
           Perfil y Mis Datos
         </h1>
         <p className="text-white/50 text-sm mt-1">
-          Administra tu identidad y la protección de tus datos personales según la Ley Nº 21.719.
+          Administra tu identidad y la protección de tus datos personales.
         </p>
       </div>
 
