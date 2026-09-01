@@ -23,9 +23,6 @@ export default async function UsuariosPage() {
         >
           Gestión de Usuarios
         </h1>
-        <p className="text-xs text-neutral-400 mt-1">
-          Administración y cumplimiento de protección de datos personales (Ley Nº 21.719).
-        </p>
       </div>
 
       {error && (
@@ -113,7 +110,7 @@ export default async function UsuariosPage() {
               <th className="p-4">Nombre / Identificador</th>
               <th className="p-4">Rol</th>
               <th className="p-4">Fecha de registro</th>
-              <th className="p-4">Estado Ley 21.719</th>
+              <th className="p-4">Estado</th>
               <th className="p-4 text-right">Acciones</th>
             </tr>
           </thead>

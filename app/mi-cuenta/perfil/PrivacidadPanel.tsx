@@ -32,7 +32,7 @@ export default function PrivacidadPanel({
   return (
     <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 space-y-6">
       <div className="border-b border-white/10 pb-4">
-        <h2 className="text-lg font-bold text-gold">Privacidad y Derechos ARCO (Ley 21.719)</h2>
+        <h2 className="text-lg font-bold text-gold">Privacidad y Derechos ARCO</h2>
         <p className="text-xs text-white/60 mt-1">
           Controla cómo se procesa tu información. Tienes derecho a la rectificación, anonimización y supresión permanente.
         </p>

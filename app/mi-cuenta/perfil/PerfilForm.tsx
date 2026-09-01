@@ -59,9 +59,6 @@ export default function PerfilForm({ profile, userEmail }: PerfilFormProps) {
             Actualiza tus datos de contacto y registro de alumna.
           </p>
         </div>
-        <span className="text-[11px] font-mono uppercase bg-gold/10 text-gold border border-gold/20 px-3 py-1 rounded-full">
-          Ley 21.719 Cumplimiento Activo
-        </span>
       </div>
 
       {/* Alertas de Estado (Éxito / Error) */}
@@ -180,9 +177,6 @@ export default function PerfilForm({ profile, userEmail }: PerfilFormProps) {
             <option value="no_binario">No binario</option>
             <option value="otro">Otro</option>
           </select>
-          <p className="text-[10px] text-white/40 mt-1.5 leading-relaxed">
-            Conforme a la Ley 21.719, este dato no condiciona tu acceso al estudio ni al contenido de la plataforma.
-          </p>
         </div>
 
         {/* Botón de Guardar Cambios */}
