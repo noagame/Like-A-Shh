@@ -32,12 +32,11 @@ export default async function AdminEventosPage({
   const { estado, categoria } = await searchParams;
   const supabase = await createClient();
 
-  // Server action para crear el evento dentro de la misma vista
   async function handleCreateEvent(formData: FormData) {
     "use server";
     const supabaseClient = await createClient();
 
-    await supabaseClient.from("events").insert({
+    const { data, error } = await supabaseClient.from("events").insert({
       title: formData.get("title"),
       description: formData.get("description"),
       category_id: formData.get("category_id") || null,
@@ -46,7 +45,16 @@ export default async function AdminEventosPage({
       location: formData.get("location"),
       capacity: formData.get("capacity") ? Number(formData.get("capacity")) : null,
       status: formData.get("status") ?? "draft",
-    });
+    }).select("id, title").single();
+
+    if (!error && data) {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      await supabaseClient.from("audit_log").insert({
+        actor_id: user?.id,
+        action: "create_event",
+        metadata: { event_id: data.id, title: data.title },
+      });
+    }
 
     revalidatePath("/admin/eventos");
   }
@@ -64,10 +72,10 @@ export default async function AdminEventosPage({
   const eventIds = events?.map((e) => e.id) ?? [];
   const { data: attendanceCounts } = eventIds.length
     ? await supabase
-      .from("attendances")
-      .select("event_id")
-      .in("event_id", eventIds)
-      .eq("status", "registered")
+        .from("attendances")
+        .select("event_id")
+        .in("event_id", eventIds)
+        .eq("status", "registered")
     : { data: [] as { event_id: string }[] };
 
   const countByEvent = (attendanceCounts ?? []).reduce<Record<string, number>>((acc, row) => {
@@ -78,35 +86,43 @@ export default async function AdminEventosPage({
   const { data: categories } = await supabase.from("categories").select("id, name").order("name");
 
   return (
-    <div className="space-y-6">
+    <div className="w-full space-y-6">
       <BackButton />
 
-      <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+      {/* Cabecera Responsiva */}
+      <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl">
         <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.28em] text-amber-300/80">Gestión</p>
-            <h1 className="mt-2 text-3xl font-bold text-white" style={{ fontFamily: "var(--font-serif)" }}>
+            <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-amber-300/80">
+              Gestión
+            </p>
+            <h1
+              className="mt-1 text-2xl sm:text-3xl font-bold text-white"
+              style={{ fontFamily: "var(--font-serif)" }}
+            >
               Eventos y clases
             </h1>
           </div>
 
-          <div className="flex  gap-3">
+          {/* Botones apilados en móvil y en fila en pantallas grandes */}
+          <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 w-full lg:w-auto">
             <EventModal createAction={handleCreateEvent} categories={categories || []} />
             <ClaseOnlineModal categories={categories || []} />
             <ClasePresencialModal categories={categories || []} />
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-3">
-          <div className="rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-amber-200">
+        {/* Badges descriptivos */}
+        <div className="flex flex-wrap gap-2 pt-2 border-t border-white/5">
+          <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-1 text-[9px] sm:text-[10px] uppercase tracking-[0.18em] text-amber-200">
             Landing page
-          </div>
-          <div className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-cyan-200">
+          </span>
+          <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1 text-[9px] sm:text-[10px] uppercase tracking-[0.18em] text-cyan-200">
             Online
-          </div>
-          <div className="rounded-full border border-pink-500/30 bg-pink-500/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] text-pink-200">
+          </span>
+          <span className="rounded-full border border-pink-500/30 bg-pink-500/10 px-2.5 py-1 text-[9px] sm:text-[10px] uppercase tracking-[0.18em] text-pink-200">
             Presencial
-          </div>
+          </span>
         </div>
       </div>
 
@@ -115,114 +131,181 @@ export default async function AdminEventosPage({
         description="Acá administras todas las sesiones, clases y workshops del sitio: crea nuevos eventos, cambia su estado (borrador/publicado/cancelado), edítalos o elimínalos. Solo los eventos en estado 'Publicado' se muestran en la landing pública."
       />
 
-      {/* Filtros */}
-      <form className="mb-6 flex flex-wrap gap-3 text-sm">
+      {/* Filtros de Búsqueda */}
+      <form className="flex flex-col sm:flex-row gap-2.5 text-xs sm:text-sm">
         <AutoSubmitSelect
           name="estado"
           defaultValue={estado ?? ""}
-          className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 backdrop-blur-xl"
+          className="w-full sm:w-auto rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-white/80 backdrop-blur-xl"
         >
-          <option value="">Todos los estados</option>
-          <option value="draft">Borrador</option>
-          <option value="published">Publicado</option>
-          <option value="cancelled">Cancelado</option>
+          <option value="" className="bg-neutral-900">Todos los estados</option>
+          <option value="draft" className="bg-neutral-900">Borrador</option>
+          <option value="published" className="bg-neutral-900">Publicado</option>
+          <option value="cancelled" className="bg-neutral-900">Cancelado</option>
         </AutoSubmitSelect>
+
         <AutoSubmitSelect
           name="categoria"
           defaultValue={categoria ?? ""}
-          className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 backdrop-blur-xl"
+          className="w-full sm:w-auto rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-white/80 backdrop-blur-xl"
         >
-          <option value="">Todas las categorías</option>
+          <option value="" className="bg-neutral-900">Todas las categorías</option>
           {categories?.map((c) => (
-            <option key={c.id} value={c.id}>
+            <option key={c.id} value={c.id} className="bg-neutral-900">
               {c.name}
             </option>
           ))}
         </AutoSubmitSelect>
       </form>
 
+      {/* Estado Vacío */}
       {!events || events.length === 0 ? (
-        <p className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-white/55">
-          No hay eventos que coincidan con el filtro.
-        </p>
-      ) : (
-        <div className="overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl">
-          <table className="w-full border-collapse text-sm text-left">
-            <thead>
-              <tr className="border-b border-white/10 text-[11px] uppercase tracking-[0.2em] text-white/45">
-                <th className="px-4 py-3">Título</th>
-                <th className="px-4 py-3">Categoría</th>
-                <th className="px-4 py-3">Fecha</th>
-                <th className="px-4 py-3">Lugar</th>
-                <th className="px-4 py-3">Cupo</th>
-                <th className="px-4 py-3">Estado</th>
-                <th className="px-4 py-3">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {events.map((event: any) => {
-                const ocupados = countByEvent[event.id] ?? 0;
-                return (
-                  <tr key={event.id} className="border-b border-white/5 text-white/80 last:border-none">
-                    <td className="px-4 py-3 font-medium text-white">{event.title}</td>
-                    <td className="px-4 py-3 text-white/60">{event.categories?.name ?? "—"}</td>
-                    <td className="px-4 py-3 text-white/60">{formatFecha(event.start_time)}</td>
-                    <td className="px-4 py-3 text-white/60">
-                      {event.location && event.location.startsWith("http") ? (
-                        <a
-                          href={event.location}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-white/10"
-                        >
-                          Ver ubicación ↗
-                        </a>
-                      ) : (
-                        event.location ?? "—"
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-white/60">
-                      {event.capacity ? `${ocupados} / ${event.capacity}` : `${ocupados} / ∞`}
-                    </td>
-                    <td className="px-4 py-3">
-                      <form action={changeEventStatus} className="inline">
-                        <input type="hidden" name="event_id" value={event.id} />
-                        <AutoSubmitSelect
-                          name="status"
-                          defaultValue={event.status}
-                          className={`rounded-full px-2.5 py-1.5 text-[10px] uppercase tracking-[0.14em] ${ESTADO_COLOR[event.status]}`}
-                        >
-                          <option value="draft">Borrador</option>
-                          <option value="published">Publicado</option>
-                          <option value="cancelled">Cancelado</option>
-                        </AutoSubmitSelect>
-                      </form>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex flex-wrap gap-3">
-                        <Link
-                          href={`/admin/eventos/${event.id}/editar`}
-                          className="font-medium text-amber-300 transition hover:text-amber-200"
-                        >
-                          Editar
-                        </Link>
-                        <form action={deleteEvent}>
-                          <input type="hidden" name="event_id" value={event.id} />
-                          <button
-                            type="submit"
-                            className="font-medium text-red-400 transition hover:text-red-300"
-                          >
-                            Eliminar
-                          </button>
-                        </form>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 text-center text-white/50 text-xs">
+          No hay eventos que coincidan con los filtros seleccionados.
         </div>
+      ) : (
+        <>
+          {/* VISTA MÓVIL: Tarjetas individuales (< md) */}
+          <div className="block md:hidden space-y-3">
+            {events.map((event: any) => {
+              const ocupados = countByEvent[event.id] ?? 0;
+              return (
+                <div
+                  key={event.id}
+                  className="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl space-y-3 shadow-lg"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <span className="text-[10px] font-mono text-amber-300/80 uppercase">
+                        {event.categories?.name ?? "General"}
+                      </span>
+                      <h3 className="text-sm font-semibold text-white mt-0.5">{event.title}</h3>
+                      <p className="text-[11px] text-white/50 mt-1">{formatFecha(event.start_time)}</p>
+                    </div>
+                    <form action={changeEventStatus} className="inline">
+                      <input type="hidden" name="event_id" value={event.id} />
+                      <AutoSubmitSelect
+                        name="status"
+                        defaultValue={event.status}
+                        className={`rounded-full px-2 py-1 text-[9px] uppercase tracking-wider font-mono ${ESTADO_COLOR[event.status]}`}
+                      >
+                        <option value="draft" className="bg-neutral-900">Borrador</option>
+                        <option value="published" className="bg-neutral-900">Publicado</option>
+                        <option value="cancelled" className="bg-neutral-900">Cancelado</option>
+                      </AutoSubmitSelect>
+                    </form>
+                  </div>
+
+                  <div className="text-xs text-white/60 flex items-center justify-between pt-2 border-t border-white/5">
+                    <span>Cupo: {event.capacity ? `${ocupados} / ${event.capacity}` : `${ocupados} / ∞`}</span>
+                    {event.location && (
+                      <span className="truncate max-w-[140px] text-[11px] text-white/40">
+                        {event.location}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="pt-2 border-t border-white/5 flex items-center justify-end gap-3">
+                    <Link
+                      href={`/admin/eventos/${event.id}/editar`}
+                      className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-amber-300 text-xs font-semibold rounded-lg transition-colors"
+                    >
+                      Editar
+                    </Link>
+                    <form action={deleteEvent}>
+                      <input type="hidden" name="event_id" value={event.id} />
+                      <button
+                        type="submit"
+                        className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+                      >
+                        Eliminar
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* VISTA ESCRITORIO: Tabla estructurada (>= md) */}
+          <div className="hidden md:block overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl shadow-2xl">
+            <table className="w-full border-collapse text-sm text-left">
+              <thead>
+                <tr className="border-b border-white/10 text-[10px] uppercase tracking-[0.2em] text-white/45 font-mono">
+                  <th className="px-4 py-3.5">Título</th>
+                  <th className="px-4 py-3.5">Categoría</th>
+                  <th className="px-4 py-3.5">Fecha</th>
+                  <th className="px-4 py-3.5">Lugar</th>
+                  <th className="px-4 py-3.5">Cupo</th>
+                  <th className="px-4 py-3.5">Estado</th>
+                  <th className="px-4 py-3.5 text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {events.map((event: any) => {
+                  const ocupados = countByEvent[event.id] ?? 0;
+                  return (
+                    <tr key={event.id} className="text-white/80 hover:bg-white/[0.02] transition-colors">
+                      <td className="px-4 py-3.5 font-medium text-white">{event.title}</td>
+                      <td className="px-4 py-3.5 text-white/60">{event.categories?.name ?? "—"}</td>
+                      <td className="px-4 py-3.5 text-white/60">{formatFecha(event.start_time)}</td>
+                      <td className="px-4 py-3.5 text-white/60">
+                        {event.location && event.location.startsWith("http") ? (
+                          <a
+                            href={event.location}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-amber-300 hover:bg-white/10"
+                          >
+                            Ver mapa ↗
+                          </a>
+                        ) : (
+                          event.location ?? "—"
+                        )}
+                      </td>
+                      <td className="px-4 py-3.5 text-white/60">
+                        {event.capacity ? `${ocupados} / ${event.capacity}` : `${ocupados} / ∞`}
+                      </td>
+                      <td className="px-4 py-3.5">
+                        <form action={changeEventStatus} className="inline">
+                          <input type="hidden" name="event_id" value={event.id} />
+                          <AutoSubmitSelect
+                            name="status"
+                            defaultValue={event.status}
+                            className={`rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] font-mono ${ESTADO_COLOR[event.status]}`}
+                          >
+                            <option value="draft" className="bg-neutral-900">Borrador</option>
+                            <option value="published" className="bg-neutral-900">Publicado</option>
+                            <option value="cancelled" className="bg-neutral-900">Cancelado</option>
+                          </AutoSubmitSelect>
+                        </form>
+                      </td>
+                      <td className="px-4 py-3.5 text-right">
+                        <div className="flex items-center justify-end gap-3">
+                          <Link
+                            href={`/admin/eventos/${event.id}/editar`}
+                            className="font-medium text-amber-300 hover:underline text-xs"
+                          >
+                            Editar
+                          </Link>
+                          <form action={deleteEvent}>
+                            <input type="hidden" name="event_id" value={event.id} />
+                            <button
+                              type="submit"
+                              className="font-medium text-red-400 hover:underline text-xs bg-transparent border-none cursor-pointer"
+                            >
+                              Eliminar
+                            </button>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </div>
   );
