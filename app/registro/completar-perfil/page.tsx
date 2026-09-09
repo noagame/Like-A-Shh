@@ -1,3 +1,5 @@
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 import { completarPerfil } from "./actions";
 
 export default async function CompletarPerfilPage({
@@ -5,6 +7,9 @@ export default async function CompletarPerfilPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
   const { error } = await searchParams;
 
   return (

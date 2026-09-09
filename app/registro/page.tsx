@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { signUp, checkEmailAvailable } from "./actions";
+import { signUp } from "./actions";
 import { useState, useTransition } from "react";
 import Link from "next/link";
 
@@ -26,13 +26,11 @@ type SignUpValues = z.infer<typeof signUpSchema>;
 
 export default function RegistroPage() {
   const [serverError, setServerError] = useState<string | null>(null);
-  const [emailWarning, setEmailWarning] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const {
     register,
     handleSubmit,
-    getValues,
     formState: { errors },
   } = useForm<SignUpValues>({
     resolver: zodResolver(signUpSchema),
@@ -45,24 +43,13 @@ export default function RegistroPage() {
     },
   });
 
-  const handleEmailBlur = async () => {
-    const email = getValues("email");
-    if (!email || !z.string().email().safeParse(email).success) return;
-
-    const res = await checkEmailAvailable(email);
-    if (!res.available) {
-      setEmailWarning("Este correo ya está registrado.");
-    } else {
-      setEmailWarning(null);
-    }
-  };
-
   const onSubmit = (data: SignUpValues) => {
     setServerError(null);
     const formData = new FormData();
     formData.append("full_name", data.full_name);
     formData.append("email", data.email);
     formData.append("password", data.password);
+    formData.append("confirm_password", data.confirm_password);
     formData.append("accepted_privacy", data.accepted_privacy ? "on" : "off");
 
     startTransition(async () => {
@@ -101,11 +88,9 @@ export default function RegistroPage() {
           <input
             {...register("email")}
             type="email"
-            onBlur={handleEmailBlur}
             className="w-full p-2.5 bg-black/60 border border-white/10 rounded-lg text-white focus:border-gold outline-none text-sm"
           />
           {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>}
-          {emailWarning && <p className="text-amber-400 text-xs mt-1">{emailWarning}</p>}
         </div>
 
         <div>

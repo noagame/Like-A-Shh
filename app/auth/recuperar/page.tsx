@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { resetPassword } from "@/app/login/actions";
 import Link from "next/link";
 
 export default function RecuperarPasswordPage() {
@@ -16,14 +16,12 @@ export default function RecuperarPasswordPage() {
         setError(null);
         setMensaje(null);
 
-        const supabase = createClient();
-
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${window.location.origin}/auth/actualizar-password`,
-        });
+        const form = new FormData();
+        form.set("email", email);
+        const { error } = await resetPassword(form);
 
         if (error) {
-            setError(error.message);
+            setError(error);
         } else {
             setMensaje("¡Listo! Revisa tu bandeja de correo para restablecer tu contraseña.");
         }

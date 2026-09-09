@@ -11,7 +11,7 @@
  */
 "use client"; // Convertido a Client Component
 
-import { useState, useEffect } from "react";
+import { useSyncExternalStore } from "react";
 
 export default function PanelInfo({
   title,
@@ -20,29 +20,22 @@ export default function PanelInfo({
   title: string;
   description: string;
 }) { //[cite: 3]
-  const [isVisible, setIsVisible] = useState(true);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    // Evita errores de hidratación asegurando que localStorage solo se lea en el cliente
-    setIsMounted(true);
-    const savedState = localStorage.getItem(`hide-panel-${title}`);
-    if (savedState === "true") {
-      setIsVisible(false);
-    }
-  }, [title]);
-
-  const handleHide = () => {
-    setIsVisible(false);
-    localStorage.setItem(`hide-panel-${title}`, "true");
+  const key = `hide-panel-${title}`;
+  const isVisible = useSyncExternalStore(
+    (notify) => {
+      window.addEventListener("storage", notify);
+      window.addEventListener("panel-preference", notify);
+      return () => { window.removeEventListener("storage", notify); window.removeEventListener("panel-preference", notify); };
+    },
+    () => { try { return localStorage.getItem(key) !== "true"; } catch { return true; } },
+    () => true,
+  );
+  const save = (hidden: boolean) => {
+    try { localStorage.setItem(key, String(hidden)); } catch { return; }
+    window.dispatchEvent(new Event("panel-preference"));
   };
-  
-  const handleShow = () => {
-    setIsVisible(true);
-    localStorage.setItem(`hide-panel-${title}`, "false");
-  };
-
-  if (!isMounted) return null;
+  const handleHide = () => save(true);
+  const handleShow = () => save(false);
 
   return (
     <div className="mb-8 transition-all duration-300">

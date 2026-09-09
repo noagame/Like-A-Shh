@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/authorize";
 import Link from "next/link";
 
 type AdminCard = {
@@ -66,7 +66,7 @@ const cards: AdminCard[] = [
 ];
 
 export default async function AdminHomePage() {
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
   const {
     data: { user },
   } = await supabase.auth.getUser();

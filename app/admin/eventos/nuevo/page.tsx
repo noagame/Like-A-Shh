@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/authorize";
 import { createEvent } from "../actions";
 import CategorySelect from "./CategorySelect";
 import DateInput from "./DateInput";
@@ -9,7 +9,7 @@ export default async function NuevoEventoPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
   const { data: categories } = await supabase
     .from("categories")
     .select("id, name")

@@ -1,0 +1,13 @@
+> likeashh@0.1.0 test:run
+> vitest run
+
+
+ RUN  v4.1.11 /home/fabian/Escritorio/likeashh
+
+
+ Test Files  11 passed (11)
+      Tests  53 passed (53)
+   Start at  06:50:44
+   Duration  2.87s (transform 278ms, setup 0ms, import 1.14s, tests 478ms, environment 4.71s)
+
+

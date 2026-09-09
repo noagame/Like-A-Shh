@@ -1,0 +1,56 @@
+[
+  {
+    "path": "/admin",
+    "status": 307,
+    "location": "/login",
+    "csp": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https: https://*.supabase.co; font-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://*.googleapis.com ws://localhost:*"
+  },
+  {
+    "path": "/admin/usuarios",
+    "status": 307,
+    "location": "/login",
+    "csp": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https: https://*.supabase.co; font-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://*.googleapis.com ws://localhost:*"
+  },
+  {
+    "path": "/mi-cuenta",
+    "status": 307,
+    "location": "/login",
+    "csp": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https: https://*.supabase.co; font-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://*.googleapis.com ws://localhost:*"
+  },
+  {
+    "path": "/registro/completar-perfil",
+    "status": 200,
+    "location": null,
+    "csp": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https: https://*.supabase.co; font-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://*.googleapis.com ws://localhost:*"
+  },
+  {
+    "path": "/auth/callback",
+    "status": 307,
+    "location": "http://localhost:3100/auth/error?message=C%C3%B3digo%20de%20confirmaci%C3%B3n%20ausente",
+    "csp": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https: https://*.supabase.co; font-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://*.googleapis.com ws://localhost:*"
+  },
+  {
+    "path": "/api/maps",
+    "status": 200,
+    "location": null,
+    "csp": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https: https://*.supabase.co; font-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://*.googleapis.com ws://localhost:*"
+  },
+  {
+    "path": "/login",
+    "status": 200,
+    "location": null,
+    "csp": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https: https://*.supabase.co; font-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://*.googleapis.com ws://localhost:*"
+  },
+  {
+    "path": "/auth/recuperar",
+    "status": 200,
+    "location": null,
+    "csp": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https: https://*.supabase.co; font-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://*.googleapis.com ws://localhost:*"
+  },
+  {
+    "path": "/auth/actualizar-password",
+    "status": 200,
+    "location": null,
+    "csp": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https: https://*.supabase.co; font-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://*.googleapis.com ws://localhost:*"
+  }
+]

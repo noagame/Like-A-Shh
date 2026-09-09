@@ -1,3 +1,4 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 export type EventRecord = {
   id: string;
   title: string;
@@ -13,21 +14,17 @@ export type EventRecord = {
 };
 
 export class EventQueryBuilder {
-  private readonly query: any;
+  private readonly client: SupabaseClient;
   private publishedOnly = false;
   private futureOnly = false;
   private category: string | null = null;
   private ascending = true;
 
-  constructor(supabaseClient: any) {
-    this.query = supabaseClient
-      .from("events")
-      .select(
-        "id, title, description, start_time, end_time, location, capacity, status, category_id, categories(id, name, color), image_url"
-      );
+  constructor(supabaseClient: SupabaseClient) {
+    this.client = supabaseClient;
   }
 
-  public static from(supabaseClient: any): EventQueryBuilder {
+  public static from(supabaseClient: SupabaseClient): EventQueryBuilder {
     return new EventQueryBuilder(supabaseClient);
   }
 
@@ -52,7 +49,7 @@ export class EventQueryBuilder {
   }
 
   public async execute(): Promise<EventRecord[]> {
-    let query: any = this.query;
+    let query = this.client.from("events").select("id, title, description, start_time, end_time, location, capacity, status, category_id, categories(id, name, color), image_url");
 
     if (this.publishedOnly) {
       query = query.eq("status", "published");
@@ -72,6 +69,6 @@ export class EventQueryBuilder {
       return [];
     }
 
-    return (data ?? []) as EventRecord[];
+    return (data ?? []) as unknown as EventRecord[];
   }
 }

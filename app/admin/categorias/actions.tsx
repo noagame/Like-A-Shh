@@ -1,10 +1,10 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/authorize";
 import { revalidatePath } from "next/cache";
 
 export async function createCategory(formData: FormData) {
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
   const name = formData.get("name") as string;
   const color = (formData.get("color") as string) || "#D4AF37";
 
@@ -25,8 +25,13 @@ export async function createCategory(formData: FormData) {
 }
 
 export async function deleteCategory(formData: FormData) {
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id") as string;
-  await supabase.from("categories").delete().eq("id", id);
+  const { error } = await supabase.from("categories").delete().eq("id", id);
+  if (error) throw new Error("No se pudo eliminar el registro.");
   revalidatePath("/admin/categorias");
+}
+export async function createCategoryForm(formData: FormData): Promise<void> {
+  const result = await createCategory(formData);
+  if (result.error) throw new Error("No se pudo crear la categoría.");
 }

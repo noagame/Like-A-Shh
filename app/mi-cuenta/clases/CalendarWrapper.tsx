@@ -1,5 +1,6 @@
 "use client";
 
+import type { EventClickArg } from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 
@@ -15,7 +16,7 @@ type CalendarWrapperProps = {
     backgroundColor: string;
     borderColor: string;
   }>;
-  onEventClick: (info: any) => void;
+  onEventClick: (info: EventClickArg) => void;
 };
 
 export default function CalendarWrapper({ events, onEventClick }: CalendarWrapperProps) {

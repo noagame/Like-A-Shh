@@ -28,7 +28,9 @@ export default function GalleryDropzone({ galleryId }: { galleryId: string }) {
     formData.append("file", file);
 
     // 1. Solución al primer error: pasamos el galleryId y el formData
-    const result = await uploadMedia(galleryId, formData);
+    let result: { success?: boolean; error?: string };
+    try { result = await uploadMedia(galleryId, formData); }
+    catch { result = { error: "No se pudo subir la imagen. Usa PNG, JPEG o WebP de hasta 5 MB e intenta nuevamente." }; }
 
     setUploads((prev) =>
       prev.map((upload) => {

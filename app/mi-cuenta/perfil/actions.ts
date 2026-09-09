@@ -1,109 +1,60 @@
 "use server";
 
-import { z } from "zod";
-import { createClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
+import { z } from 'zod';
+import { createClient } from '@/lib/supabase/server';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { birthDateSchema, genderSchema } from '@/lib/validation/profile';
+import { allowAuthRequest } from '@/lib/auth/request-limit';
 
 const profileSchema = z.object({
-  full_name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
-  phone: z.string().optional(),
-  birth_date: z.string().optional(),
-  gender: z.enum(["femenino", "masculino", "no_binario", "prefiero_no_decir", "otro"]).optional(),
+  full_name: z.string().trim().min(2, 'El nombre debe tener al menos 2 caracteres').max(100),
+  phone: z.string().trim().max(30).optional(),
+  birth_date: birthDateSchema,
+  gender: genderSchema.optional(),
 });
 
-// 1. Rectificación de datos personales
 export async function actualizarPerfil(formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
+  if (!user) redirect('/login');
   const parsed = profileSchema.safeParse({
-    full_name: formData.get("full_name"),
-    phone: formData.get("phone") || undefined,
-    birth_date: formData.get("birth_date") || undefined,
-    gender: formData.get("gender") || undefined,
+    full_name: formData.get('full_name'), phone: formData.get('phone') || undefined,
+    birth_date: formData.get('birth_date'), gender: formData.get('gender') || undefined,
   });
-
-  if (!parsed.success) {
-    return { error: parsed.error.issues[0].message };
-  }
-
-  const { error } = await supabase
-    .from("profiles")
-    .update({
-      full_name: parsed.data.full_name,
-      phone: parsed.data.phone || null,
-      birth_date: parsed.data.birth_date || null,
-      gender: parsed.data.gender || "prefiero_no_decir",
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", user.id);
-
-  if (error) return { error: error.message };
-
-  revalidatePath("/mi-cuenta");
-  revalidatePath("/mi-cuenta/perfil");
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  const { error } = await supabase.from('profiles').update({
+    ...parsed.data, phone: parsed.data.phone || null,
+    gender: parsed.data.gender || 'prefiero_no_decir',
+    is_anonymized: false, updated_at: new Date().toISOString(),
+  }).eq('id', user.id);
+  if (error) return { error: 'No se pudo actualizar el perfil. Intenta nuevamente.' };
+  revalidatePath('/mi-cuenta', 'layout');
   return { success: true };
 }
 
-// 2. Anonimización de datos personales (Ley 21.719)
+// Hide profile details, preserving the identity required to sign in. This is not anonymization.
 export async function anonimizarDatos() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
-  const anonId = `anon_${user.id.slice(0, 8)}`;
-
-  // Se disocian los datos personales del perfil sin romper métricas agregadas
-  const { error } = await supabase
-    .from("profiles")
-    .update({
-      full_name: "Usuario Anonimizado",
-      phone: null,
-      birth_date: null,
-      gender: "prefiero_no_decir",
-      is_anonymized: true,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", user.id);
-
-  if (error) return { error: error.message };
-
-  const headerList = await headers();
-  await supabase.from("consent_logs").insert({
-    user_id: user.id,
-    consent_type: "solicitud_anonimizacion_ley21719",
-    accepted: true,
-    policy_version: "politica-privacidad-v2-ley21719-2026",
-    ip_address: headerList.get("x-forwarded-for") ?? "unknown",
-  });
-
-  revalidatePath("/mi-cuenta");
+  if (!user) redirect('/login');
+  const { error } = await supabase.rpc('hide_my_profile');
+  if (error) return { error: 'No se pudieron ocultar los datos del perfil. Intenta nuevamente.' };
+  revalidatePath('/mi-cuenta', 'layout');
   return { success: true };
 }
 
-// 3. Derecho de Supresión Total (Eliminación de cuenta y datos)
-export async function eliminarCuentaTotal() {
+export async function eliminarCuentaTotal(formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
-  // Registro de consentimiento antes de eliminar registros
-  const headerList = await headers();
-  await supabase.from("consent_logs").insert({
-    user_id: user.id,
-    consent_type: "supresion_definitiva_cuenta",
-    accepted: true,
-    policy_version: "politica-privacidad-v2-ley21719-2026",
-    ip_address: headerList.get("x-forwarded-for") ?? "unknown",
-  });
-
-  // Limpieza de inscripciones y perfil (Auth cascade o RPC en Supabase)
-  await supabase.from("attendances").delete().eq("user_id", user.id);
-  await supabase.from("profiles").delete().eq("id", user.id);
+  if (!user) redirect('/login');
+  const password = formData.get('password');
+  if (typeof password !== 'string' || !password || !user.email) return { error: 'Confirma tu contraseña para eliminar la cuenta.' };
+  if (!await allowAuthRequest('delete-account', user.email)) return { error: 'Acceso temporalmente limitado. Intenta más tarde.' };
+  const { error: authError } = await supabase.auth.signInWithPassword({ email: user.email, password });
+  if (authError) return { error: 'No se pudo confirmar tu contraseña.' };
+  const { error } = await supabase.rpc('delete_account', { target_user_id: user.id });
+  if (error) return { error: 'No se pudo eliminar la cuenta. Tus datos no se han borrado; contacta a soporte si el problema continúa.' };
   await supabase.auth.signOut();
-
-  redirect("/?cuenta_eliminada=1");
+  redirect('/?cuenta_eliminada=1');
 }

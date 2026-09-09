@@ -1,13 +1,14 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { uploadFlyer, rollbackFlyer } from "@/lib/infrastructure/factories/flyer";
+import { requireAdmin } from "@/lib/auth/authorize";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { validateEventDateRange } from "@/lib/event-date-validation";
 import { CommandInvoker } from "@/lib/application/commands/CommandInvoker";
 
 export async function createEvent(formData: FormData) {
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
   const start_time = formData.get("start_time") as string;
@@ -24,25 +25,8 @@ export async function createEvent(formData: FormData) {
     redirect(`/admin/eventos?error=${encodeURIComponent((error as Error).message)}`);
   }
 
-  let image_url: string | null = null;
-
-  // Carga de imagen a Supabase Storage
-  if (flyerFile && flyerFile.size > 0 && flyerFile.name !== "undefined") {
-    const fileExt = flyerFile.name.split(".").pop();
-    const fileName = `${crypto.randomUUID()}.${fileExt}`;
-    const filePath = `flyers/${fileName}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("eventos")
-      .upload(filePath, flyerFile, { contentType: flyerFile.type });
-
-    if (!uploadError) {
-      const { data: publicUrlData } = supabase.storage
-        .from("eventos")
-        .getPublicUrl(filePath);
-      image_url = publicUrlData.publicUrl;
-    }
-  }
+  const flyer = await uploadFlyer(supabase, flyerFile, "eventos", "flyers");
+  const image_url = flyer?.url ?? null;
 
   const commandInvoker = new CommandInvoker(supabase);
 
@@ -62,6 +46,7 @@ export async function createEvent(formData: FormData) {
       }).select("id, title").single();
 
       if (error) {
+        await rollbackFlyer(supabase, flyer);
         return { success: false, error: error.message };
       }
 
@@ -82,7 +67,7 @@ export async function createEvent(formData: FormData) {
 }
 
 export async function changeEventStatus(formData: FormData) {
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
   const event_id = formData.get("event_id") as string;
   const status = formData.get("status") as string;
 
@@ -94,23 +79,23 @@ export async function changeEventStatus(formData: FormData) {
     .eq("id", event_id);
 
   if (error) {
-    console.error("Error al actualizar estado:", error.message);
-    return;
+    throw new Error("No se pudo actualizar el estado.");
   }
 
   // Trazabilidad de la acción
   const { data: { user } } = await supabase.auth.getUser();
-  await supabase.from("audit_log").insert({
+  const { error: auditError } = await supabase.from("audit_log").insert({
     actor_id: user?.id,
     action: "change_event_status",
     metadata: { event_id, status },
   });
 
+  if (auditError) throw new Error("La operación se completó, pero no se pudo registrar su auditoría. Revisa el resultado antes de reintentar.");
   revalidatePath("/admin/eventos");
 }
 
 export async function deleteEvent(formData: FormData) {
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
   const event_id = formData.get("event_id") as string;
 
   if (!event_id) return;
@@ -121,17 +106,17 @@ export async function deleteEvent(formData: FormData) {
     .eq("id", event_id);
 
   if (error) {
-    console.error("Error al eliminar evento:", error.message);
-    return;
+    throw new Error("No se pudo eliminar el evento.");
   }
 
   // Trazabilidad de la acción
   const { data: { user } } = await supabase.auth.getUser();
-  await supabase.from("audit_log").insert({
+  const { error: auditError } = await supabase.from("audit_log").insert({
     actor_id: user?.id,
     action: "delete_event",
     metadata: { event_id },
   });
 
+  if (auditError) throw new Error("La operación se completó, pero no se pudo registrar su auditoría. Revisa el resultado antes de reintentar.");
   revalidatePath("/admin/eventos");
 }

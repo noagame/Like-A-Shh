@@ -12,45 +12,9 @@ export async function attendEvent(eventId: string) {
 
   if (!user) redirect("/login");
 
-  const { data: event } = await supabase
-    .from("events")
-    .select("capacity, title")
-    .eq("id", eventId)
-    .single();
-
-  const { count } = await supabase
-    .from("attendances")
-    .select("*", { count: "exact", head: true })
-    .eq("event_id", eventId)
-    .eq("status", "registered");
-
-  if (event?.capacity && count !== null && count >= event.capacity) {
-    return { error: "Lo sentimos, el cupo para esta clase está completo." };
-  }
-
-  const { data: existingRecord } = await supabase
-    .from("attendances")
-    .select("id, status")
-    .eq("event_id", eventId)
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  if (existingRecord) {
-    const { error: updateError } = await supabase
-      .from("attendances")
-      .update({ status: "registered", created_at: new Date().toISOString() })
-      .eq("id", existingRecord.id);
-
-    if (updateError) return { error: updateError.message };
-  } else {
-    const { error: insertError } = await supabase.from("attendances").insert({
-      event_id: eventId,
-      user_id: user.id,
-      status: "registered",
-    });
-
-    if (insertError) return { error: insertError.message };
-  }
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(eventId)) return { error: "Evento inválido." };
+  const { error } = await supabase.rpc("reserve_event", { target_event_id: eventId });
+  if (error) return { error: "No se pudo reservar. Comprueba los cupos y que tu perfil esté completo." };
 
   revalidatePath("/mi-cuenta");
   revalidatePath("/mi-cuenta/clases");

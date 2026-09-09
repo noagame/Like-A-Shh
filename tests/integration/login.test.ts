@@ -1,27 +1,17 @@
-import { describe, it, expect } from "vitest";
-import { z } from "zod";
-
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
-});
-
-describe("login flow contract", () => {
-  it("accepts valid credentials payload", () => {
-    const parsed = loginSchema.safeParse({
-      email: "usuario@example.com",
-      password: "segura123",
-    });
-
-    expect(parsed.success).toBe(true);
+// @vitest-environment node
+import { describe, it, expect, vi } from 'vitest';
+const client = vi.hoisted(() => vi.fn());
+vi.mock('@/lib/supabase/server', () => ({ createClient: client }));
+vi.mock('@/lib/auth/request-limit', () => ({ allowAuthRequest: async () => true }));
+import { signIn, signUp } from '@/app/login/actions';
+describe('actual login and signup validation', () => {
+  it('invalid email never reaches authentication', async () => {
+    const data = new FormData(); data.set('email','bad'); data.set('password','test');
+    expect(await signIn(data)).toHaveProperty('error'); expect(client).not.toHaveBeenCalled();
   });
-
-  it("rejects invalid email", () => {
-    const parsed = loginSchema.safeParse({
-      email: "correo-no-valido",
-      password: "segura123",
-    });
-
-    expect(parsed.success).toBe(false);
+  it('mismatched passwords never create account', async () => {
+    const data = new FormData();
+    Object.entries({ full_name:'Test',email:'test@example.com',password:'12345678',confirm_password:'87654321',accepted_privacy:'on' }).forEach(([k,v]) => data.set(k,v));
+    expect(await signUp(data)).toHaveProperty('error'); expect(client).not.toHaveBeenCalled();
   });
 });

@@ -1,0 +1,114 @@
+DO
+CREATE SCHEMA
+CREATE SCHEMA
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+ALTER TABLE
+CREATE POLICY
+DO
+GRANT
+GRANT
+BEGIN
+CREATE FUNCTION
+CREATE FUNCTION
+REVOKE
+GRANT
+CREATE FUNCTION
+psql:supabase/migrations/202609090001_security.sql:30: NOTICE:  trigger "guard_profile_role" for relation "public.profiles" does not exist, skipping
+DROP TRIGGER
+CREATE TRIGGER
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_private_scope" for relation "public.profiles" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_authenticated_access" for relation "public.profiles" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_private_scope" for relation "public.attendances" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_authenticated_access" for relation "public.attendances" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_private_scope" for relation "public.consent_logs" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_authenticated_access" for relation "public.consent_logs" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_private_scope" for relation "public.audit_log" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_authenticated_access" for relation "public.audit_log" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_private_scope" for relation "public.event_invitations" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_authenticated_access" for relation "public.event_invitations" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_private_scope" for relation "public.event_reviews" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_authenticated_access" for relation "public.event_reviews" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_private_scope" for relation "public.course_likes" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_authenticated_access" for relation "public.course_likes" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_private_scope" for relation "public.media_likes" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_authenticated_access" for relation "public.media_likes" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_insert" for relation "public.events" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_update" for relation "public.events" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_delete" for relation "public.events" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_authenticated_access" for relation "public.events" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_insert" for relation "public.categories" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_update" for relation "public.categories" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_delete" for relation "public.categories" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_authenticated_access" for relation "public.categories" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_insert" for relation "public.courses" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_update" for relation "public.courses" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_delete" for relation "public.courses" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_authenticated_access" for relation "public.courses" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_insert" for relation "public.media" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_update" for relation "public.media" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_delete" for relation "public.media" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_authenticated_access" for relation "public.media" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_insert" for relation "public.galleries" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_update" for relation "public.galleries" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_delete" for relation "public.galleries" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_authenticated_access" for relation "public.galleries" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_insert" for relation "public.site_settings" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_update" for relation "public.site_settings" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_admin_delete" for relation "public.site_settings" does not exist, skipping
+psql:supabase/migrations/202609090001_security.sql:62: NOTICE:  policy "qa_authenticated_access" for relation "public.site_settings" does not exist, skipping
+DO
+psql:supabase/migrations/202609090001_security.sql:64: NOTICE:  policy "qa_events_read" for relation "public.events" does not exist, skipping
+DROP POLICY
+CREATE POLICY
+psql:supabase/migrations/202609090001_security.sql:66: NOTICE:  policy "qa_courses_read" for relation "public.courses" does not exist, skipping
+DROP POLICY
+CREATE POLICY
+GRANT
+REVOKE
+REVOKE
+CREATE FUNCTION
+CREATE INDEX
+psql:supabase/migrations/202609090001_security.sql:101: NOTICE:  trigger "guard_attendance" for relation "public.attendances" does not exist, skipping
+DROP TRIGGER
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+psql:supabase/migrations/202609090001_security.sql:180: NOTICE:  trigger "zz_capture_signup_consent" for relation "auth.users" does not exist, skipping
+DROP TRIGGER
+CREATE TRIGGER
+CREATE FUNCTION
+REVOKE
+GRANT
+psql:supabase/migrations/202609090001_security.sql:212: NOTICE:  policy "qa_storage_insert" for relation "storage.objects" does not exist, skipping
+DROP POLICY
+CREATE POLICY
+psql:supabase/migrations/202609090001_security.sql:214: NOTICE:  policy "qa_storage_update" for relation "storage.objects" does not exist, skipping
+DROP POLICY
+CREATE POLICY
+psql:supabase/migrations/202609090001_security.sql:216: NOTICE:  policy "qa_storage_delete" for relation "storage.objects" does not exist, skipping
+DROP POLICY
+CREATE POLICY
+REVOKE
+GRANT
+REVOKE
+COMMIT

@@ -1,0 +1,91 @@
+
+> likeashh@0.1.0 qa
+> npm run lint -- --max-warnings 0 && npm run typecheck && npm run test:run && npm run build
+
+
+> likeashh@0.1.0 lint
+> eslint --max-warnings 0
+
+
+> likeashh@0.1.0 typecheck
+> tsc --noEmit --incremental false
+
+
+> likeashh@0.1.0 test:run
+> vitest run
+
+
+ RUN  v4.1.11 /home/fabian/Escritorio/likeashh
+
+
+ Test Files  11 passed (11)
+      Tests  53 passed (53)
+   Start at  06:50:44
+   Duration  2.87s (transform 278ms, setup 0ms, import 1.14s, tests 478ms, environment 4.71s)
+
+
+> likeashh@0.1.0 build
+> next build --webpack
+
+▲ Next.js 16.3.4 (webpack)
+- Environments: .env.local
+✓ Running next.config.ts took 23ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 7.5s
+  Running TypeScript ...
+  Finished TypeScript in 2.9s ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/36) ...
+  Generating static pages using 3 workers (9/36) 
+  Generating static pages using 3 workers (18/36) 
+  Generating static pages using 3 workers (27/36) 
+✓ Generating static pages using 3 workers (36/36) in 410ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /admin
+├ ƒ /admin/ajustes
+├ ƒ /admin/categorias
+├ ƒ /admin/clases-online
+├ ƒ /admin/clases-online/nuevo
+├ ƒ /admin/clases-presenciales
+├ ƒ /admin/clases-presenciales/nuevo
+├ ƒ /admin/cursos
+├ ƒ /admin/dashboard
+├ ƒ /admin/eventos
+├ ƒ /admin/eventos/[id]/editar
+├ ƒ /admin/eventos/nuevo
+├ ƒ /admin/galeria
+├ ƒ /admin/galeria/[id]
+├ ƒ /admin/usuarios
+├ ƒ /admin/usuarios/[id]/editar
+├ ƒ /api/maps
+├ ƒ /auth/actualizar-password
+├ ƒ /auth/callback
+├ ƒ /auth/confirmado
+├ ƒ /auth/error
+├ ƒ /auth/recuperar
+├ ƒ /auth/verificar-email
+├ ƒ /login
+├ ƒ /mi-cuenta
+├ ƒ /mi-cuenta/clases
+├ ƒ /mi-cuenta/explorar
+├ ƒ /mi-cuenta/galeria
+├ ƒ /mi-cuenta/perfil
+├ ƒ /privacidad
+├ ƒ /registro
+├ ƒ /registro/completar-perfil
+├ ○ /robots.txt
+├ ○ /sitemap.xml
+└ ƒ /terminos
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

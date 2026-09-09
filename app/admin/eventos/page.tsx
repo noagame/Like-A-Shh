@@ -1,12 +1,11 @@
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/authorize";
 import Link from "next/link";
-import { changeEventStatus, deleteEvent } from "./actions";
+import { changeEventStatus, deleteEvent, createEvent } from "./actions";
 import AutoSubmitSelect from "./AutoSubmitSelect";
 import PanelInfo from "@/app/admin/components/PanelInfo";
 import EventModal from "./EventModal";
 import ClaseOnlineModal from "./ClaseOnlineModal";
 import ClasePresencialModal from "./ClasePresencialModal";
-import { revalidatePath } from "next/cache";
 import BackButton from "@/app/admin/components/BackButton";
 
 const ESTADO_COLOR: Record<string, string> = {
@@ -30,34 +29,8 @@ export default async function AdminEventosPage({
   searchParams: Promise<{ estado?: string; categoria?: string }>;
 }) {
   const { estado, categoria } = await searchParams;
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
 
-  async function handleCreateEvent(formData: FormData) {
-    "use server";
-    const supabaseClient = await createClient();
-
-    const { data, error } = await supabaseClient.from("events").insert({
-      title: formData.get("title"),
-      description: formData.get("description"),
-      category_id: formData.get("category_id") || null,
-      start_time: formData.get("start_time"),
-      end_time: formData.get("end_time"),
-      location: formData.get("location"),
-      capacity: formData.get("capacity") ? Number(formData.get("capacity")) : null,
-      status: formData.get("status") ?? "draft",
-    }).select("id, title").single();
-
-    if (!error && data) {
-      const { data: { user } } = await supabaseClient.auth.getUser();
-      await supabaseClient.from("audit_log").insert({
-        actor_id: user?.id,
-        action: "create_event",
-        metadata: { event_id: data.id, title: data.title },
-      });
-    }
-
-    revalidatePath("/admin/eventos");
-  }
 
   let query = supabase
     .from("events")
@@ -67,7 +40,8 @@ export default async function AdminEventosPage({
   if (estado) query = query.eq("status", estado);
   if (categoria) query = query.eq("category_id", categoria);
 
-  const { data: events } = await query;
+  const { data: eventRows } = await query;
+  const events = eventRows as unknown as Array<{ id: string; title: string; start_time: string; end_time: string; location: string | null; capacity: number | null; status: string; categories: { id: string; name: string } | null }> | null;
 
   const eventIds = events?.map((e) => e.id) ?? [];
   const { data: attendanceCounts } = eventIds.length
@@ -106,7 +80,7 @@ export default async function AdminEventosPage({
 
           {/* Botones apilados en móvil y en fila en pantallas grandes */}
           <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 w-full lg:w-auto">
-            <EventModal createAction={handleCreateEvent} categories={categories || []} />
+            <EventModal createAction={createEvent} categories={categories || []} />
             <ClaseOnlineModal categories={categories || []} />
             <ClasePresencialModal categories={categories || []} />
           </div>
@@ -167,7 +141,7 @@ export default async function AdminEventosPage({
         <>
           {/* VISTA MÓVIL: Tarjetas individuales (< md) */}
           <div className="block md:hidden space-y-3">
-            {events.map((event: any) => {
+            {events.map((event) => {
               const ocupados = countByEvent[event.id] ?? 0;
               return (
                 <div
@@ -242,7 +216,7 @@ export default async function AdminEventosPage({
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {events.map((event: any) => {
+                {events.map((event) => {
                   const ocupados = countByEvent[event.id] ?? 0;
                   return (
                     <tr key={event.id} className="text-white/80 hover:bg-white/[0.02] transition-colors">

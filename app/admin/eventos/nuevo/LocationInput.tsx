@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 
 export default function LocationInput({ name, label }: { name: string; label: string }) {
     const [query, setQuery] = useState("");
-    const [results, setResults] = useState<any[]>([]);
+    const [results, setResults] = useState<Array<{ place_id: number; display_name: string }>>([]);
     const [isOpen, setIsOpen] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
 

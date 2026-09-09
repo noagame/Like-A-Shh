@@ -1,20 +1,22 @@
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/authorize";
 import { createGallery, deleteGallery } from "@/app/admin/medios/actions";
 import Link from "next/link";
 import PanelInfo from "@/app/admin/components/PanelInfo";
 import BackButton from "@/app/admin/components/BackButton";
 
 export default async function GaleriasPage() {
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
 
   async function handleCreate(formData: FormData) {
     "use server";
-    await createGallery(formData);
+    const result = await createGallery(formData);
+    if (result.error) throw new Error(result.error);
   }
 
   async function handleDelete(formData: FormData) {
     "use server";
-    await deleteGallery(formData);
+    const result = await deleteGallery(formData);
+    if (result?.error) throw new Error(result.error);
   }
 
   const { data: galleries } = await supabase

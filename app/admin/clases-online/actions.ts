@@ -1,12 +1,13 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { uploadFlyer, rollbackFlyer } from "@/lib/infrastructure/factories/flyer";
+import { requireAdmin } from "@/lib/auth/authorize";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { validateEventDateRange } from "@/lib/event-date-validation";
 
 export async function createClaseOnline(formData: FormData) {
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
 
   const title = String(formData.get("title") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
@@ -26,30 +27,12 @@ export async function createClaseOnline(formData: FormData) {
     redirect("/admin/clases-online/nuevo?error=" + encodeURIComponent((error as Error).message));
   }
 
-  if (capacity <= 0) {
+  if (!Number.isInteger(capacity) || capacity <= 0) {
     redirect("/admin/clases-online/nuevo?error=" + encodeURIComponent("Debe indicar un aforo válido para la clase online."));
   }
 
-  let image_url: string | null = null;
-
-  if (flyerFile && flyerFile.size > 0 && flyerFile.name !== "undefined") {
-    try {
-      const fileExt = flyerFile.name.split(".").pop() ?? "jpg";
-      const fileName = `clase-online-${crypto.randomUUID()}.${fileExt}`;
-      const filePath = `eventos/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("eventos")
-        .upload(filePath, flyerFile, { contentType: flyerFile.type });
-
-      if (!uploadError) {
-        const { data: publicUrlData } = supabase.storage.from("eventos").getPublicUrl(filePath);
-        image_url = publicUrlData.publicUrl;
-      }
-    } catch {
-      image_url = null;
-    }
-  }
+  const flyer = await uploadFlyer(supabase, flyerFile, "eventos", "eventos");
+  const image_url = flyer?.url ?? null;
 
   const { data: category } = await supabase
     .from("categories")
@@ -74,11 +57,12 @@ export async function createClaseOnline(formData: FormData) {
     .single();
 
   if (error) {
+    await rollbackFlyer(supabase, flyer);
     redirect("/admin/clases-online/nuevo?error=" + encodeURIComponent(error.message));
   }
 
   const { data: { user } } = await supabase.auth.getUser();
-  await supabase.from("audit_log").insert({
+  const { error: auditError } = await supabase.from("audit_log").insert({
     actor_id: user?.id ?? null,
     action: "create_clase_online",
     metadata: {
@@ -90,6 +74,7 @@ export async function createClaseOnline(formData: FormData) {
     },
   });
 
+  if (auditError) throw new Error("La clase se creó, pero no se pudo registrar su auditoría. Revisa el panel antes de reintentar.");
   revalidatePath("/admin/eventos");
   revalidatePath("/mi-cuenta");
   revalidatePath("/mi-cuenta/explorar");

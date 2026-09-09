@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/authorize";
 import DashboardCharts from "./DashboardCharts";
 import PanelInfo from "@/app/admin/components/PanelInfo";
 import BackButton from "@/app/admin/components/BackButton"; // <--- 1. Importas el botón aquí
@@ -14,9 +14,9 @@ function KpiCard({ label, value, hint }: { label: string; value: string | number
 }
 
 export default async function AdminDashboardPage() {
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
   const nowIso = new Date().toISOString();
-  const sieteDiasAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const sieteDiasAtras = new Date(new Date(nowIso).getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
   // Todas las consultas de KPIs en paralelo, no una tras otra
   const [

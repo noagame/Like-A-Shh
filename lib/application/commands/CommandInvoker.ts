@@ -1,10 +1,5 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 type CommandResult = { success: boolean; data?: Record<string, unknown>; error?: string };
-
-type AuditLogPayload = {
-  actor_id: string | null;
-  action: string;
-  metadata: Record<string, unknown>;
-};
 
 type Command = {
   execute: () => Promise<CommandResult>;
@@ -13,7 +8,7 @@ type Command = {
 
 export class CommandInvoker {
   constructor(
-    private readonly supabaseClient: any
+    private readonly supabaseClient: SupabaseClient
   ) {}
 
   public async execute(command: Command): Promise<CommandResult> {
@@ -27,12 +22,13 @@ export class CommandInvoker {
       data: { user },
     } = await this.supabaseClient.auth.getUser();
 
-    await this.supabaseClient.from("audit_log").insert({
+    const { error } = await this.supabaseClient.from("audit_log").insert({
       actor_id: user?.id ?? null,
       action: command.actionName,
       metadata: result.data ?? {},
     });
 
+    if (error) return { success: false, error: "La operación se completó, pero no se pudo registrar la auditoría. Revisa el resultado antes de reintentar." };
     return result;
   }
 }

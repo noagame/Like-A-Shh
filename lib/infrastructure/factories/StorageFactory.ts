@@ -1,3 +1,4 @@
+import { validateImage } from "@/lib/validation/image";
 export type StorageBucket = "eventos" | "galerias";
 
 export class StorageFactory {
@@ -18,6 +19,7 @@ export class StorageFactory {
     file: File,
     path: string
   ): Promise<string | null> {
+    await validateImage(file);
     const storageBucket = this.resolveBucket(bucket);
     const { error } = await supabaseClient.storage
       .from(storageBucket)

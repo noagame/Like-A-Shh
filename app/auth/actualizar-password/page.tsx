@@ -17,12 +17,16 @@ export default function ActualizarPasswordPage() {
         setError(null);
 
         const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { setError("El enlace expiró o no es válido. Solicita uno nuevo."); setLoading(false); return; }
+        if (password.length < 8) { setError("La contraseña debe tener al menos 8 caracteres."); setLoading(false); return; }
         const { error } = await supabase.auth.updateUser({ password });
 
         if (error) {
             setError(error.message);
         } else {
-            setMensaje("¡Contraseña actualizada con éxito! Redirigindo...");
+            await supabase.auth.signOut();
+            setMensaje("¡Contraseña actualizada con éxito! Redirigiendo...");
             setTimeout(() => {
                 router.push("/login");
             }, 2000);
@@ -43,6 +47,8 @@ export default function ActualizarPasswordPage() {
                     <label className="block text-sm font-medium mb-1">Nueva contraseña</label>
                     <input
                         type="password"
+                        minLength={8}
+                        autoComplete="new-password"
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}

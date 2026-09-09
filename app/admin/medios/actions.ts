@@ -1,16 +1,19 @@
 "use server";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/authorize";
+import { z } from "zod";
+import { validateImage } from "@/lib/validation/image";
 import { revalidatePath } from "next/cache";
 
 // 1. Subir imagen a Supabase Storage
 export async function uploadMedia(galleryId: string, formData: FormData) {
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
   const file = formData.get("file") as File;
   
   if (!file) return { error: "No se encontró el archivo" };
 
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${Math.random()}.${fileExt}`;
+  z.uuid().parse(galleryId);
+  const fileExt = await validateImage(file);
+  const fileName = `${crypto.randomUUID()}.${fileExt}`;
   const filePath = `${galleryId}/${fileName}`; // Lo guardamos dentro de un folder con el ID de la galería
 
   // Subir al bucket "galerias"
@@ -33,7 +36,11 @@ export async function uploadMedia(galleryId: string, formData: FormData) {
     alt_text: file.name
   });
 
-  if (dbError) return { error: dbError.message };
+  if (dbError) {
+    const { error: cleanupError } = await supabase.storage.from("galerias").remove([filePath]);
+    if (cleanupError) throw new Error("No se pudo guardar ni retirar la imagen. Contacta a soporte para revisar el archivo.");
+    return { error: "No se pudo guardar la imagen. Intenta nuevamente." };
+  }
   
   revalidatePath(`/admin/galeria/${galleryId}`);
   return { success: true };
@@ -41,22 +48,22 @@ export async function uploadMedia(galleryId: string, formData: FormData) {
 
 // 2. Eliminar imagen de Storage y DB
 export async function deleteMedia(formData: FormData) {
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id") as string;
-  const storagePath = formData.get("storage_path") as string; 
-
-  if (storagePath) {
-    // Borrar del bucket
-    await supabase.storage.from("galerias").remove([storagePath]);
+  z.uuid().parse(id);
+  const { data: media, error: readError } = await supabase.from("media").select("storage_path").eq("id", id).single();
+  if (readError || !media) throw new Error("No se encontró la imagen.");
+  if (media.storage_path) {
+    const { error } = await supabase.storage.from("galerias").remove([media.storage_path]);
+    if (error) throw new Error("No se pudo retirar el archivo. Intenta nuevamente.");
   }
-
-  // Borrar de la tabla
-  await supabase.from("media").delete().eq("id", id);
+  const { error: deleteError } = await supabase.from("media").delete().eq("id", id);
+  if (deleteError) throw new Error("El archivo fue retirado, pero falta borrar su registro. Reintenta la eliminación.");
   revalidatePath("/admin/galeria");
 }
 export async function createGallery(formData: FormData) {
-  const supabase = await createClient();
-  const name = formData.get("name") as string;
+  const { supabase } = await requireAdmin();
+  const name = z.string().trim().min(2).max(100).parse(formData.get("name"));
   const description = formData.get("description") as string;
 
   const { error } = await supabase
@@ -73,8 +80,8 @@ export async function createGallery(formData: FormData) {
 }
 
 export async function updateGallery(id: string, formData: FormData) {
-  const supabase = await createClient();
-  const name = formData.get("name") as string;
+  const { supabase } = await requireAdmin();
+  const name = z.string().trim().min(2).max(100).parse(formData.get("name"));
   const description = formData.get("description") as string;
 
   const { error } = await supabase
@@ -94,10 +101,13 @@ export async function updateGallery(id: string, formData: FormData) {
 }
 
 export async function deleteGallery(formData: FormData) {
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id") as string;
 
-  if (!id) return { error: "ID no proporcionado" };
+  z.uuid().parse(id);
+  const { count, error: countError } = await supabase.from("media").select("id", { count: "exact", head: true }).eq("gallery_id", id);
+  if (countError) return { error: "No se pudo comprobar el contenido de la galería." };
+  if (count) return { error: "Elimina primero las imágenes de la galería." };
 
   const { error } = await supabase
     .from("galleries")

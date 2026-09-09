@@ -1,95 +1,30 @@
 "use server";
+import { z } from 'zod';
+import { requireAdmin } from '@/lib/auth/authorize';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
-import { createClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
-
-// Actualizar rol y datos del usuario (Ley 21.719)[cite: 3, 5]
 export async function updateUser(id: string, formData: FormData) {
-  const supabase = await createClient();
-  const { data: { user: adminUser } } = await supabase.auth.getUser();
-
-  if (!adminUser) throw new Error("No autorizado.");
-
-  const name = (formData.get("name") || formData.get("full_name")) as string;
-  const role = formData.get("role") as string;
-  const phone = formData.get("phone") as string | null;
-
-  const { error } = await supabase
-    .from("profiles")
-    .update({
-      full_name: name,
-      phone: phone || null,
-      role: role || "user",
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", id);
-
-  if (error) {
-    console.error("Error al actualizar usuario:", error.message);
-    throw new Error(error.message);
-  }
-
-  // Trazabilidad administrativa exigida por Ley Nº 21.719[cite: 5, 8]
-  await supabase.from("audit_log").insert({
-    actor_id: adminUser.id,
-    action: "update_user_admin",
-    metadata: { target_user_id: id, role, updated_name: name },
-  });
-
-  revalidatePath("/admin/usuarios");
-  redirect("/admin/usuarios");
+  const { supabase, user } = await requireAdmin();
+  const target = z.uuid().parse(id);
+  const payload = z.object({
+    full_name: z.string().trim().min(2).max(100),
+    role: z.enum(['user', 'admin']), phone: z.string().trim().max(30).nullable(),
+  }).parse({ full_name: formData.get('name') || formData.get('full_name'), role: formData.get('role'), phone: formData.get('phone') || null });
+  if (target === user.id && payload.role !== 'admin') throw new Error('No puedes quitarte tu propio acceso de administrador.');
+  const { error } = await supabase.rpc('admin_update_profile', { target_user_id: target, new_name: payload.full_name, new_phone: payload.phone, new_role: payload.role });
+  if (error) throw new Error('No se pudo actualizar el usuario.');
+  revalidatePath('/admin/usuarios');
+  redirect('/admin/usuarios');
 }
-
-// Supresión o eliminación de usuario bajo Derechos ARCO[cite: 3, 5]
 export async function deleteUser(id: string) {
-  const supabase = await createClient();
-  const { data: { user: adminUser } } = await supabase.auth.getUser();
-
-  if (!adminUser) throw new Error("No autorizado.");
-
-  if (adminUser.id === id) {
-    throw new Error("No puedes eliminar tu propia cuenta de administrador activa.");
-  }
-
-  const headerList = await headers();
-  const ip = headerList.get("x-forwarded-for") ?? "unknown";
-
-  // Registro de consentimiento/solicitud de supresión Ley 21.719[cite: 3, 5]
-  await supabase.from("consent_logs").insert({
-    user_id: id,
-    consent_type: "supresion_administrativa_ley21719",
-    accepted: true,
-    policy_version: "politica-privacidad-v2-ley21719-2026",
-    ip_address: ip,
-  });
-
-  await supabase.from("audit_log").insert({
-    actor_id: adminUser.id,
-    action: "delete_user_admin",
-    metadata: { target_user_id: id },
-  });
-
-  // Limpieza de inscripciones asociadas
-  await supabase.from("attendances").delete().eq("user_id", id);
-
-  const { error } = await supabase
-    .from("profiles")
-    .delete()
-    .eq("id", id);
-
-  if (error) {
-    console.error("Error al eliminar usuario:", error.message);
-    throw new Error(error.message);
-  }
-
-  revalidatePath("/admin/usuarios");
+  const { supabase, user } = await requireAdmin();
+  z.uuid().parse(id);
+  if (id === user.id) throw new Error('Usa la opción de eliminación en tu perfil para borrar tu cuenta.');
+  const { error } = await supabase.rpc('delete_account', { target_user_id: id });
+  if (error) throw new Error('No se pudo eliminar la cuenta. No se han borrado los datos.');
+  revalidatePath('/admin/usuarios');
 }
-
-// Función auxiliar para invocar borrado desde formularios Server Actions
 export async function deleteUserAction(formData: FormData) {
-  const userId = formData.get("user_id") as string;
-  if (!userId) return;
-  await deleteUser(userId);
+  await deleteUser(String(formData.get('user_id') ?? ''));
 }

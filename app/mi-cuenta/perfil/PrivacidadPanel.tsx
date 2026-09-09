@@ -11,21 +11,25 @@ export default function PrivacidadPanel({
   isAnonymized: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
+  const [password, setPassword] = useState("");
   const [mensaje, setMensaje] = useState<string | null>(null);
 
   const handleAnonimizar = () => {
-    if (!confirm("¿Deseas anonimizar tus datos? Tu nombre y datos sensibles serán sustituidos de forma irreversible.")) return;
+    if (!confirm("¿Deseas ocultar los datos opcionales de tu perfil? Podrás volver a completarlos después.")) return;
     startTransition(async () => {
       const res = await anonimizarDatos();
       if (res?.error) setMensaje(`Error: ${res.error}`);
-      else setMensaje("Datos anonimizados exitosamente.");
+      else setMensaje("Datos opcionales del perfil ocultados.");
     });
   };
 
   const handleEliminar = () => {
     if (!confirm("¿ESTÁS SEGURO? Esta acción borrará todas tus inscripciones, historial y cuenta permanentemente.")) return;
     startTransition(async () => {
-      await eliminarCuentaTotal();
+      const form = new FormData();
+      form.set("password", password);
+      const result = await eliminarCuentaTotal(form);
+      if (result?.error) setMensaje(result.error);
     });
   };
 
@@ -34,7 +38,7 @@ export default function PrivacidadPanel({
       <div className="border-b border-white/10 pb-4">
         <h2 className="text-lg font-bold text-gold">Privacidad y Derechos ARCO</h2>
         <p className="text-xs text-white/60 mt-1">
-          Controla cómo se procesa tu información. Tienes derecho a la rectificación, anonimización y supresión permanente.
+          Controla cómo se procesa tu información. Tienes derecho a la rectificación, ocultación del perfil y eliminación de cuenta.
         </p>
       </div>
 
@@ -49,11 +53,11 @@ export default function PrivacidadPanel({
         <div>
           <p className="text-sm font-semibold text-white">Estado de Identidad</p>
           <p className="text-xs text-white/50 mt-0.5">
-            {isAnonymized ? "Perfil disociado / anónimo para reportes" : "Perfil nominal estándar"}
+            {isAnonymized ? "Datos opcionales ocultos" : "Perfil nominal estándar"}
           </p>
         </div>
         <span className={`text-xs px-3 py-1 rounded-full font-mono ${isAnonymized ? "bg-amber-500/20 text-amber-300" : "bg-green-500/20 text-green-300"}`}>
-          {isAnonymized ? "Anonimizado" : "Activo"}
+          {isAnonymized ? "Oculto" : "Activo"}
         </span>
       </div>
 
@@ -61,9 +65,9 @@ export default function PrivacidadPanel({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
         <div className="p-4 bg-white/5 rounded-xl border border-white/10 flex flex-col justify-between">
           <div>
-            <h3 className="text-sm font-bold text-white mb-1">Anonimizar Mis Datos</h3>
+            <h3 className="text-sm font-bold text-white mb-1">Ocultar datos del perfil</h3>
             <p className="text-xs text-white/60 leading-relaxed">
-              Oculta tu nombre e información de contacto en métricas y tablas históricas manteniendo tu acceso.
+              Oculta nombre, teléfono y género del perfil. Conservamos el correo, la fecha de nacimiento para validar edad y los registros asociados a tu cuenta; esto no anonimiza tu identidad.
             </p>
           </div>
           <button
@@ -71,7 +75,7 @@ export default function PrivacidadPanel({
             disabled={isPending || isAnonymized}
             className="mt-4 bg-white/10 text-white hover:bg-white/20 text-xs font-semibold py-2 px-4 rounded-lg transition-colors disabled:opacity-40 cursor-pointer"
           >
-            {isAnonymized ? "Ya anonimizado" : "Solicitar Anonimización"}
+            {isAnonymized ? "Datos ocultos" : "Ocultar datos"}
           </button>
         </div>
 
@@ -79,12 +83,15 @@ export default function PrivacidadPanel({
           <div>
             <h3 className="text-sm font-bold text-red-400 mb-1">Eliminar Cuenta y Datos</h3>
             <p className="text-xs text-white/60 leading-relaxed">
-              Borra completamente tu cuenta, historial de clases y registros personales de los servidores.
+              Elimina tu acceso y los datos asociados de la aplicación. Confirma tu contraseña para continuar.
             </p>
           </div>
+          <label className="mt-3 text-xs">Contraseña actual
+            <input type="password" autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} required className="mt-1 w-full rounded border border-white/20 bg-black p-2" />
+          </label>
           <button
             onClick={handleEliminar}
-            disabled={isPending}
+            disabled={isPending || !password}
             className="mt-4 bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white text-xs font-semibold py-2 px-4 rounded-lg transition-colors cursor-pointer"
           >
             Eliminar Definitivamente

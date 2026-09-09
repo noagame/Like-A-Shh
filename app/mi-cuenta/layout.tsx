@@ -1,3 +1,4 @@
+import { isAdultBirthDate } from "@/lib/validation/profile";
 import { ReactNode } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
@@ -19,9 +20,11 @@ export default async function MiCuentaLayout({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name")
+    .select("full_name, birth_date")
     .eq("id", user.id)
     .maybeSingle();
+
+  if (!profile?.birth_date || !isAdultBirthDate(profile.birth_date)) redirect("/registro/completar-perfil");
 
   const userName = profile?.full_name || user.email?.split("@")[0] || "Alumna";
 

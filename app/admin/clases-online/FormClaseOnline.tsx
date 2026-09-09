@@ -1,11 +1,12 @@
 "use client";
 
+import { useLocalDateTime } from "@/lib/hooks/client-state";
 import { useState } from "react";
 import { createOnlineClass } from "./actions";
 
 export default function FormClaseOnline() {
   const [startValue, setStartValue] = useState("");
-  const nowIso = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+  const nowIso = useLocalDateTime();
 
   return (
     <form action={createOnlineClass} className="space-y-5 rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">

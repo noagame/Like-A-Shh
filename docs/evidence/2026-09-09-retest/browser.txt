@@ -1,0 +1,8 @@
+QA final 2026-09-09. Next.js 16.3.4, compilación de producción, next start en http://127.0.0.1:3100.
+Navegador Codex, viewport de escritorio predeterminado.
+/login: encabezado Iniciar sesión, correo, contraseña, ENTRAR.
+Click ¿Olvidaste tu contraseña?: tras la animación, encabezado Recuperar contraseña, correo y ENVIAR ENLACE DE RECUPERACIÓN.
+Click volver al inicio de sesión y Regístrate aquí: Crear cuenta, nombre completo, correo, contraseña, confirmación, checkbox de consentimiento y REGISTRARSE.
+Inspección visual: formulario completo visible, sin recortes evidentes en el viewport usado.
+Consola: consulta de niveles error/warn devuelve [].
+No se enviaron formularios ni correos y no se crearon cuentas reales.

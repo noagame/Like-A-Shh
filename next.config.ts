@@ -25,17 +25,18 @@ const securityHeaders = [
       "font-src 'self' data:",
       scriptSrc,
       "style-src 'self' 'unsafe-inline'",
-      "connect-src 'self' https://*.supabase.co https://*.googleapis.com" + (isDev ? " ws://localhost:*" : ""),
+      "connect-src 'self' https://*.supabase.co https://*.googleapis.com https://formspree.io" + (isDev ? " ws://localhost:*" : ""),
     ].join("; "),
   },
 ];
 
 const nextConfig: NextConfig = {
+  agentRules: false,
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**.supabase.co',
+        hostname: new URL(process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://invalid.local').hostname,
         pathname: '/storage/v1/object/public/**',
       },
     ],

@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const protectedPaths = ["/admin", "/mi-cuenta"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isProtectedRoute = protectedPaths.some((path) => pathname.startsWith(path));
 
@@ -46,6 +46,10 @@ export async function middleware(request: NextRequest) {
 
     if (error || !user) {
       return NextResponse.redirect(new URL("/login", request.url));
+    }
+    if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+      const { data: profile, error: roleError } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+      if (roleError || profile?.role !== "admin") return NextResponse.redirect(new URL("/", request.url));
     }
   } catch (err) {
     console.error("[middleware] Error en sesión:", err);

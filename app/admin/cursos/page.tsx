@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/authorize";
 import BackButton from "@/app/admin/components/BackButton";
 import PanelInfo from "@/app/admin/components/PanelInfo";
 import Image from "next/image";
@@ -6,7 +6,7 @@ import { deleteCourse } from "./actions";
 import CourseModal from "./Course.Modal";
 
 export default async function AdminCursosPage() {
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
 
   const { data: courses } = await supabase
     .from("courses")

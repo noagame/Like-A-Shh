@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/authorize";
 import { notFound, redirect } from "next/navigation";
 import LocationInput from "../../nuevo/LocationInput";
 import EventWhitelistManager from "../../EventWhitelistManager";
@@ -13,7 +13,7 @@ export default async function EditarEventoPage({
 }) {
     const { id } = await params;
     const { error: searchError } = searchParams ? await searchParams : { error: undefined };
-    const supabase = await createClient();
+    const { supabase } = await requireAdmin();
 
     // 1. Buscamos el evento actual en la base de datos
     const { data: event, error: fetchError } = await supabase
@@ -29,7 +29,7 @@ export default async function EditarEventoPage({
     // 2. Server Action para actualizar el evento
     async function updateEvent(formData: FormData) {
         "use server";
-        const supabase = await createClient();
+        const { supabase } = await requireAdmin();
         const start_time = String(formData.get("start_time") ?? "").trim();
         const end_time = String(formData.get("end_time") ?? "").trim();
 
@@ -39,7 +39,7 @@ export default async function EditarEventoPage({
             redirect(`/admin/eventos/${id}/editar?error=${encodeURIComponent((error as Error).message)}`);
         }
 
-        await supabase
+        const { error: updateError } = await supabase
             .from("events")
             .update({
                 title: formData.get("title"),
@@ -53,6 +53,7 @@ export default async function EditarEventoPage({
             })
             .eq("id", id);
 
+        if (updateError) throw new Error("No se pudo actualizar el evento.");
         redirect("/admin/eventos");
     }
 

@@ -11,13 +11,16 @@ export default async function MiCuentaPage() {
 
   const nowIso = new Date().toISOString();
 
-  const { data: clasesActivas } = await supabase
+  const { data: attendanceRows } = await supabase
     .from("attendances")
     .select("id, event_id, events!inner(title, start_time, end_time, location, capacity, categories(name, color))")
     .eq("user_id", user.id)
     .eq("status", "registered")
-    .gte("events.end_time", nowIso)
-    .order("events(start_time)", { ascending: true });
+        .order("events(start_time)", { ascending: true });
+
+  type AttendanceRow = { id: string; event_id: string; events: { title: string; start_time: string; end_time: string; location: string | null; categories: { name: string; color: string | null } | null } | null };
+  const allAttendances = (attendanceRows ?? []) as unknown as AttendanceRow[];
+  const clasesActivas = allAttendances.filter(row => row.events && row.events.end_time >= nowIso);
 
   const { data: clasesDisponiblesRaw } = await supabase
     .from("events")
@@ -41,8 +44,8 @@ export default async function MiCuentaPage() {
     .select("event_id, rating, comment, recommendation")
     .eq("user_id", user.id);
 
-  const misInscripciones = new Set((misInscripcionesRaw ?? []).map((row: any) => row.event_id));
-  const conteoPorEvento = new Map((conteos ?? []).map((row: any) => [row.event_id, row.total_registered]));
+  const misInscripciones = new Set((misInscripcionesRaw ?? []).map((row) => row.event_id));
+  const conteoPorEvento = new Map((conteos ?? []).map((row) => [row.event_id, row.total_registered]));
   const reviewsByEvent = new Map(
     (userReviewsRaw ?? []).map((row: { event_id: string; rating: number; comment: string | null; recommendation: string | null }) => [
       row.event_id,
@@ -86,9 +89,9 @@ export default async function MiCuentaPage() {
     categoryColor: evento.categoryColor,
   }));
 
-  const clasesTomadas = (clasesActivas ?? [])
-    .filter((row: any) => row.events && new Date(row.events.end_time).getTime() < Date.now())
-    .map((row: any) => {
+  const clasesTomadas = allAttendances
+    .filter((row): row is AttendanceRow & { events: NonNullable<AttendanceRow["events"]> } => row.events !== null && row.events.end_time < nowIso)
+    .map((row) => {
       const review = reviewsByEvent.get(row.event_id);
       return {
         attendanceId: row.id,

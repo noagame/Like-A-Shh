@@ -1,0 +1,119 @@
+[
+  {
+    "path": "/",
+    "status": 200,
+    "expected_status": 200,
+    "streaming_redirect": false,
+    "location": null,
+    "passed": true,
+    "csp": null
+  },
+  {
+    "path": "/login",
+    "status": 200,
+    "expected_status": 200,
+    "streaming_redirect": false,
+    "location": null,
+    "passed": true,
+    "csp": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https: https://*.supabase.co; font-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co https://*.googleapis.com https://formspree.io"
+  },
+  {
+    "path": "/registro",
+    "status": 200,
+    "expected_status": 200,
+    "streaming_redirect": false,
+    "location": null,
+    "passed": true,
+    "csp": null
+  },
+  {
+    "path": "/admin",
+    "status": 307,
+    "expected_status": 307,
+    "streaming_redirect": false,
+    "location": "/login",
+    "passed": true,
+    "csp": null
+  },
+  {
+    "path": "/admin/usuarios",
+    "status": 307,
+    "expected_status": 307,
+    "streaming_redirect": false,
+    "location": "/login",
+    "passed": true,
+    "csp": null
+  },
+  {
+    "path": "/mi-cuenta",
+    "status": 307,
+    "expected_status": 307,
+    "streaming_redirect": false,
+    "location": "/login",
+    "passed": true,
+    "csp": null
+  },
+  {
+    "path": "/registro/completar-perfil",
+    "status": 307,
+    "expected_status": 307,
+    "streaming_redirect": false,
+    "location": "/login",
+    "passed": true,
+    "csp": null
+  },
+  {
+    "path": "/auth/callback",
+    "status": 307,
+    "expected_status": 307,
+    "streaming_redirect": false,
+    "location": "http://localhost:3100/auth/error?message=C%C3%B3digo%20de%20confirmaci%C3%B3n%20ausente",
+    "passed": true,
+    "csp": null
+  },
+  {
+    "path": "/auth/recuperar",
+    "status": 200,
+    "expected_status": 200,
+    "streaming_redirect": false,
+    "location": null,
+    "passed": true,
+    "csp": null
+  },
+  {
+    "path": "/auth/actualizar-password",
+    "status": 200,
+    "expected_status": 200,
+    "streaming_redirect": false,
+    "location": null,
+    "passed": true,
+    "csp": null
+  },
+  {
+    "path": "/api/maps?q=Santiago",
+    "status": 403,
+    "expected_status": 403,
+    "streaming_redirect": false,
+    "location": null,
+    "passed": true,
+    "csp": null
+  },
+  {
+    "path": "/privacidad",
+    "status": 200,
+    "expected_status": 200,
+    "streaming_redirect": false,
+    "location": null,
+    "passed": true,
+    "csp": null
+  },
+  {
+    "path": "/terminos",
+    "status": 200,
+    "expected_status": 200,
+    "streaming_redirect": false,
+    "location": null,
+    "passed": true,
+    "csp": null
+  }
+]

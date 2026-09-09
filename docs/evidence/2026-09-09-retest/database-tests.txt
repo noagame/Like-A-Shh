@@ -1,0 +1,48 @@
+PASS normal user cannot promote own role
+PASS normal user cannot create gallery even with legacy permissive policy
+PASS anonymous cannot create gallery
+PASS normal user cannot upload Storage object
+PASS normal user cannot forge consent
+PASS direct profile update cannot bypass adult age validation
+PASS admin can create gallery
+PASS profile SELECT isolates users despite legacy policy
+PASS zero capacity rejected
+PASS draft rejected
+PASS past event rejected
+PASS missing event rejected
+PASS 20 simultaneous reservations: exactly one winner, repeated booking idempotent
+PASS profile hiding preserves age and records consent atomically
+PASS account deletion removes Auth and data; deleted identity cannot write
+PASS Storage ownership blocks deletion without data loss
+PASS account deletion requires recent password authentication
+PASS cannot delete another account
+PASS signup trigger persists consent without a user session
+PASS unexpected FK error rolls back every account deletion step
+PASS whitelist exceeding capacity rolls back all registrations
+{
+  "passed": 21,
+  "failed": 0,
+  "tests": [
+    "normal user cannot promote own role",
+    "normal user cannot create gallery even with legacy permissive policy",
+    "anonymous cannot create gallery",
+    "normal user cannot upload Storage object",
+    "normal user cannot forge consent",
+    "direct profile update cannot bypass adult age validation",
+    "admin can create gallery",
+    "profile SELECT isolates users despite legacy policy",
+    "zero capacity rejected",
+    "draft rejected",
+    "past event rejected",
+    "missing event rejected",
+    "20 simultaneous reservations: exactly one winner, repeated booking idempotent",
+    "profile hiding preserves age and records consent atomically",
+    "account deletion removes Auth and data; deleted identity cannot write",
+    "Storage ownership blocks deletion without data loss",
+    "account deletion requires recent password authentication",
+    "cannot delete another account",
+    "signup trigger persists consent without a user session",
+    "unexpected FK error rolls back every account deletion step",
+    "whitelist exceeding capacity rolls back all registrations"
+  ]
+}

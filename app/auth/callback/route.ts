@@ -22,5 +22,7 @@ export async function GET(request: Request) {
   }
 
   // Redirección hacia la página de agradecimiento y confirmación exitosa
-  return NextResponse.redirect(`${origin}/auth/confirmado`);
+  const destination = searchParams.get("next") === "/auth/actualizar-password"
+    ? "/auth/actualizar-password" : "/auth/confirmado";
+  return NextResponse.redirect(`${origin}${destination}`);
 }

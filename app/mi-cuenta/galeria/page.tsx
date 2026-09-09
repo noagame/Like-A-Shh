@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import Image from "next/image";
 import HeartButton from "./HeartButton";
-import Link from "next/link";
 
 export default async function AlumnaGaleriaPage() {
   const supabase = await createClient();
@@ -53,7 +52,7 @@ export default async function AlumnaGaleriaPage() {
               {fotosDeGaleria.map((foto) => {
                 const totalLikes = foto.media_likes?.length || 0;
                 const hasLiked = Boolean(
-                  user && foto.media_likes?.some((l: any) => l.user_id === user.id)
+                  user && foto.media_likes?.some((l) => l.user_id === user.id)
                 );
 
                 return (

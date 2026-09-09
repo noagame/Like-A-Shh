@@ -1,10 +1,10 @@
-import { createClient } from "@/lib/supabase/server";
-import { createCategory, deleteCategory } from "./actions";
+import { requireAdmin } from "@/lib/auth/authorize";
+import { createCategoryForm, deleteCategory } from "./actions";
 import PanelInfo from "../components/PanelInfo";
 import BackButton from "@/app/admin/components/BackButton"; // 1. Importas el botón
 
 export default async function CategoriasPage() {
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
   const { data: categories } = await supabase.from("categories").select("*").order("name");
 
   return (
@@ -19,7 +19,7 @@ export default async function CategoriasPage() {
       />
 
       <div className="mt-6 bg-black border border-gray-800 p-4 rounded-lg max-w-2xl">
-        <form action={createCategory as any} className="flex items-end gap-4">
+        <form action={createCategoryForm} className="flex items-end gap-4">
           <div className="flex-1">
             <label className="block text-sm font-medium text-white mb-1">Nombre</label>
             <input

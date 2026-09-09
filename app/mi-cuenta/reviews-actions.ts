@@ -22,7 +22,7 @@ export async function submitEventReview(formData: FormData): Promise<{ success: 
     return { success: false, error: "No se encontró la clase asociada." };
   }
 
-  if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
     return { success: false, error: "La puntuación debe estar entre 1 y 5 estrellas." };
   }
 

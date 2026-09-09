@@ -1,0 +1,4 @@
+Navegador Codex, servidor local Next dev con Webpack en puerto 3100.
+/login: encabezado Iniciar sesión; campos correo y contraseña; botón ENTRAR.
+Al pulsar ¿Olvidaste tu contraseña?: tras la animación aparece Recuperar contraseña, un campo correo y botón ENVIAR ENLACE DE RECUPERACIÓN.
+No se enviaron formularios ni correos.

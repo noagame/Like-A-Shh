@@ -1,10 +1,10 @@
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/authorize";
 import BackButton from "@/app/admin/components/BackButton";
 import PanelInfo from "@/app/admin/components/PanelInfo";
 import { revalidatePath } from "next/cache";
 
 export default async function AjustesPage() {
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
   
   // Obtenemos los ajustes actuales desde Supabase
   const { data: settings } = await supabase
@@ -15,14 +15,16 @@ export default async function AjustesPage() {
   // Server Action incrustado para actualizar la base de datos
   async function updateSettings(formData: FormData) {
     "use server";
-    const supabaseClient = await createClient();
+    const { supabase: supabaseClient } = await requireAdmin();
     
-    await supabaseClient.from("site_settings").update({
+    const { error } = await supabaseClient.from("site_settings").update({
       site_title: formData.get("site_title"),
       site_description: formData.get("site_description"),
       seo_keywords: formData.get("seo_keywords"),
       primary_color: formData.get("primary_color"),
     }).eq("id", true); // Actualizamos la única fila existente
+
+    if (error) throw new Error("No se pudieron guardar los ajustes.");
 
     // Revalidamos todo el sitio para que el layout.tsx tome los nuevos metadatos
     revalidatePath("/", "layout"); 

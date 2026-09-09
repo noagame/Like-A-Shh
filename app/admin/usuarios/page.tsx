@@ -1,10 +1,10 @@
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/authorize";
 import Link from "next/link";
 import { deleteUserAction } from "./actions";
 import BackButton from "@/app/admin/components/BackButton";
 
 export default async function UsuariosPage() {
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
 
   // Consulta tolerante a cualquier esquema existente
   const { data: users, error } = await supabase
@@ -39,7 +39,7 @@ export default async function UsuariosPage() {
 
       {/* VISTA MÓVIL: Tarjetas individuales (< md) */}
       <div className="block md:hidden space-y-3">
-        {users?.map((user: any) => {
+        {users?.map((user) => {
           const displayName =
             user.full_name ||
             user.name ||
@@ -115,7 +115,7 @@ export default async function UsuariosPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-800/60">
-            {users?.map((user: any) => {
+            {users?.map((user) => {
               const displayName =
                 user.full_name ||
                 user.name ||

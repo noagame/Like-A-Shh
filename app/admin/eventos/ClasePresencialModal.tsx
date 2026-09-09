@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useMounted, useLocalDateTime } from "@/lib/hooks/client-state";
 import { createPortal } from "react-dom";
 import CategorySelect from "./nuevo/CategorySelect";
 import LocationInput from "./nuevo/LocationInput";
@@ -14,23 +15,25 @@ export default function ClasePresencialModal({
   categories: Category[];
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const [startValue, setStartValue] = useState("");
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
-  const nowIso = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-    .toISOString()
-    .slice(0, 16);
+  const nowIso = useLocalDateTime();
 
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
-    await createEvent(formData);
-    setIsSubmitting(false);
-    setIsOpen(false);
+    setErrorMessage(null);
+    try {
+      await createEvent(formData);
+      setIsOpen(false);
+    } catch {
+      setErrorMessage("No se pudo guardar. Revisa los datos e intenta nuevamente.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const modalContent = isOpen ? (
@@ -53,6 +56,7 @@ export default function ClasePresencialModal({
           </h2>
         </div>
 
+        {errorMessage && <p role="alert" className="mb-3 text-sm text-red-300">{errorMessage}</p>}
         <form action={handleSubmit} className="space-y-4 text-xs sm:text-sm">
           <div>
             <label className="mb-1 block font-medium text-white/70">Título de la clase</label>

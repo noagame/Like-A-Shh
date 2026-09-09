@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/authorize";
 
 import { updateGallery, deleteMedia } from "@/app/admin/medios/actions";
 import { notFound } from "next/navigation";
@@ -11,7 +11,7 @@ export default async function GalleryDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
 
   const { data: gallery } = await supabase
     .from("galleries")
@@ -28,9 +28,12 @@ export default async function GalleryDetailPage({
     .order("created_at", { ascending: false });
 
   const updateGalleryWithId = async (formData: FormData) => {
-    await updateGallery(id, formData);
+    "use server";
+    const result = await updateGallery(id, formData);
+    if (result.error) throw new Error(result.error);
   };
   const handleDeleteMedia = async (formData: FormData) => {
+    "use server";
     await deleteMedia(formData);
   };
 

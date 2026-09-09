@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/authorize";
 import { notFound } from "next/navigation";
 import { updateUser } from "../../actions";
 import BackButton from "@/app/admin/components/BackButton";
@@ -10,7 +10,7 @@ export default async function EditarUsuarioPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const supabase = await createClient();
+  const { supabase } = await requireAdmin();
 
   const { data: user, error } = await supabase
     .from("profiles")
