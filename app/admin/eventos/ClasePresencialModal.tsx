@@ -3,16 +3,11 @@
 import { useState } from "react";
 import { useMounted, useLocalDateTime } from "@/lib/hooks/client-state";
 import { createPortal } from "react-dom";
-import CategorySelect from "./nuevo/CategorySelect";
 import LocationInput from "./nuevo/LocationInput";
-import { createEvent } from "./actions";
+import type { CreateActivityResult } from "./actions";
 
-type Category = { id: string; name: string };
-
-export default function ClasePresencialModal({
-  categories = [],
-}: {
-  categories: Category[];
+export default function ClasePresencialModal({ createAction }: {
+  createAction: (formData: FormData) => Promise<CreateActivityResult>;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -27,8 +22,9 @@ export default function ClasePresencialModal({
     setIsSubmitting(true);
     setErrorMessage(null);
     try {
-      await createEvent(formData);
-      setIsOpen(false);
+      const result = await createAction(formData);
+      if (result.success) setIsOpen(false);
+      else setErrorMessage(result.error);
     } catch {
       setErrorMessage("No se pudo guardar. Revisa los datos e intenta nuevamente.");
     } finally {
@@ -69,10 +65,8 @@ export default function ClasePresencialModal({
             />
           </div>
 
-          <div>
-            <label className="mb-1 block font-medium text-white/70">Categoría</label>
-            <CategorySelect initialCategories={categories} />
-          </div>
+          <input type="hidden" name="activity_kind" value="presential" />
+          <p className="rounded-xl border border-pink-400/20 bg-pink-400/10 px-3 py-2 text-[11px] text-pink-100">Categoría asignada: <strong>Clase Particular Presencial</strong>.</p>
 
           <div>
             <LocationInput name="location" label="Estudio o Dirección" />
@@ -112,6 +106,11 @@ export default function ClasePresencialModal({
               defaultValue={1}
               className="w-full rounded-xl border border-white/10 bg-black/50 px-3 py-2.5 text-white focus:border-pink-400 focus:outline-none"
             />
+          </div>
+
+          <div>
+            <label className="mb-1 block font-medium text-white/70">Flyer o afiche <span className="text-white/40">(opcional)</span></label>
+            <input name="flyer" type="file" accept="image/png,image/jpeg,image/webp" className="block w-full rounded-xl border border-dashed border-white/15 bg-black/30 px-3 py-2 text-xs text-white/60 file:mr-3 file:rounded-lg file:border-0 file:bg-pink-400/15 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-pink-100" />
           </div>
 
           <input type="hidden" name="status" value="published" />

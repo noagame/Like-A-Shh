@@ -3,6 +3,7 @@ import Link from "next/link";
 import ClasesTomadasCarousel from "./UserEventsCarousel";
 import ClassesCarousel from "./components/ClassesCarousel";
 import { EventAssembler } from "@/lib/infrastructure/assemblers/EventAssembler";
+import HelpTooltip from "./components/HelpTooltip";
 
 export default async function MiCuentaPage() {
   const supabase = await createClient();
@@ -111,9 +112,7 @@ export default async function MiCuentaPage() {
   return (
     <div className="max-w-5xl mx-auto p-4 md:p-8">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-white" style={{ fontFamily: "var(--font-serif)" }}>
-          Resumen
-        </h1>
+        <div className="flex items-center gap-2"><h1 className="text-3xl font-bold text-white" style={{ fontFamily: "var(--font-serif)" }}>Resumen</h1><HelpTooltip label="Ayuda sobre el resumen">Aquí ves tu próxima reserva y el número de clases activas. Una clase activa es una inscripción cuyo término aún no ha pasado.</HelpTooltip></div>
         <p className="text-white/50 text-sm mt-1">Tu actividad en Like a Shh</p>
       </div>
 
@@ -168,12 +167,14 @@ export default async function MiCuentaPage() {
         </Link>
       </div>
 
+      <div className="mb-2 flex items-center gap-2"><h2 className="text-lg font-semibold text-white">Disponibles para ti</h2><HelpTooltip label="Ayuda para reservar">Inscríbete desde cada tarjeta. Si el cupo está completo, podrás ver el estado pero no reservar hasta que se libere un lugar.</HelpTooltip></div>
       <ClassesCarousel
         title="Clases y Workshops Disponibles"
         subtitle="Selecciona tus próximas sesiones con el profesor"
         items={clasesDisponibles}
       />
 
+      <div className="mt-8 flex items-center gap-2"><h2 className="text-lg font-semibold text-white">Historial</h2><HelpTooltip label="Ayuda sobre el historial">Aquí aparecen tus clases terminadas y, cuando esté disponible, podrás dejar tu reseña.</HelpTooltip></div>
       <ClasesTomadasCarousel clases={clasesTomadas} />
     </div>
   );

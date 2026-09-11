@@ -1,6 +1,6 @@
 import { requireAdmin } from "@/lib/auth/authorize";
 import Link from "next/link";
-import { changeEventStatus, deleteEvent, createEvent } from "./actions";
+import { changeEventStatus, deleteEvent, createEvent, createOnlineClass, createPresentialClass } from "./actions";
 import AutoSubmitSelect from "./AutoSubmitSelect";
 import PanelInfo from "@/app/admin/components/PanelInfo";
 import EventModal from "./EventModal";
@@ -80,9 +80,9 @@ export default async function AdminEventosPage({
 
           {/* Botones apilados en móvil y en fila en pantallas grandes */}
           <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 w-full lg:w-auto">
-            <EventModal createAction={createEvent} categories={categories || []} />
-            <ClaseOnlineModal categories={categories || []} />
-            <ClasePresencialModal categories={categories || []} />
+            <EventModal createAction={createEvent} />
+            <ClaseOnlineModal createAction={createOnlineClass} />
+            <ClasePresencialModal createAction={createPresentialClass} />
           </div>
         </div>
 
@@ -102,7 +102,7 @@ export default async function AdminEventosPage({
 
       <PanelInfo
         title="¿Para qué sirve este panel?"
-        description="Acá administras todas las sesiones, clases y workshops del sitio: crea nuevos eventos, cambia su estado (borrador/publicado/cancelado), edítalos o elimínalos. Solo los eventos en estado 'Publicado' se muestran en la landing pública."
+        description="Esta es la agenda única de actividades reservables: eventos, clases online y clases presenciales se guardan en la tabla events y se muestran aquí. La landing ahora usa esa misma agenda, por lo que no existen tarjetas ficticias. Los cursos grabados de Hotmart son otro producto y se administran en Gestión de Cursos Online."
       />
 
       {/* Filtros de Búsqueda */}

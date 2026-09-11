@@ -3,29 +3,80 @@
 import { uploadFlyer, rollbackFlyer } from "@/lib/infrastructure/factories/flyer";
 import { requireAdmin } from "@/lib/auth/authorize";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { validateEventDateRange } from "@/lib/event-date-validation";
 import { CommandInvoker } from "@/lib/application/commands/CommandInvoker";
 
-export async function createEvent(formData: FormData) {
+export type CreateActivityResult = { success: true } | { success: false; error: string };
+
+type ActivityKind = "event" | "online" | "presential";
+
+const ACTIVITY_CATEGORIES: Record<ActivityKind, { name: string; aliases: string[]; color: string }> = {
+  event: { name: "Evento", aliases: ["Evento"], color: "#D4AF37" },
+  online: { name: "Clase Particular Online", aliases: ["Clase Particular Online", "Clase Online", "Online"], color: "#48CAE4" },
+  presential: { name: "Clase Particular Presencial", aliases: ["Clase Particular Presencial", "Clase Presencial", "Presencial"], color: "#E0218A" },
+};
+
+async function resolveCategoryId(
+  supabase: Awaited<ReturnType<typeof requireAdmin>>["supabase"],
+  kind: ActivityKind,
+) {
+  const category = ACTIVITY_CATEGORIES[kind];
+
+  for (const name of category.aliases) {
+    const { data } = await supabase.from("categories").select("id").ilike("name", name).maybeSingle();
+    if (data?.id) return data.id;
+  }
+
+  // Las categorías de sistema son necesarias para que la agenda tenga una
+  // clasificación consistente. El administrador no debe crearlas a mano.
+  const { data, error } = await supabase
+    .from("categories")
+    .insert({ name: category.name, color: category.color })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    throw new Error("No se pudo preparar la categoría de esta actividad. Intenta nuevamente.");
+  }
+
+  return data.id;
+}
+
+async function createActivity(formData: FormData, kind: ActivityKind): Promise<CreateActivityResult> {
   const { supabase } = await requireAdmin();
-  const title = formData.get("title") as string;
-  const description = formData.get("description") as string;
+  const title = String(formData.get("title") ?? "").trim();
+  const description = String(formData.get("description") ?? "").trim();
   const start_time = formData.get("start_time") as string;
   const end_time = formData.get("end_time") as string;
-  const location = formData.get("location") as string;
+  const location = String(formData.get("location") ?? "").trim();
   const capacity = formData.get("capacity") ? Number(formData.get("capacity")) : null;
-  const category_id = formData.get("category_id") as string || null;
+  let category_id: string;
+  try {
+    category_id = await resolveCategoryId(supabase, kind);
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
   const status = (formData.get("status") as string) || "published";
   const flyerFile = formData.get("flyer") as File | null;
 
+  if (!title || !start_time || !end_time || (kind !== "event" && !location)) {
+    return { success: false, error: "Completa todos los campos obligatorios." };
+  }
+  if (capacity !== null && (!Number.isInteger(capacity) || capacity < 1)) {
+    return { success: false, error: "El cupo debe ser un número entero mayor que cero." };
+  }
   try {
     validateEventDateRange(start_time, end_time);
   } catch (error) {
-    redirect(`/admin/eventos?error=${encodeURIComponent((error as Error).message)}`);
+    return { success: false, error: (error as Error).message };
   }
 
-  const flyer = await uploadFlyer(supabase, flyerFile, "eventos", "flyers");
+  let flyer;
+  try {
+    flyer = await uploadFlyer(supabase, flyerFile, "eventos", "flyers");
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
   const image_url = flyer?.url ?? null;
 
   const commandInvoker = new CommandInvoker(supabase);
@@ -47,7 +98,7 @@ export async function createEvent(formData: FormData) {
 
       if (error) {
         await rollbackFlyer(supabase, flyer);
-        return { success: false, error: error.message };
+      return { success: false, error: error.message };
       }
 
       return {
@@ -58,12 +109,25 @@ export async function createEvent(formData: FormData) {
   });
 
   if (!result.success) {
-    redirect(`/admin/eventos?error=${encodeURIComponent(result.error ?? "No se pudo crear el evento.")}`);
+    return { success: false, error: result.error ?? "No se pudo crear la actividad." };
   }
 
   revalidatePath("/admin/eventos");
   revalidatePath("/");
-  redirect("/admin/eventos");
+  revalidatePath("/mi-cuenta");
+  return { success: true };
+}
+
+export async function createEvent(formData: FormData) {
+  return createActivity(formData, "event");
+}
+
+export async function createOnlineClass(formData: FormData) {
+  return createActivity(formData, "online");
+}
+
+export async function createPresentialClass(formData: FormData) {
+  return createActivity(formData, "presential");
 }
 
 export async function changeEventStatus(formData: FormData) {

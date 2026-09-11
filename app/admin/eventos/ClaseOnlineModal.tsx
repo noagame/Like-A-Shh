@@ -3,15 +3,10 @@
 import { useState } from "react";
 import { useMounted, useLocalDateTime } from "@/lib/hooks/client-state";
 import { createPortal } from "react-dom";
-import CategorySelect from "./nuevo/CategorySelect";
-import { createEvent } from "./actions";
+import type { CreateActivityResult } from "./actions";
 
-type Category = { id: string; name: string };
-
-export default function ClaseOnlineModal({
-  categories = [],
-}: {
-  categories: Category[];
+export default function ClaseOnlineModal({ createAction }: {
+  createAction: (formData: FormData) => Promise<CreateActivityResult>;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -26,8 +21,9 @@ export default function ClaseOnlineModal({
     setIsSubmitting(true);
     setErrorMessage(null);
     try {
-      await createEvent(formData);
-      setIsOpen(false);
+      const result = await createAction(formData);
+      if (result.success) setIsOpen(false);
+      else setErrorMessage(result.error);
     } catch {
       setErrorMessage("No se pudo guardar. Revisa los datos e intenta nuevamente.");
     } finally {
@@ -68,10 +64,8 @@ export default function ClaseOnlineModal({
             />
           </div>
 
-          <div>
-            <label className="mb-1 block font-medium text-white/70">Categoría</label>
-            <CategorySelect initialCategories={categories} />
-          </div>
+          <input type="hidden" name="activity_kind" value="online" />
+          <p className="rounded-xl border border-cyan-400/20 bg-cyan-400/10 px-3 py-2 text-[11px] text-cyan-100">Categoría asignada: <strong>Clase Particular Online</strong>.</p>
 
           <div>
             <label className="mb-1 block font-medium text-white/70">Link de reunión (Zoom / Meet)</label>
@@ -107,6 +101,15 @@ export default function ClaseOnlineModal({
                 className="w-full rounded-xl border border-white/10 bg-black/50 px-3 py-2 text-white focus:border-cyan-400 focus:outline-none [color-scheme:dark]"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="mb-1 block font-medium text-white/70">Cupos virtuales</label>
+            <input name="capacity" type="number" required min={1} defaultValue={1} className="w-full rounded-xl border border-white/10 bg-black/50 px-3 py-2.5 text-white focus:border-cyan-400 focus:outline-none" />
+          </div>
+          <div>
+            <label className="mb-1 block font-medium text-white/70">Flyer o afiche</label>
+            <input name="flyer" type="file" accept="image/png,image/jpeg,image/webp" className="block w-full rounded-xl border border-dashed border-white/15 bg-black/30 px-3 py-2 text-xs text-white/60 file:mr-3 file:rounded-lg file:border-0 file:bg-cyan-400/15 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-cyan-100" />
           </div>
 
           <input type="hidden" name="status" value="published" />

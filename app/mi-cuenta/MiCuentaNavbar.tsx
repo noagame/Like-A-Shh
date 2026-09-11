@@ -16,6 +16,7 @@ const navLinks = [
   { href: "/mi-cuenta/galeria", label: "Galeria" },
   { href: "/mi-cuenta/perfil", label: "Mi Perfil" },
   { href: "/mi-cuenta/explorar", label: "Explorar" },
+  { href: "/mi-cuenta/comunidad", label: "Comunidad" },
 ];
 
 export default function MiCuentaNavbar({ userName }: MiCuentaNavbarProps) {

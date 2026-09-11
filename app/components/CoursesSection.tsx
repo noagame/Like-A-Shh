@@ -2,11 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import AutoplayCarousel from "./AutoplayCarousel";
 import PricingTable from "./PricingTable";
 
-import {
-  StandardProgramCard,
-  CourseItem,
-  ClassItem,
-} from "./CourseCards";
+import { StandardProgramCard, CourseItem, ClassItem } from "./CourseCards";
 
 const FALLBACK_SUPABASE_COURSE_IMAGE =
   "https://ssgcrrblxmmqurjlwope.supabase.co/storage/v1/object/public/galerias/cursos/curso_b4285aab-184e-4534-9398-1869ac6dd017.jpg";
@@ -69,98 +65,30 @@ export default async function CoursesSection() {
   const finalHotmartList =
     hotmartCoursesList.length > 0 ? hotmartCoursesList : [flexCourse];
 
-  // 4. Clases y Sesiones desde la base de datos
+  // 4. Sesiones programadas. La landing y /admin/eventos leen la misma tabla.
   const { data: rawEvents } = await supabase
     .from("events")
-    .select("id, title, description, start_time, location, image_url")
+    .select("id, title, description, start_time, location, image_url, categories(name)")
     .eq("status", "published")
+    .gte("start_time", new Date().toISOString())
     .order("start_time", { ascending: true });
 
-  const allEvents: ClassItem[] = (rawEvents as unknown as ClassItem[]) ?? [];
+  type ScheduledClass = ClassItem & { categories: { name: string } | null };
+  const allEvents: ScheduledClass[] = (rawEvents as unknown as ScheduledClass[]) ?? [];
 
-  // 5. FILTRADO POR NOMBRE: Clases Presenciales vs Clases Online
-  const presencialClassesRaw = allEvents.filter((e) =>
-    e.title.toLowerCase().includes("presencial")
+  const categoryOrTitle = (event: ScheduledClass) =>
+    `${event.categories?.name ?? ""} ${event.title}`.toLocaleLowerCase("es-CL");
+
+  // La categoría es la fuente de verdad; el título solo respalda sesiones antiguas.
+  const presencialClasses = allEvents.filter((event) => categoryOrTitle(event).includes("presencial"));
+
+  const onlineClasses = allEvents.filter((event) => categoryOrTitle(event).includes("online"));
+
+  const emptySessionCard = (message: string) => (
+    <div className="flex min-h-56 items-center justify-center rounded-2xl border border-dashed border-white/15 bg-white/[0.03] p-6 text-center text-sm leading-relaxed text-white/55">
+      {message}
+    </div>
   );
-
-  const onlineClassesRaw = allEvents.filter(
-    (e) =>
-      e.title.toLowerCase().includes("online") &&
-      !e.title.toLowerCase().includes("flexibiliza")
-  );
-
-  // Clases por defecto (4 para cada carrusel con "Agenda aquí")
-  const defaultPresencialClasses: ClassItem[] = [
-    {
-      id: "cp-1",
-      title: "Clase Presencial Pole Sport",
-      description: "Agenda tu clase particular Presencial de Pole Sport multinivel. Duración: 1 hora.",
-      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
-      url: "#",
-    },
-    {
-      id: "cp-2",
-      title: "Clase Presencial Exotic Pole",
-      description: "Entrena técnica de tacos, fluidez y secuencias coreográficas de forma presencial.",
-      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
-      url: "#",
-    },
-    {
-      id: "cp-3",
-      title: "Clase Presencial Flexibilidad Activa",
-      description: "Sesión presencial asistida para aperturas y arcos corporales seguros.",
-      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
-      url: "#",
-    },
-    {
-      id: "cp-4",
-      title: "Clase Presencial Chair & Floorwork",
-      description: "Explora la danza y musicalidad en estudio con elementos escénicos.",
-      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
-      url: "#",
-    },
-  ];
-
-  const defaultOnlineClasses: ClassItem[] = [
-    {
-      id: "co-1",
-      title: "Clase Online Flexibilidad Sincrónica",
-      description: "Agenda tu clase particular Online en vivo de Flexibilidad. Duración: 1 hora vía Zoom.",
-      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
-      url: "#",
-    },
-    {
-      id: "co-2",
-      title: "Clase Online Exotic Pole",
-      description: "Agenda tu clase particular Online de Exotic Pole Multinivel vía Zoom.",
-      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
-      url: "#",
-    },
-    {
-      id: "co-3",
-      title: "Clase Online Fortalecimiento Muscular",
-      description: "Acondicionamiento físico intensivo adaptado para practicar en casa.",
-      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
-      url: "#",
-    },
-    {
-      id: "co-4",
-      title: "Clase Online Articular Flow",
-      description: "Movilidad y prevención de lesiones en sesiones sincrónicas guiadas.",
-      image_url: FALLBACK_SUPABASE_COURSE_IMAGE,
-      url: "#",
-    },
-  ];
-
-  const presencialCarouselList = [
-    ...presencialClassesRaw,
-    ...defaultPresencialClasses.slice(presencialClassesRaw.length),
-  ].slice(0, 4);
-
-  const onlineClassesCarouselList = [
-    ...onlineClassesRaw,
-    ...defaultOnlineClasses.slice(onlineClassesRaw.length),
-  ].slice(0, 4);
 
   return (
     <section id="cursos" className="py-16 md:py-24 section-spacing">
@@ -204,7 +132,7 @@ export default async function CoursesSection() {
           subtitle="Sesiones particulares sincrónicas vía Zoom"
           interval={4000}
         >
-          {onlineClassesCarouselList.map((clase) => (
+          {onlineClasses.length > 0 ? onlineClasses.map((clase) => (
             <StandardProgramCard
               key={clase.id}
               title={clase.title}
@@ -212,9 +140,9 @@ export default async function CoursesSection() {
               imageUrl={clase.image_url || FALLBACK_SUPABASE_COURSE_IMAGE}
               badgeText="Online en Vivo"
               buttonText="Agenda aquí"
-              url={clase.url || "#"}
+              url="/mi-cuenta/explorar"
             />
-          ))}
+          )) : [emptySessionCard("No hay clases online programadas por ahora. Vuelve pronto para revisar la agenda.")]}
         </AutoplayCarousel>
 
         {/* 4. CARRUSEL 3: Clases Planificadas Presenciales */}
@@ -223,7 +151,7 @@ export default async function CoursesSection() {
           subtitle="Entrenamiento personalizado directo en estudio"
           interval={4000}
         >
-          {presencialCarouselList.map((clase) => (
+          {presencialClasses.length > 0 ? presencialClasses.map((clase) => (
             <StandardProgramCard
               key={clase.id}
               title={clase.title}
@@ -231,9 +159,9 @@ export default async function CoursesSection() {
               imageUrl={clase.image_url || FALLBACK_SUPABASE_COURSE_IMAGE}
               badgeText="Presencial en Estudio"
               buttonText="Agenda aquí"
-              url={clase.url || "#"}
+              url="/mi-cuenta/explorar"
             />
-          ))}
+          )) : [emptySessionCard("No hay clases presenciales programadas por ahora. Vuelve pronto para revisar la agenda.")]}
         </AutoplayCarousel>
         <PricingTable />
       </div>

@@ -86,9 +86,7 @@ export default async function GalleryDetailPage({
                 className="w-full aspect-square object-cover rounded-lg border border-white/10"
               />
               <form action={handleDeleteMedia} className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <input type="hidden" name="media_id" value={item.id} />
-                <input type="hidden" name="mongo_file_id" value={item.storage_path} />
-                <input type="hidden" name="gallery_id" value={id} />
+                <input type="hidden" name="id" value={item.id} />
                 <button type="submit" className="bg-red-600 text-white text-xs px-2 py-1 rounded">
                   Eliminar
                 </button>

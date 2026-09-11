@@ -32,6 +32,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   agentRules: false,
+  // Permite que las pruebas E2E locales consuman el servidor de desarrollo sin
+  // bloquear los recursos de Fast Refresh por comprobación de origen.
+  allowedDevOrigins: ["127.0.0.1"],
   images: {
     remotePatterns: [
       {
@@ -39,7 +42,13 @@ const nextConfig: NextConfig = {
         hostname: new URL(process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://invalid.local').hostname,
         pathname: '/storage/v1/object/public/**',
       },
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co',
+        pathname: '/storage/v1/object/public/**',
+      },
     ],
+    qualities: [75, 100],
   },
   transpilePackages: [
     "@fullcalendar/common",

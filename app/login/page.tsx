@@ -245,10 +245,8 @@ export default function LoginPage() {
                         className="mt-1 rounded bg-white/5 accent-[#E09F67] cursor-pointer"
                       />
                       <label htmlFor="auth-privacy" className="text-[11px] text-white/60 leading-tight">
-                        Acepto los términos y la{" "}
-                        <Link href="/privacidad" target="_blank" className="underline text-white/80 hover:text-white">
-                          política de privacidad (Ley 21.719)
-                        </Link>
+                        Acepto los <Link href="/terminos" target="_blank" className="underline text-white/80 hover:text-white">términos y condiciones</Link> y la{" "}
+                        <Link href="/privacidad" target="_blank" className="underline text-white/80 hover:text-white">política de privacidad</Link>.
                       </label>
                     </div>
                   </>

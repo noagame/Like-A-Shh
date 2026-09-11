@@ -18,6 +18,7 @@ export class EventQueryBuilder {
   private publishedOnly = false;
   private futureOnly = false;
   private category: string | null = null;
+  private categoryName: string | null = null;
   private ascending = true;
 
   constructor(supabaseClient: SupabaseClient) {
@@ -43,13 +44,20 @@ export class EventQueryBuilder {
     return this;
   }
 
+  /** Restricts public listings to one canonical category, not a title convention. */
+  public porNombreCategoria(categoryName: string): this {
+    this.categoryName = categoryName;
+    return this;
+  }
+
   public ordenarCronologico(): this {
     this.ascending = true;
     return this;
   }
 
   public async execute(): Promise<EventRecord[]> {
-    let query = this.client.from("events").select("id, title, description, start_time, end_time, location, capacity, status, category_id, categories(id, name, color), image_url");
+    const categoryJoin = this.categoryName ? "categories!inner(id, name, color)" : "categories(id, name, color)";
+    let query = this.client.from("events").select(`id, title, description, start_time, end_time, location, capacity, status, category_id, ${categoryJoin}, image_url`);
 
     if (this.publishedOnly) {
       query = query.eq("status", "published");
@@ -61,6 +69,10 @@ export class EventQueryBuilder {
 
     if (this.category) {
       query = query.eq("category_id", this.category);
+    }
+
+    if (this.categoryName) {
+      query = query.eq("categories.name", this.categoryName);
     }
 
     const { data, error } = await query.order("start_time", { ascending: this.ascending });

@@ -16,6 +16,8 @@ const navLinks = [
   { href: "/admin/dashboard", label: "Panel Analitico" },
   { href: "/admin/usuarios", label: "Gestión de Usuarios" },
   { href: "/admin/cursos", label: "Gestión de Cursos Online" },
+  { href: "/admin/blog", label: "Blog" },
+  { href: "/admin/comunidad", label: "Moderación Comunidad" },
   { href: "/admin/ajustes", label: "Ajustes" },
 ];
 

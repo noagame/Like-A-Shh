@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import PerfilForm from "./PerfilForm";
 import PrivacidadPanel from "./PrivacidadPanel";
+import HelpTooltip from "../components/HelpTooltip";
 
 export default async function PerfilPage() {
   const supabase = await createClient();
@@ -23,9 +24,7 @@ export default async function PerfilPage() {
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-gold" style={{ fontFamily: "var(--font-serif)" }}>
-          Perfil y Mis Datos
-        </h1>
+        <div className="flex items-center gap-2"><h1 className="text-3xl font-bold text-gold" style={{ fontFamily: "var(--font-serif)" }}>Perfil y Mis Datos</h1><HelpTooltip label="Ayuda sobre privacidad">Puedes rectificar tus datos, ocultar información opcional o solicitar la eliminación de tu cuenta. Revisa el panel de privacidad antes de confirmar una acción.</HelpTooltip></div>
         <p className="text-white/50 text-sm mt-1">
           Administra tu identidad y la protección de tus datos personales.
         </p>

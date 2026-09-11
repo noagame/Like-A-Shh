@@ -56,7 +56,7 @@ export default function TerminosPage() {
               className="text-white/40 text-sm tracking-wider uppercase"
               style={{ fontFamily: "var(--font-sans)" }}
             >
-              Última actualización: 18 de Junio de 2026
+              Última actualización: 11 de septiembre de 2026
             </p>
           </div>
 
@@ -99,13 +99,28 @@ export default function TerminosPage() {
               </ul>
             </section>
 
-            {/* Sección 3 */}
             <section className="space-y-3">
               <h2
                 className="text-2xl sm:text-3xl font-bold text-gold"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
-                3. Propiedad Intelectual y Uso del Contenido
+                3. Cuenta, datos de contacto y notificaciones
+              </h2>
+              <p>
+                Para crear una cuenta y gestionar reservas, el usuario debe proporcionar información exacta y mantenerla actualizada. El correo electrónico y, cuando sea proporcionado, el número telefónico se utilizarán para comunicaciones necesarias sobre la cuenta y los servicios solicitados: confirmaciones, cambios de horario o ubicación, recordatorios, cancelaciones, seguridad y soporte.
+              </p>
+              <p>
+                En futuras implementaciones, Like a SHH podrá remitir estas notificaciones por correo electrónico, SMS, WhatsApp u otros canales habilitados. Las comunicaciones promocionales o comerciales requerirán una autorización opcional y separada; negarse a ellas no afectará el acceso a clases ni reservas vigentes. Los detalles se encuentran en la <Link href="/privacidad" className="text-gold underline hover:text-gold-light">Política de Privacidad</Link>.
+              </p>
+            </section>
+
+            {/* Sección 4 */}
+            <section className="space-y-3">
+              <h2
+                className="text-2xl sm:text-3xl font-bold text-gold"
+                style={{ fontFamily: "var(--font-serif)" }}
+              >
+                4. Propiedad Intelectual y Uso del Contenido
               </h2>
               <p>
                 Todos los derechos de propiedad intelectual del diseño de este sitio web, estructura, logotipos, marcas comerciales, coreografías didácticas, textos, y el material fotográfico y audiovisual exhibido en las galerías de eventos:
@@ -120,13 +135,13 @@ export default function TerminosPage() {
               </p>
             </section>
 
-            {/* Sección 4 */}
+            {/* Sección 5 */}
             <section className="space-y-3">
               <h2
                 className="text-2xl sm:text-3xl font-bold text-gold"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
-                4. Exclusión de Responsabilidad y Salud
+                5. Exclusión de Responsabilidad y Salud
               </h2>
               <p>
                 La práctica del pole dance, danza exotic y entrenamiento de flexibilidad conlleva exigencias físicas de nivel medio y alto. Al utilizar nuestro material educativo y participar de nuestros programas, el usuario declara estar en condiciones óptimas de salud y asume voluntariamente los riesgos físicos inherentes al ejercicio corporal.
@@ -136,13 +151,13 @@ export default function TerminosPage() {
               </p>
             </section>
 
-            {/* Sección 5 */}
+            {/* Sección 6 */}
             <section className="space-y-3">
               <h2
                 className="text-2xl sm:text-3xl font-bold text-gold"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
-                5. Modificaciones y Ley Aplicable
+                6. Modificaciones y Ley Aplicable
               </h2>
               <p>
                 Nos reservamos el derecho a modificar estos Términos y Condiciones en cualquier momento sin previo aviso. Cualquier modificación entrará en vigor inmediatamente después de su publicación en este sitio web.

@@ -121,10 +121,8 @@ export default function RegistroPage() {
             className="mt-1 accent-gold cursor-pointer"
           />
           <label htmlFor="privacy" className="text-xs text-white/60">
-            Acepto los términos y la{" "}
-            <Link href="/privacidad" className="text-gold underline hover:text-gold-light">
-              política de privacidad (Ley 21.719)
-            </Link>
+            Acepto los <Link href="/terminos" className="text-gold underline hover:text-gold-light">términos y condiciones</Link> y la{" "}
+            <Link href="/privacidad" className="text-gold underline hover:text-gold-light">política de privacidad</Link>.
           </label>
         </div>
         {errors.accepted_privacy && <p className="text-red-400 text-xs">{errors.accepted_privacy.message}</p>}

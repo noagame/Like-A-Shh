@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import AttendButton from "./AttendButton";
+import HelpTooltip from "../components/HelpTooltip";
 
 const CATEGORIA_COLOR_FALLBACK = "#D4AF37";
 
@@ -75,12 +76,10 @@ export default async function ExplorarPage({
     <div>
       <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
         <div>
-          <h1
+          <div className="flex items-center gap-2"><h1
             className="text-2xl sm:text-3xl font-bold text-white"
             style={{ fontFamily: "var(--font-serif)" }}
-          >
-            Explorar
-          </h1>
+          >Explorar</h1><HelpTooltip label="Ayuda para explorar">Usa los filtros para ver una categoría. Cada color identifica su categoría; dorado es la selección actual. Revisa fecha, lugar y cupos antes de inscribirte.</HelpTooltip></div>
           <p className="text-white/50 text-sm mt-1">Clases, eventos y workshops disponibles</p>
         </div>
 

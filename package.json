@@ -9,6 +9,8 @@
     "lint": "eslint",
     "doctor": "npx react-doctor@latest",
     "test:run": "vitest run",
+    "test:e2e": "playwright test",
+    "supabase:blog:deploy": "bash scripts/deploy-blog-community.sh",
     "typecheck": "tsc --noEmit --incremental false",
     "qa": "npm run lint -- --max-warnings 0 && npm run typecheck && npm run test:run && npm run build"
   },
@@ -30,6 +32,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",

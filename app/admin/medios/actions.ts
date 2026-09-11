@@ -49,7 +49,7 @@ export async function uploadMedia(galleryId: string, formData: FormData) {
 // 2. Eliminar imagen de Storage y DB
 export async function deleteMedia(formData: FormData) {
   const { supabase } = await requireAdmin();
-  const id = formData.get("id") as string;
+  const id = String(formData.get("id") ?? formData.get("media_id") ?? "");
   z.uuid().parse(id);
   const { data: media, error: readError } = await supabase.from("media").select("storage_path").eq("id", id).single();
   if (readError || !media) throw new Error("No se encontró la imagen.");

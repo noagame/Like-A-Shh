@@ -8,6 +8,7 @@ export class EventController {
     const events = await EventQueryBuilder.from(supabase)
       .soloPublicados()
       .soloFuturos()
+      .porNombreCategoria("Evento")
       .ordenarCronologico()
       .execute();
 

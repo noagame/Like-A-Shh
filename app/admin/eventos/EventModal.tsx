@@ -4,16 +4,12 @@ import { useState } from "react";
 import { useMounted, useLocalDateTime } from "@/lib/hooks/client-state";
 import { createPortal } from "react-dom";
 import LocationInput from "./nuevo/LocationInput";
-import CategorySelect from "./nuevo/CategorySelect";
-
-type Category = { id: string; name: string };
+import type { CreateActivityResult } from "./actions";
 
 export default function EventModal({
   createAction,
-  categories = [],
 }: {
-  createAction: (formData: FormData) => Promise<void>;
-  categories: Category[];
+  createAction: (formData: FormData) => Promise<CreateActivityResult>;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -28,8 +24,9 @@ export default function EventModal({
     setIsSubmitting(true);
     setErrorMessage(null);
     try {
-      await createAction(formData);
-      setIsOpen(false);
+      const result = await createAction(formData);
+      if (result.success) setIsOpen(false);
+      else setErrorMessage(result.error);
     } catch {
       setErrorMessage("No se pudo guardar. Revisa los datos e intenta nuevamente.");
     } finally {
@@ -54,7 +51,7 @@ export default function EventModal({
             Evento General
           </p>
           <h2 className="mt-1 text-xl sm:text-2xl font-bold text-white">
-            Nuevo evento / clase
+            Agregar evento
           </h2>
         </div>
 
@@ -71,10 +68,8 @@ export default function EventModal({
             />
           </div>
 
-          <div>
-            <label className="mb-1 block font-medium text-white/70">Categoría</label>
-            <CategorySelect initialCategories={categories} />
-          </div>
+          <input type="hidden" name="activity_kind" value="event" />
+          <p className="rounded-xl border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-[11px] text-amber-100">Categoría asignada: <strong>Evento</strong>. Solo esta modalidad se considera para la cartelera pública.</p>
 
           <div>
             <label className="mb-1 block font-medium text-white/70">Descripción</label>
@@ -109,6 +104,11 @@ export default function EventModal({
                 className="w-full rounded-xl border border-white/10 bg-black/50 px-3 py-2 text-white focus:border-amber-400 focus:outline-none [color-scheme:dark]"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="mb-1 block font-medium text-white/70">Flyer o afiche</label>
+            <input name="flyer" type="file" accept="image/png,image/jpeg,image/webp" className="block w-full rounded-xl border border-dashed border-white/15 bg-black/30 px-3 py-2 text-xs text-white/60 file:mr-3 file:rounded-lg file:border-0 file:bg-amber-400/15 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-amber-200" />
           </div>
 
           <div>

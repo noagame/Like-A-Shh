@@ -1,0 +1,13 @@
+import { createClient } from "@/lib/supabase/server";
+import { CommunityCommentForm, CommunityComposer } from "./CommunityComposer";
+import HelpTooltip from "../components/HelpTooltip";
+
+type CommunityPost = { id: string; title: string; body: string; status: string; created_at: string; profiles: { full_name: string | null } | null; community_comments: Array<{ id: string; body: string; created_at: string; profiles: { full_name: string | null } | null }> };
+
+export default async function CommunityPage() {
+  const supabase = await createClient();
+  const { data } = await supabase.from("community_posts").select("id,title,body,status,created_at,profiles!community_posts_user_id_fkey(full_name),community_comments(id,body,created_at,status,profiles!community_comments_user_id_fkey(full_name))").order("created_at", { ascending: false });
+  const posts = (data ?? []) as unknown as CommunityPost[];
+  return <div className="mx-auto max-w-4xl space-y-6"><div><div className="flex items-center gap-2"><h1 className="text-3xl font-bold text-white" style={{ fontFamily: "var(--font-serif)" }}>Comunidad</h1><HelpTooltip label="Normas de la comunidad">Comparte experiencias y preguntas con respeto. Tu publicación y comentarios se muestran después de la moderación.</HelpTooltip></div><p className="mt-1 text-sm text-white/55">Un espacio cuidado para aprender juntas.</p></div><CommunityComposer />
+    <section aria-label="Conversaciones aprobadas" className="space-y-4">{posts.length ? posts.map((post) => <article key={post.id} className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 backdrop-blur-xl sm:p-5"><div className="flex flex-wrap items-center gap-2 text-[11px] text-white/45"><span>{post.profiles?.full_name ?? "Alumna"}</span><span>•</span><time>{new Date(post.created_at).toLocaleDateString("es-CL")}</time>{post.status !== "approved" && <span className="rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-2 py-0.5 text-[#f4d57a]">En moderación</span>}</div><h2 className="mt-2 text-lg font-bold text-white">{post.title}</h2><p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-white/70">{post.body}</p>{post.status === "approved" && <><div className="mt-4 space-y-2">{post.community_comments.map((comment) => <div key={comment.id} className="rounded-xl bg-black/20 px-3 py-2 text-xs text-white/65"><span className="font-semibold text-white/85">{comment.profiles?.full_name ?? "Alumna"}: </span>{comment.body}</div>)}</div><CommunityCommentForm postId={post.id} /></>}</article>) : <p className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-sm text-white/50">Aún no hay conversaciones. Sé la primera en compartir.</p>}</section></div>;
+}

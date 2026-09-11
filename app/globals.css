@@ -192,3 +192,110 @@ body {
 .accordion-content.open {
   max-height: 300px;
 }
+
+/* FullCalendar: override the library's light defaults inside the student area. */
+.likeashh-calendar .fc {
+  --fc-border-color: rgba(255, 255, 255, 0.12);
+  --fc-button-bg-color: rgba(72, 202, 228, 0.16);
+  --fc-button-border-color: rgba(72, 202, 228, 0.25);
+  --fc-button-hover-bg-color: rgba(72, 202, 228, 0.28);
+  --fc-button-hover-border-color: rgba(72, 202, 228, 0.55);
+  --fc-button-active-bg-color: #D4AF37;
+  --fc-button-active-border-color: #D4AF37;
+  --fc-page-bg-color: #111111;
+  --fc-neutral-bg-color: #151515;
+  --fc-today-bg-color: rgba(212, 175, 55, 0.16);
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.likeashh-calendar .fc .fc-scrollgrid,
+.likeashh-calendar .fc .fc-scrollgrid-section,
+.likeashh-calendar .fc .fc-scrollgrid-section > td,
+.likeashh-calendar .fc .fc-daygrid-body,
+.likeashh-calendar .fc .fc-daygrid-body table {
+  background: #111111;
+}
+
+.likeashh-calendar .fc .fc-col-header-cell,
+.likeashh-calendar .fc .fc-col-header-cell-cushion {
+  background: #171717;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.likeashh-calendar .fc .fc-col-header-cell-cushion {
+  display: block;
+  padding: 0.8rem 0.25rem;
+  text-decoration: none;
+}
+
+.likeashh-calendar .fc .fc-daygrid-day,
+.likeashh-calendar .fc .fc-daygrid-day-frame,
+.likeashh-calendar .fc .fc-daygrid-day-bg {
+  background: #111111;
+}
+
+.likeashh-calendar .fc .fc-daygrid-day.fc-day-today,
+.likeashh-calendar .fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-frame {
+  background: rgba(212, 175, 55, 0.16);
+}
+
+.likeashh-calendar .fc .fc-daygrid-day-number {
+  color: rgba(255, 255, 255, 0.88);
+  padding: 0.45rem;
+  text-decoration: none;
+}
+
+.likeashh-calendar .fc .fc-day-other .fc-daygrid-day-number {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.likeashh-calendar .fc .fc-toolbar {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.likeashh-calendar .fc .fc-toolbar-title {
+  color: #ffffff;
+  font-size: clamp(1.25rem, 4vw, 1.85rem);
+  font-weight: 700;
+}
+
+.likeashh-calendar .fc .fc-button {
+  box-shadow: none;
+  color: #d9f9ff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.likeashh-calendar .fc .fc-button:focus-visible {
+  box-shadow: 0 0 0 2px #48CAE4;
+}
+
+.likeashh-calendar .fc .fc-button-active {
+  color: #111111;
+}
+
+.likeashh-calendar .fc .fc-daygrid-event {
+  border-radius: 0.45rem;
+  padding: 0.12rem 0.3rem;
+  font-size: 0.7rem;
+}
+
+@media (max-width: 640px) {
+  .likeashh-calendar .fc .fc-toolbar-chunk:last-child {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .likeashh-calendar .fc .fc-col-header-cell-cushion {
+    font-size: 0.58rem;
+    letter-spacing: 0.04em;
+  }
+}

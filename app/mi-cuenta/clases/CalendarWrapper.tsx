@@ -21,13 +21,27 @@ type CalendarWrapperProps = {
 
 export default function CalendarWrapper({ events, onEventClick }: CalendarWrapperProps) {
   return (
-    <FullCalendar
+    <div className="likeashh-calendar">
+      <FullCalendar
       plugins={calendarPlugins}
       initialView="dayGridMonth"
       locale="es"
       height="auto"
+      firstDay={1}
+      fixedWeekCount={false}
+      showNonCurrentDates={false}
+      dayMaxEventRows={2}
+      headerToolbar={{
+        left: "title",
+        center: "",
+        right: "today prev,next",
+      }}
+      buttonText={{ today: "Hoy" }}
+      eventTimeFormat={{ hour: "2-digit", minute: "2-digit", hour12: false }}
+      eventDisplay="block"
       events={events}
       eventClick={onEventClick}
-    />
+      />
+    </div>
   );
 }

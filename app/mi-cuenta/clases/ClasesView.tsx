@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import dynamic from "next/dynamic";
 import { cancelAttendance } from "@/app/mi-cuenta/actions";
+import HelpTooltip from "../components/HelpTooltip";
 
 // QA ARQUITECTURA: Importamos dinámicamente NUESTRO wrapper, 
 // aislando por completo las clases de FullCalendar del servidor de Next.js
@@ -53,9 +54,7 @@ export default function ClasesView({ clases }: { clases: Clase[] }) {
       {/* --- Encabezado y Controles (Igual que antes) --- */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight" style={{ fontFamily: "var(--font-serif)" }}>
-            Mis clases
-          </h1>
+          <div className="flex items-center gap-2"><h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight" style={{ fontFamily: "var(--font-serif)" }}>Mis clases</h1><HelpTooltip label="Ayuda sobre mis clases">Aquí están tus reservas vigentes. Usa Tabla o Calendario para verlas y pulsa Cancelar solo si no podrás asistir; la disponibilidad se actualizará para otras alumnas.</HelpTooltip></div>
           <p className="text-white/50 text-sm mt-1">
             {clases.length} {clases.length === 1 ? "clase activa" : "clases activas"}
           </p>
