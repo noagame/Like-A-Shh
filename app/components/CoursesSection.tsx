@@ -61,6 +61,16 @@ export default async function CoursesSection() {
       c.title.toLowerCase().includes("flexibiliza")
   );
 
+  // Los cursos administrados desde /admin/cursos también pueden representar
+  // modalidades de clase. El título es el criterio solicitado para ubicarlos
+  // en el carrusel correcto, sin excluir las sesiones fechadas de la agenda.
+  const onlineCourses = allCourses.filter((course) =>
+    course.title.toLocaleLowerCase("es-CL").includes("online")
+  );
+  const presencialCourses = allCourses.filter((course) =>
+    course.title.toLocaleLowerCase("es-CL").includes("presencial")
+  );
+
   // Fallback si la BD aún no tiene los cursos creados
   const finalHotmartList =
     hotmartCoursesList.length > 0 ? hotmartCoursesList : [flexCourse];
@@ -132,17 +142,35 @@ export default async function CoursesSection() {
           subtitle="Sesiones particulares sincrónicas vía Zoom"
           interval={4000}
         >
-          {onlineClasses.length > 0 ? onlineClasses.map((clase) => (
-            <StandardProgramCard
-              key={clase.id}
-              title={clase.title}
-              description={clase.description || "Agenda tu clase particular online en vivo."}
-              imageUrl={clase.image_url || FALLBACK_SUPABASE_COURSE_IMAGE}
-              badgeText="Online en Vivo"
-              buttonText="Agenda aquí"
-              url="/mi-cuenta/explorar"
-            />
-          )) : [emptySessionCard("No hay clases online programadas por ahora. Vuelve pronto para revisar la agenda.")]}
+          {onlineCourses.length + onlineClasses.length > 0
+            ? [
+                ...onlineCourses.map((course) => (
+                  <StandardProgramCard
+                    key={`course-${course.id}`}
+                    title={course.title}
+                    description={course.description}
+                    imageUrl={course.image_url}
+                    badgeText="Clase Online"
+                    buttonText="Agenda aquí"
+                    url={course.url}
+                    courseId={course.id}
+                    liked={likedCourseIds.has(course.id)}
+                    likesCount={courseLikeMap.get(course.id) ?? 0}
+                  />
+                )),
+                ...onlineClasses.map((clase) => (
+                  <StandardProgramCard
+                    key={`event-${clase.id}`}
+                    title={clase.title}
+                    description={clase.description || "Agenda tu clase particular online en vivo."}
+                    imageUrl={clase.image_url || FALLBACK_SUPABASE_COURSE_IMAGE}
+                    badgeText="Online en Vivo"
+                    buttonText="Agenda aquí"
+                    url="/mi-cuenta/explorar"
+                  />
+                )),
+              ]
+            : [emptySessionCard("No hay clases online programadas por ahora. Vuelve pronto para revisar la agenda.")]}
         </AutoplayCarousel>
 
         {/* 4. CARRUSEL 3: Clases Planificadas Presenciales */}
@@ -151,17 +179,35 @@ export default async function CoursesSection() {
           subtitle="Entrenamiento personalizado directo en estudio"
           interval={4000}
         >
-          {presencialClasses.length > 0 ? presencialClasses.map((clase) => (
-            <StandardProgramCard
-              key={clase.id}
-              title={clase.title}
-              description={clase.description || "Agenda tu clase presencial personalizada."}
-              imageUrl={clase.image_url || FALLBACK_SUPABASE_COURSE_IMAGE}
-              badgeText="Presencial en Estudio"
-              buttonText="Agenda aquí"
-              url="/mi-cuenta/explorar"
-            />
-          )) : [emptySessionCard("No hay clases presenciales programadas por ahora. Vuelve pronto para revisar la agenda.")]}
+          {presencialCourses.length + presencialClasses.length > 0
+            ? [
+                ...presencialCourses.map((course) => (
+                  <StandardProgramCard
+                    key={`course-${course.id}`}
+                    title={course.title}
+                    description={course.description}
+                    imageUrl={course.image_url}
+                    badgeText="Clase Presencial"
+                    buttonText="Agenda aquí"
+                    url={course.url}
+                    courseId={course.id}
+                    liked={likedCourseIds.has(course.id)}
+                    likesCount={courseLikeMap.get(course.id) ?? 0}
+                  />
+                )),
+                ...presencialClasses.map((clase) => (
+                  <StandardProgramCard
+                    key={`event-${clase.id}`}
+                    title={clase.title}
+                    description={clase.description || "Agenda tu clase presencial personalizada."}
+                    imageUrl={clase.image_url || FALLBACK_SUPABASE_COURSE_IMAGE}
+                    badgeText="Presencial en Estudio"
+                    buttonText="Agenda aquí"
+                    url="/mi-cuenta/explorar"
+                  />
+                )),
+              ]
+            : [emptySessionCard("No hay clases presenciales programadas por ahora. Vuelve pronto para revisar la agenda.")]}
         </AutoplayCarousel>
         <PricingTable />
       </div>
