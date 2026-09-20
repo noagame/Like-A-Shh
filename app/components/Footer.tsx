@@ -4,6 +4,7 @@ import { m } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { useSyncExternalStore } from "react";
+import { SITE_VERSION } from "@/lib/site-version";
 
 const socialLinks = [
   {
@@ -127,6 +128,10 @@ export default function Footer() {
             style={{ fontFamily: "var(--font-sans)" }}
           >
             © {currentYear} Like a SHH. Todos los derechos reservados.
+          </p>
+
+          <p className="text-xs font-medium uppercase tracking-[0.16em] text-white/35">
+            Versión {SITE_VERSION}
           </p>
 
           <div className="flex items-center gap-6">

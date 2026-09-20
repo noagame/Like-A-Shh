@@ -10,6 +10,7 @@
     "doctor": "npx react-doctor@latest",
     "test:run": "vitest run",
     "test:e2e": "playwright test",
+    "promo:video": "node scripts/generate-promo-video.mjs",
     "supabase:blog:deploy": "bash scripts/deploy-blog-community.sh",
     "typecheck": "tsc --noEmit --incremental false",
     "qa": "npm run lint -- --max-warnings 0 && npm run typecheck && npm run test:run && npm run build"
