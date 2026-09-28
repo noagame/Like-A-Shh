@@ -63,7 +63,7 @@ export function StandardProgramCard({
             fill
             loading="lazy"
             sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 22vw"
-            quality={100}
+            quality={75}
             className={`h-full w-full transition-transform duration-500 ${isLogo ? "object-contain p-4" : "object-cover object-center"}`}
             style={{
               objectFit: isLogo ? "contain" : "cover",

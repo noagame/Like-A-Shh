@@ -1,11 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Metadata, Viewport } from "next";
-import { Playfair_Display, Inter, Montserrat } from "next/font/google";
+import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import MotionProvider from "./components/MotionProvider";
 import StructuredData from "./components/StructuredData";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.likeashh.cl";
+import { SITE_ORIGIN } from "@/lib/seo/site-origin";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -19,12 +18,6 @@ const inter = Inter({
   display: "swap",
 });
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat",
-  display: "swap",
-});
-
 export async function generateMetadata(): Promise<Metadata> {
   const supabase = await createClient();
   
@@ -35,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
     .single();
 
   const title = settings?.site_title || "Like a SHH | Pole Dance, Danza Exotic y Cursos Online";
-  const description = settings?.site_description || "Descubre Like a SHH: clases de pole dance, danza exotic, flexibilidad y bienestar corporal...";
+  const description = settings?.site_description || "Descubre clases de pole dance, danza exotic y flexibilidad, cursos online y workshops en Like a SHH.";
   
   // Convertimos el string de palabras clave (separadas por coma) en un arreglo
   const keywords = settings?.seo_keywords 
@@ -43,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
     : ["pole dance", "danza exotic", "bienestar corporal", "cursos online", "like a shh"];
 
   return {
-    metadataBase: new URL(siteUrl),
+    metadataBase: new URL(SITE_ORIGIN),
     title: {
       default: title,
       template: "%s | Like a SHH",
@@ -53,7 +46,6 @@ export async function generateMetadata(): Promise<Metadata> {
     applicationName: "Like a SHH",
     authors: [{ name: "Like a SHH" }],
     category: "artes escénicas",
-    alternates: { canonical: "/" },
     robots: {
       index: true,
       follow: true,
@@ -62,14 +54,14 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       type: "website",
       locale: "es_CL",
-      url: siteUrl,
+      url: SITE_ORIGIN,
       siteName: "Like a SHH",
       title: title,
       description: description,
-      images: [{ url: "/assets/logo/logo_likeashh.jpg", width: 1200, height: 630, alt: "Like a SHH" }],
+      images: [{ url: "/assets/logo/logo_likeashh.jpg", width: 150, height: 150, alt: "Like a SHH" }],
     },
     twitter: {
-      card: "summary_large_image",
+      card: "summary",
       title: title,
       description: description,
       images: ["/assets/logo/logo_likeashh.jpg"],
@@ -92,7 +84,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`h-full antialiased ${playfair.variable} ${inter.variable} ${montserrat.variable}`}
+      className={`h-full antialiased ${playfair.variable} ${inter.variable}`}
     >
       <body className="min-h-full flex flex-col">
         <StructuredData />

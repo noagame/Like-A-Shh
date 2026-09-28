@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.likeashh.cl";
+import { SITE_ORIGIN } from "@/lib/seo/site-origin";
 
 export default async function StructuredData() {
   const supabase = await createClient();
@@ -17,8 +16,8 @@ export default async function StructuredData() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Like a SHH",
-    url: siteUrl,
-    logo: `${siteUrl}/assets/logo/logo_likeashh.jpg`,
+    url: SITE_ORIGIN,
+    logo: `${SITE_ORIGIN}/assets/logo/logo_likeashh.jpg`,
     description: currentDescription,
     sameAs: [
       "https://www.instagram.com/likeashh/",
@@ -38,14 +37,9 @@ export default async function StructuredData() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Like a SHH",
-    url: siteUrl,
+    url: SITE_ORIGIN,
     description: currentDescription,
     inLanguage: "es",
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${siteUrl}/?s={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
   };
 
   return (

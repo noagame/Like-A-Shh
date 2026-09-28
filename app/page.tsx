@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { SITE_ORIGIN } from "@/lib/seo/site-origin";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import AboutSection from "./components/AboutSection";
@@ -9,6 +11,10 @@ import FAQSection from "./components/FAQSection";
 import ContactSection from "./components/ContactSection";
 import WhatsAppButton from "./components/WhatsAppButton";
 import Footer from "./components/Footer";
+
+export const metadata: Metadata = {
+  alternates: { canonical: `${SITE_ORIGIN}/` },
+};
 
 export default function Home() {
   return (

@@ -89,6 +89,15 @@ body {
   animation: float 3s ease-in-out infinite;
 }
 
+@keyframes scroll-dot {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(12px); }
+}
+
+.animate-scroll-dot {
+  animation: scroll-dot 1.5s ease-in-out infinite;
+}
+
 /* Pulse glow for WhatsApp button */
 @keyframes pulse-glow {
 

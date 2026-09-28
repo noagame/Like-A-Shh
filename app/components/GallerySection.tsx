@@ -31,7 +31,7 @@ const mystiqueImages = [
   "/assets/X_Mystique/Galeria_Like_a_Shh_3.jpeg",
   "/assets/X_Mystique/Galeria_Like_a_Shh_4.jpeg",
   "/assets/X_Mystique/Galeria_Like_a_Shh_5.jpeg",
-  "/assets/X_Mystique/Galeria_Like_a_Shh_6.jpeg",
+  "/assets/X_Mystique/Galeria_Like_a_Shh_6.jpg",
 ];
 
 const bunnysSeasonImages = [

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { SITE_ORIGIN } from '@/lib/seo/site-origin';
 import { requireAdmin } from '@/lib/auth/authorize';
 import { checkLoginRateLimit } from '@/lib/rate-limit';
 
@@ -14,7 +15,7 @@ export async function GET(request: Request) {
     const url = new URL('https://nominatim.openstreetmap.org/search');
     url.search = new URLSearchParams({ format: 'json', countrycodes: 'cl', q, limit: '5' }).toString();
     const res = await fetch(url, {
-      headers: { 'User-Agent': 'LikeAShh/1.0 (https://www.likeashh.cl)' },
+      headers: { 'User-Agent': `LikeAShh/1.0 (${SITE_ORIGIN})` },
       signal: AbortSignal.timeout(5000), next: { revalidate: 86400 },
     });
     if (!res.ok) return NextResponse.json({ error: 'Servicio de mapas no disponible' }, { status: 502 });

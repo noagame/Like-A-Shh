@@ -1,4 +1,11 @@
 import Link from "next/link";
+import { pageMetadata } from "@/lib/seo/page-metadata";
+
+export const metadata = pageMetadata(
+  "Política de privacidad",
+  "Conoce cómo Like a SHH recopila, utiliza y protege los datos personales de sus usuarios en Chile.",
+  "/privacidad",
+);
 
 export default function PrivacidadPage() {
   return (
