@@ -97,7 +97,7 @@ export function StandardProgramCard({
         )}
 
         <a
-          href={targetUrl}
+          href="https://wa.me/56971577711?text=Hola%20Maximiliano,%20vengo%20de%20la%20p%C3%A1gina%20web%20Like%20a%20Shh%20y%20me%20gustar%C3%ADa%20agendar%20una%20clase."
           target="_blank"
           rel="noopener noreferrer"
           className="block w-full text-center text-xs font-bold uppercase tracking-wider py-2.5 rounded-xl bg-gold text-black hover:bg-gold-light shadow-lg shadow-gold/10 transition-all cursor-pointer"
