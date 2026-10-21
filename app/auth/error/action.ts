@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { getSiteUrl } from "@/lib/auth/site-url";
 import { redirect } from "next/navigation";
 
 export async function reenviarConfirmacion(formData: FormData) {
@@ -10,7 +11,7 @@ export async function reenviarConfirmacion(formData: FormData) {
   }
 
   const supabase = await createClient();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.likeashh.cl";
+  const siteUrl = getSiteUrl();
 
   const { error } = await supabase.auth.resend({
     type: "signup",

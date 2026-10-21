@@ -11,6 +11,7 @@ export type EventRecord = {
   category_id: string | null;
   categories?: { id: string; name: string; color: string | null } | null;
   image_url?: string | null;
+  purchase_url?: string | null;
 };
 
 export class EventQueryBuilder {
@@ -57,7 +58,7 @@ export class EventQueryBuilder {
 
   public async execute(): Promise<EventRecord[]> {
     const categoryJoin = this.categoryName ? "categories!inner(id, name, color)" : "categories(id, name, color)";
-    let query = this.client.from("events").select(`id, title, description, start_time, end_time, location, capacity, status, category_id, ${categoryJoin}, image_url`);
+    let query = this.client.from("events").select(`id, title, description, start_time, end_time, location, capacity, status, category_id, ${categoryJoin}, image_url, purchase_url`);
 
     if (this.publishedOnly) {
       query = query.eq("status", "published");

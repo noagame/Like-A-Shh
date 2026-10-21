@@ -25,6 +25,8 @@ export default async function EventsSection() {
               start_time: event.start_time,
               end_time: event.end_time,
               location: event.location,
+              image_url: event.image_url ?? null,
+              purchase_url: event.purchase_url ?? null,
               categories: event.categoryName ? { name: event.categoryName, color: event.categoryColor } : null,
             }} index={index} />
           ))

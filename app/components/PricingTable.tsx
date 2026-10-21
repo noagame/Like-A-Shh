@@ -102,7 +102,7 @@ export default function PricingTable() {
               Clases Planificadas Presencial
             </h4>
             <p className="text-xs text-white/70 mb-6 leading-relaxed">
-              Puedes combinar el estilo de tus clases (Pole Sport, Exotic Pole, Flexibilidad Activa y Floorwork)[cite: 2].
+              Puedes combinar el estilo de tus clases (Pole Sport, Exotic Pole, Flexibilidad Activa y Floorwork).
             </p>
 
             <ul className="space-y-3 pt-4 border-t border-white/10 text-sm">
@@ -160,13 +160,13 @@ export default function PricingTable() {
               Cursos Online
             </h4>
             <p className="text-xs text-white/70 mb-6 leading-relaxed">
-              Formaciones integrales en video paso a paso, ejercicios globales de movilidad y rutinas progresivas[cite: 5].
+              Formaciones integrales en video paso a paso, ejercicios globales de movilidad y rutinas progresivas.
             </p>
 
             <div className="space-y-4 pt-4 border-t border-white/10">
               <div className="p-3.5 bg-black/40 rounded-xl border border-white/5">
                 <p className="text-xs font-semibold text-gold">Flexibiliza tu Actitud</p>
-                <p className="text-[11px] text-white/60 mt-1">Acceso ilimitado por 1 mes con garantía y soporte[cite: 2].</p>
+                <p className="text-[11px] text-white/60 mt-1">Acceso ilimitado por 1 mes con garantía y soporte.</p>
                 <div className="flex justify-between items-center mt-2 pt-2 border-t border-white/5 text-xs">
                   <span className="text-white/70">Membresía Hotmart</span>
                   <span className="text-gold font-bold font-mono">Ver en Hotmart</span>

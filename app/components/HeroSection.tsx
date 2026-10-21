@@ -1,7 +1,3 @@
-"use client";
-
-import { m } from "framer-motion";
-
 export default function HeroSection() {
   return (
     <section
@@ -15,76 +11,42 @@ export default function HeroSection() {
       </div>
 
       <div className="relative z-10 flex flex-col items-center text-center max-w-5xl mx-auto">
-        {/* SHH Logo Animation */}
-        <m.div
-          initial={{ scale: 2, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="relative mb-4"
-        >
-          <m.span
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 0.08, y: 0 }}
-            transition={{ delay: 0.5, duration: 1 }}
+        {/* Keep the title visible in server HTML: it is the mobile LCP element. */}
+        <div className="relative mb-4">
+          <span
             className="absolute inset-0 mt-20 md:mt-24 flex items-center justify-center text-[10rem] sm:text-[14rem] md:text-[18rem] font-black text-white select-none pointer-events-none"
-            style={{ fontFamily: "var(--font-serif)" }}
+            style={{ fontFamily: "var(--font-serif)", opacity: 0.08 }}
           >
             SHH
-          </m.span>
-
-          <m.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.8 }}
+          </span>
+          <h1
             className="text-5xl mt-20 md:mt-24 sm:text-6xl md:text-8xl lg:text-9xl font-bold tracking-tight relative z-10"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             <span className="text-white">LIKE A </span>
             <span className="text-gold-gradient">SHH</span>
-          </m.h1>
-        </m.div>
+          </h1>
+        </div>
 
-        {/* Subtitle */}
-        <m.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
+        <p
           className="text-gold text-lg sm:text-xl md:text-2xl tracking-[0.3em] uppercase mb-16"
           style={{ fontFamily: "var(--font-serif)" }}
         >
           Movimiento, Fuerza y Libertad
-        </m.p>
+        </p>
 
-        {/* CTA Button */}
-        <m.a
+        <a
           href="#cursos"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.5, duration: 0.6 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.98 }}
-          className="inline-flex items-center gap-2 mt-8 px-10 py-4 bg-gold text-black font-bold text-sm tracking-widest uppercase rounded-full hover:bg-gold-light transition-colors duration-300"
+          className="inline-flex items-center gap-2 mt-8 px-10 py-4 bg-gold text-black font-bold text-sm tracking-widest uppercase rounded-full hover:bg-gold-light hover:scale-105 active:scale-[0.98] transition-all duration-300"
           style={{ fontFamily: "var(--font-sans)" }}
           id="hero-cta-acceso"
         >
           Acceso
-        </m.a>
+        </a>
 
-        {/* Divider */}
-        <m.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 1.8, duration: 0.8 }}
-          className="w-32 h-px bg-gradient-to-r from-transparent via-gold to-transparent mt-12 mb-10"
-        />
+        <div className="w-32 h-px bg-gradient-to-r from-transparent via-gold to-transparent mt-12 mb-10" />
 
-        {/* Stats */}
-        <m.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 2, duration: 0.8 }}
-          className="flex flex-wrap justify-center gap-8 sm:gap-16"
-        >
+        <div className="flex flex-wrap justify-center gap-8 sm:gap-16">
           {[
             { number: "200+", label: "Alumnos" },
             { number: "5+", label: "Años" },
@@ -105,24 +67,14 @@ export default function HeroSection() {
               </p>
             </div>
           ))}
-        </m.div>
+        </div>
       </div>
 
-      {/* Scroll flotante UI/UX*/}
-      <m.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.5, duration: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-float"
-      >
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-float">
         <div className="w-6 h-10 border-2 border-gold/40 rounded-full flex justify-center pt-2">
-          <m.div
-            animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            className="w-1.5 h-1.5 bg-gold rounded-full"
-          />
+          <div className="w-1.5 h-1.5 bg-gold rounded-full animate-scroll-dot" />
         </div>
-      </m.div>
+      </div>
     </section>
   );
 }

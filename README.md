@@ -144,13 +144,15 @@ Plantilla: [.env.example](.env.example). Valores locales: `.env.local`, excluido
 | `NEXT_PUBLIC_SUPABASE_URL` | Aplicación y build | Origen HTTPS del proyecto Supabase; también delimita las imágenes remotas permitidas |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Cliente y servidor | Clave pública del proyecto. El navegador la utiliza; la protección de datos depende de RLS |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Compatibilidad del servidor/proxy | Alternativa a la publishable key en esos módulos. **No sustituye** la publishable key que requiere el cliente del navegador |
-| `NEXT_PUBLIC_SITE_URL` | Registro/recuperación; obligatoria en producción | Origen canónico, sin rutas. HTTPS en producción; debe coincidir con las URLs autorizadas en Supabase |
+| `NEXT_PUBLIC_SITE_URL` | Registro/recuperación; obligatoria en producción | Origen público para callbacks de autenticación, sin rutas (por ejemplo `https://likeashh.com`). HTTPS en producción; debe coincidir con las URLs autorizadas en Supabase |
 | `NEXT_PUBLIC_FORMSPREE_URL` | Formulario de contacto | Endpoint completo del formulario, por ejemplo `https://formspree.io/f/tu-formulario` |
 | `UPSTASH_REDIS_REST_URL` | Producción | URL REST de Redis |
 | `UPSTASH_REDIS_REST_TOKEN` | Producción | Token privado de Redis, solo servidor |
 | `TRUSTED_CLIENT_IP_HEADER` | Despliegues detrás de proxy | Nombre de una cabecera que el proxy **sobrescribe** con una sola IP validada. No aceptar una cabecera controlada por visitantes |
 | `QA_DATABASE_URL` | Runner SQL | URL de una base desechable en `localhost:55439`; no es una variable del runtime web |
 | `SUPABASE_SERVICE_ROLE_KEY` | Solo si se utiliza `lib/supabase/admin.ts` | Clave privada de privilegios elevados. Ese cliente auxiliar no está importado por los flujos actuales; no hace falta para las nuevas RPCs |
+
+Los metadatos SEO, `robots.txt`, `sitemap.xml` y los datos estructurados usan el origen público `https://likeashh.com` definido en `lib/seo/site-origin.ts`. El host `www.likeashh.com` redirige al dominio raíz; los canonical y las entradas del sitemap deben usar el destino final. Si cambia el dominio público, actualizar ese origen y comprobar en el despliegue el canonical de `/`, `/privacidad`, `/terminos` y `/blog`, además de los destinos de robots y sitemap. `NEXT_PUBLIC_SITE_URL` sigue siendo necesario para callbacks de registro y recuperación; comprobar en Vercel que sea un origen HTTPS sin ruta como `/login`.
 
 Las variables `NEXT_PUBLIC_*` son públicas y pueden quedar incorporadas en los recursos del navegador durante el build. No colocar allí tokens de Redis ni claves service role. Si cambian valores públicos de un despliegue, reconstruir la aplicación.
 
@@ -268,7 +270,7 @@ Implementación: [app/auth/callback/route.ts](app/auth/callback/route.ts).
 
 ### Recursos generados
 
-`GET /robots.txt` y `GET /sitemap.xml` se generan desde [app/robots.ts](app/robots.ts) y [app/sitemap.ts](app/sitemap.ts). Actualmente esos archivos contienen el dominio `https://www.likeashh.cl`; revisarlos si cambia el dominio. Los recursos de `public/` se sirven desde la raíz, por ejemplo `/assets/...`.
+`GET /robots.txt` y `GET /sitemap.xml` se generan desde [app/robots.ts](app/robots.ts) y [app/sitemap.ts](app/sitemap.ts). Estos recursos usan `https://likeashh.com` desde `lib/seo/site-origin.ts`; el sitemap añade `/blog` y sus artículos cuando hay publicaciones. Revisar el origen si cambia el dominio. Los recursos de `public/` se sirven desde la raíz, por ejemplo `/assets/...`.
 
 No hay un endpoint propio `/health` ni una API REST `/api/login`, `/api/events` o `/api/users` implementada en este repositorio.
 
