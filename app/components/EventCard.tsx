@@ -1,8 +1,9 @@
 "use client";
 
 import { m, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
+import { getLocationHref, parsePurchaseUrl } from "@/lib/event-links";
 
 type EventWithCategory = {
   id: string;
@@ -11,6 +12,8 @@ type EventWithCategory = {
   start_time: string;
   end_time: string;
   location: string | null;
+  image_url?: string | null;
+  purchase_url?: string | null;
   categories: { name: string; color: string | null } | null;
 };
 
@@ -32,6 +35,16 @@ export default function EventCard({
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
+  const [failedImage, setFailedImage] = useState<string | null>(null);
+  const imageSrc = event.image_url?.trim() || null;
+  const locationHref = getLocationHref(event.location);
+  let purchaseHref: string | null = null;
+  try {
+    purchaseHref = parsePurchaseUrl(event.purchase_url);
+  } catch {
+    // No activar enlaces antiguos que no pasen la validación.
+  }
+
   return (
     <m.div
       ref={ref}
@@ -44,13 +57,21 @@ export default function EventCard({
       <div className="grid grid-cols-1 lg:grid-cols-2">
         <div className="aspect-square lg:aspect-auto bg-gradient-to-br from-dark-card via-black to-dark-card relative overflow-hidden flex items-center justify-center p-4 md:p-6 lg:p-8">
           <div className="relative w-full h-full max-w-[22rem] lg:max-w-[24rem]">
-            <Image
-              src="/assets/events/exotic_night.jpeg"
-              alt={event.title}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-contain rounded-2xl"
-            />
+            {imageSrc && failedImage !== imageSrc ? (
+              <Image
+                key={imageSrc}
+                src={imageSrc}
+                alt={`Flyer de ${event.title}`}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-contain rounded-2xl"
+                onError={() => setFailedImage(imageSrc)}
+              />
+            ) : (
+              <div className="flex h-full min-h-64 items-center justify-center rounded-2xl bg-white/5 p-6 text-center text-white/60">
+                Flyer no disponible
+              </div>
+            )}
           </div>
         </div>
 
@@ -71,7 +92,7 @@ export default function EventCard({
 
           {event.description && (
             <p
-              className="text-white/70 leading-relaxed mb-6 text-justify"
+              className="text-white/70 leading-relaxed mb-6 text-left whitespace-pre-wrap break-words"
               style={{ fontFamily: "var(--font-sans)" }}
             >
               {event.description}
@@ -91,20 +112,30 @@ export default function EventCard({
                   <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <span style={{ fontFamily: "var(--font-sans)" }}>{event.location}</span>
+                {locationHref ? (
+                  <a href={locationHref} target="_blank" rel="noopener noreferrer"
+                    className="text-gold underline underline-offset-4 break-words"
+                    aria-label={`Ver ubicación de ${event.title}`}>
+                    Ver ubicación ↗
+                  </a>
+                ) : <span className="break-words">{event.location}</span>}
               </div>
             )}
           </div>
 
-          <m.a
-            href="/login"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gold text-black font-bold text-sm tracking-widest uppercase rounded-full hover:bg-gold-light transition-colors duration-300 shadow-lg shadow-gold/20 w-full sm:w-auto text-center"
-            id="event-buy-btn"
-          >
-            Quiero asistir
-          </m.a>
+          {purchaseHref ? (
+            <m.a
+              href={purchaseHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gold text-black font-bold text-sm tracking-widest uppercase rounded-full hover:bg-gold-light transition-colors duration-300 shadow-lg shadow-gold/20 w-full sm:w-auto text-center"
+              aria-label={`Comprar entradas para ${event.title}`}
+            >
+              Comprar entradas ↗
+            </m.a>
+          ) : <p className="text-sm text-white/60">Entradas próximamente</p>}
         </div>
       </div>
     </m.div>

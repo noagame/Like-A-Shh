@@ -1,83 +1,117 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
-export default function LocationInput({ name, label }: { name: string; label: string }) {
-    const [query, setQuery] = useState("");
-    const [results, setResults] = useState<Array<{ place_id: number; display_name: string }>>([]);
-    const [isOpen, setIsOpen] = useState(false);
-    const wrapperRef = useRef<HTMLDivElement>(null);
+type Place = { place_id: number; display_name: string };
 
-    // Busca direcciones en la API local (/api/maps) conectada a OpenStreetMap
-    useEffect(() => {
-        const delayDebounceFn = setTimeout(() => {
-            if (query.length > 2) {
-                const encodedQuery = encodeURIComponent(query);
-                const url = `/api/maps?q=${encodedQuery}`;
+type Props = {
+  name: string;
+  label: string;
+  defaultValue?: string;
+  autocomplete?: boolean;
+};
 
-                fetch(url)
-                    .then((res) => {
-                        if (!res.ok) throw new Error("Error en la respuesta de la API");
-                        return res.json();
-                    })
-                    .then((data) => {
-                        setResults(data);
-                        setIsOpen(true);
-                    })
-                    .catch((err) => {
-                        console.error("Fetch bloqueado o fallido:", err);
-                        setResults([]);
-                    });
-            } else {
-                setResults([]);
-                setIsOpen(false);
-            }
-        }, 500);
+export default function LocationInput({
+  name, label, defaultValue = "", autocomplete = true,
+}: Props) {
+  const inputId = useId();
+  const [query, setQuery] = useState(defaultValue);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [results, setResults] = useState<Place[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [lookupError, setLookupError] = useState<string | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
-        return () => clearTimeout(delayDebounceFn);
-    }, [query]);
+  useEffect(() => {
+    const value = searchQuery.trim();
+    const isUrl = /^(?:[a-z][a-z0-9+.-]*:|www\.|maps\.|google\.|goo\.gl|\/\/)/i.test(value);
+    if (!autocomplete || value.length < 3 || isUrl) return;
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      try {
+        const response = await fetch(`/api/maps?q=${encodeURIComponent(value)}`, {
+          signal: controller.signal,
+        });
+        if (!response.ok) throw new Error("No se pudieron buscar direcciones.");
+        const data: unknown = await response.json();
+        if (!Array.isArray(data)) throw new Error("Respuesta de direcciones inválida.");
+        const places = data.filter((item): item is Place =>
+          typeof item === "object" && item !== null &&
+          typeof item.place_id === "number" && typeof item.display_name === "string"
+        );
+        if (controller.signal.aborted) return;
+        setResults(places);
+        setIsOpen(places.length > 0);
+      } catch {
+        if (controller.signal.aborted) return;
+        setResults([]);
+        setIsOpen(false);
+        setLookupError("No pudimos cargar sugerencias. Puedes escribir la dirección o pegar el enlace de Maps.");
+      }
+    }, 500);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [searchQuery, autocomplete]);
 
-    // Cierra el menú si haces clic afuera
-    useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-                setIsOpen(false);
-            }
-        }
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+  useEffect(() => {
+    function onPointerDown(event: PointerEvent) {
+      if (!wrapperRef.current?.contains(event.target as Node)) setIsOpen(false);
+    }
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, []);
 
-    return (
-        <div ref={wrapperRef} className="relative">
-            <label className="block text-sm font-medium text-neutral-400 mb-1">{label}</label>
-            <input
-                name={name}
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Empieza a escribir una dirección..."
-                className="w-full p-2 bg-neutral-800 border border-neutral-700 rounded text-white focus:outline-none focus:border-blue-500"
-                autoComplete="off"
-            />
-
-            {/* Menú desplegable adaptado a diseño oscuro */}
-            {isOpen && results.length > 0 && (
-                <ul className="absolute z-10 w-full bg-neutral-900 border border-neutral-700 rounded shadow-lg mt-1 max-h-60 overflow-auto text-white">
-                    {results.map((place) => (
-                        <li
-                            key={place.place_id}
-                            className="p-2 hover:bg-neutral-800 cursor-pointer text-sm border-b border-neutral-800 last:border-none"
-                            onClick={() => {
-                                setQuery(place.display_name);
-                                setIsOpen(false);
-                            }}
-                        >
-                            {place.display_name}
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
-    );
+  return (
+    <div ref={wrapperRef} className="relative">
+      <label htmlFor={inputId} className="mb-1 block text-sm font-medium text-neutral-400">
+        {label}
+      </label>
+      <input
+        id={inputId}
+        name={name}
+        type="text"
+        value={query}
+        onChange={(event) => {
+          setQuery(event.target.value);
+          setSearchQuery(event.target.value);
+          setResults([]);
+          setIsOpen(false);
+          setLookupError(null);
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Escape") {
+            event.stopPropagation();
+            setIsOpen(false);
+          }
+        }}
+        aria-describedby={lookupError ? `${inputId}-error` : undefined}
+        placeholder={autocomplete ? "Escribe una dirección o pega un enlace de Maps" : "Enlace o ubicación de la clase"}
+        className="w-full rounded border border-neutral-700 bg-neutral-800 p-2 text-white focus:border-blue-500 focus:outline-none"
+        autoComplete="off"
+      />
+      {lookupError && <p id={`${inputId}-error`} role="status" className="mt-1 text-xs text-amber-200">{lookupError}</p>}
+      {isOpen && results.length > 0 && (
+        <ul aria-label="Direcciones sugeridas" className="absolute z-10 max-h-60 w-full overflow-auto rounded border border-neutral-700 bg-neutral-900 text-white shadow-lg">
+          {results.map((place) => (
+            <li key={place.place_id}>
+              <button
+                type="button"
+                className="w-full border-b border-neutral-800 p-2 text-left text-sm hover:bg-neutral-800 focus:bg-neutral-800"
+                onClick={() => {
+                  setQuery(place.display_name);
+                  setSearchQuery("");
+                  setResults([]);
+                  setIsOpen(false);
+                }}
+              >
+                {place.display_name}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 }

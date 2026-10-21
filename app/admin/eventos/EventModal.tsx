@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, type FormEvent } from "react";
 import { useMounted, useLocalDateTime } from "@/lib/hooks/client-state";
 import { createPortal } from "react-dom";
 import LocationInput from "./nuevo/LocationInput";
 import type { CreateActivityResult } from "./actions";
+
+
 
 export default function EventModal({
   createAction,
@@ -15,21 +17,30 @@ export default function EventModal({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const mounted = useMounted();
+  const submittingRef = useRef(false);
   const [startValue, setStartValue] = useState("");
 
 
   const nowIso = useLocalDateTime();
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (submittingRef.current) return;
+    const formData = new FormData(event.currentTarget);
+    submittingRef.current = true;
     setIsSubmitting(true);
     setErrorMessage(null);
     try {
       const result = await createAction(formData);
-      if (result.success) setIsOpen(false);
+      if (result.success) {
+        setIsOpen(false);
+        setStartValue("");
+      }
       else setErrorMessage(result.error);
     } catch {
       setErrorMessage("No se pudo guardar. Revisa los datos e intenta nuevamente.");
     } finally {
+      submittingRef.current = false;
       setIsSubmitting(false);
     }
   };
@@ -40,6 +51,7 @@ export default function EventModal({
         <button
           type="button"
           onClick={() => setIsOpen(false)}
+          disabled={isSubmitting}
           className="absolute right-4 top-4 text-xl font-bold text-white/40 hover:text-white transition-colors cursor-pointer"
           aria-label="Cerrar modal"
         >
@@ -56,7 +68,14 @@ export default function EventModal({
         </div>
 
         {errorMessage && <p role="alert" className="mb-3 text-sm text-red-300">{errorMessage}</p>}
-        <form action={handleSubmit} className="space-y-4 text-xs sm:text-sm">
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs sm:text-sm">
+          {isSubmitting && (
+            <div className="absolute inset-0 z-20 flex items-center justify-center rounded-2xl bg-black/90 p-6"
+              role="status" aria-live="polite">
+              <p className="text-center text-lg text-amber-200">Espera, estamos agregando el evento...</p>
+            </div>
+          )}
+          <fieldset disabled={isSubmitting} className="space-y-4">
           <div>
             <label className="mb-1 block font-medium text-white/70">Título</label>
             <input
@@ -114,6 +133,11 @@ export default function EventModal({
           <div>
             <LocationInput name="location" label="Ubicación" />
           </div>
+          <div>
+            <label htmlFor="create-purchase-url" className="mb-1 block font-medium text-white/70">Enlace de compra (opcional)</label>
+            <input id="create-purchase-url" name="purchase_url" type="url" placeholder="https://..."
+              className="w-full rounded-xl border border-white/10 bg-black/50 px-3 py-2.5 text-white" />
+          </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
@@ -144,6 +168,7 @@ export default function EventModal({
             <button
               type="button"
               onClick={() => setIsOpen(false)}
+              disabled={isSubmitting}
               className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-white/70 transition hover:bg-white/10 cursor-pointer"
             >
               Cancelar
@@ -156,6 +181,7 @@ export default function EventModal({
               {isSubmitting ? "Guardando..." : "Crear evento"}
             </button>
           </div>
+          </fieldset>
         </form>
       </div>
     </div>

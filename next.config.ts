@@ -32,6 +32,11 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   agentRules: false,
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "8mb",
+    },
+  },
   // Permite que las pruebas E2E locales consuman el servidor de desarrollo sin
   // bloquear los recursos de Fast Refresh por comprobación de origen.
   allowedDevOrigins: ["127.0.0.1"],

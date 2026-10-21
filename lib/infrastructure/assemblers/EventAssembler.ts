@@ -10,6 +10,7 @@ export type EventCardDTO = {
   capacity: number | null;
   status: "draft" | "published" | "cancelled";
   image_url?: string | null;
+  purchase_url?: string | null;
 };
 
 type EventRow = {
@@ -23,6 +24,7 @@ type EventRow = {
   status: "draft" | "published" | "cancelled";
   categories?: { name: string; color: string | null } | null;
   image_url?: string | null;
+  purchase_url?: string | null;
 };
 
 export class EventAssembler {
@@ -39,6 +41,7 @@ export class EventAssembler {
       capacity: event.capacity,
       status: event.status,
       image_url: event.image_url ?? null,
+      purchase_url: event.purchase_url ?? null,
     };
   }
 

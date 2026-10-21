@@ -19,6 +19,11 @@ export interface ClassItem {
   url?: string;
 }
 
+const WHATSAPP_AGENDA_URL_ONLINE =
+  "https://wa.me/56971577711?text=Hola%20Maximiliano,%20vengo%20de%20la%20p%C3%A1gina%20web%20Like%20a%20Shh%20y%20me%20gustar%C3%ADa%20agendar%20una%20clase%20online. ";
+
+const WHATSAPP_AGENDA_URL_PRESENCIAL =
+  "https://wa.me/56971577711?text=Hola%20Maximiliano,%20vengo%20de%20la%20p%C3%A1gina%20web%20Like%20a%20Shh%20y%20me%20gustar%C3%ADa%20agendar%20una%20clase%20presencial. ";
 const WHATSAPP_AGENDA_URL =
   "https://wa.me/56971577711?text=Hola%20Maximiliano,%20vengo%20de%20la%20p%C3%A1gina%20web%20Like%20a%20Shh%20y%20me%20gustar%C3%ADa%20agendar%20una%20clase.";
 
