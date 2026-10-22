@@ -20,7 +20,7 @@ En el modelo actual, un alumno es una cuenta con `profiles.role = 'user'`, segú
 
 La acción del servidor vuelve a comprobar sesión, rol y publicación del artículo. Guardar el estado deseado de la reacción permite reintentar sin duplicar ni invertir un Me gusta. Si falla el guardado, se conserva la representación anterior y se muestra un error recuperable.
 
-### Migración autorizada para preparar, sin aplicar
+### Migración aplicada y verificada
 
 Archivo: `supabase/migrations/202610220002_blog_post_reactions.sql`.
 
@@ -32,9 +32,9 @@ La migración prepara:
 - Lectura de registros individuales limitada a su propietario.
 - La función `get_blog_reaction_counts`, que entrega totales públicos de artículos publicados sin exponer las identidades de quienes reaccionaron.
 
-**La migración no se ejecutó en Supabase ni en una base local.** El usuario autorizó únicamente preparar el archivo. Se necesita autorización adicional para aplicarla al entorno de destino. Mientras falten la tabla o la función, el Blog continúa siendo legible y las reacciones quedan deshabilitadas, sin mostrar un total ficticio.
+**Aplicada el 22 de octubre de 2026** al proyecto `ssgcrrblxmmqurjlwope`, con autorización posterior del usuario para configurar Supabase antes de publicar en `main`. Quedó registrada en el historial de migraciones. La API confirmó que la función pública de totales responde HTTP 200 y que las identidades de reacciones permanecen inaccesibles para visitantes, con HTTP 401.
 
-La revisión de permisos SQL fue de lectura; no se afirma haber ejecutado una prueba de RLS contra PostgreSQL. La migración utiliza el historial normal de migraciones y debe aplicarse una sola vez.
+Las dos migraciones iniciales pasaron 39 comprobaciones reales en PostgreSQL temporal; el permiso adicional de Storage pasó otras 27. En Supabase se verificaron 14 condiciones de esquema y permisos, todas correctas, sin crear publicaciones ni reacciones de prueba en producción. La migración de reacciones utiliza el historial normal de migraciones y debe aplicarse una sola vez.
 
 Archivos principales: `app/blog/actions.ts`, `app/blog/BlogReactionButton.tsx`, `lib/blog-reactions.ts`, `app/blog/page.tsx` y `app/blog/[slug]/page.tsx`.
 
@@ -71,11 +71,11 @@ Se añadieron pruebas de navegación pública y privada, menús móviles, reacci
 | `npm run build` | Aprobado; compilación de producción y generación de las 40 páginas completadas |
 | `git diff --check` | Aprobado |
 
-La compilación se ejecutó con URL de Supabase, clave pública y origen ficticios de prueba, sin escribir en Supabase. La revisión independiente de las políticas SQL no encontró problemas bloqueantes; su ejecución contra una base real sigue pendiente de autorización.
+La compilación se ejecutó con URL de Supabase, clave pública y origen ficticios de prueba. La aplicación posterior de las migraciones fue autorizada expresamente y su resultado está documentado en [VALIDACION_SUPABASE_2026-10-22.md](VALIDACION_SUPABASE_2026-10-22.md).
 
-Las pruebas de acciones utilizan servicios simulados. No se crearon artículos, conversaciones, cuentas ni reacciones en Supabase; tampoco se aplicó ninguna migración.
+Las pruebas de acciones utilizan servicios simulados. No se crearon artículos, conversaciones, cuentas ni reacciones de prueba en Supabase. Se aplicaron únicamente las tres migraciones de configuración de esta entrega y sus registros de historial.
 
-El usuario autorizó crear y subir los commits primero a la rama `dev`. Los cambios se organizan por punto: acceso y reacciones del Blog, creación de conversaciones y correcciones del editor. Las migraciones SQL se incluyen como archivos pendientes de aplicación; la autorización para publicar código no implica aplicarlas.
+El usuario autorizó crear y subir los commits primero a `dev`, y después configurar Supabase y promoverlos a `main`. Los cambios se organizan por punto: acceso y reacciones del Blog, creación de conversaciones y correcciones del editor. Las migraciones SQL quedaron aplicadas antes de preparar la promoción a `main`.
 
 ### Comprobación manual al desplegar
 
@@ -87,4 +87,4 @@ El usuario autorizó crear y subir los commits primero a la rama `dev`. Los camb
 
 ## Trabajo anterior
 
-Se conservaron los arreglos de carruseles, enlaces de cursos e imágenes de eventos y su informe `docs/CORRECCIONES_BUGS_2026-10-22.md`. Su migración de `courses.link_label` también sigue pendiente de aplicación. `docs/PLAN_DEMOSTRACION_DUENO.md` permanece fuera de esta entrega y no se modificó.
+Se conservaron los arreglos de carruseles, enlaces de cursos e imágenes de eventos y su informe `docs/CORRECCIONES_BUGS_2026-10-22.md`. La migración de `courses.link_label` también quedó aplicada. `docs/PLAN_DEMOSTRACION_DUENO.md` permanece fuera de esta entrega y no se modificó.

@@ -23,13 +23,13 @@ Archivo principal: `app/components/AutoplayCarousel.tsx`.
 
 Archivos principales: `app/admin/cursos/Course.Modal.tsx`, `app/admin/cursos/actions.ts`, `app/admin/cursos/page.tsx`, `lib/course-links.ts`, `app/components/CourseCards.tsx` y `app/components/CoursesSection.tsx`.
 
-### Migración preparada, sin aplicar
+### Migración aplicada en Supabase
 
-Se preparó `supabase/migrations/202610220001_course_link_label.sql` con autorización expresa del usuario para **preparar la migración sin aplicarla**. Agrega únicamente `courses.link_label`, de tipo `text` y opcional. Los registros existentes conservan `NULL` y usan el texto automático; no se modifica su URL ni se eliminan datos.
+La migración `supabase/migrations/202610220001_course_link_label.sql` agrega únicamente `courses.link_label`, de tipo `text` y opcional. Los registros existentes conservan `NULL` y usan el texto automático; no se modifica su URL ni se eliminan datos.
 
-**No se ejecutó esta migración ni se modificó el Supabase remoto.** Antes de publicar la funcionalidad completa del punto 2, se debe autorizar y aplicar esta migración al entorno de destino. Crear o editar cursos con esta versión requiere que exista `link_label`. La consulta pública permite leer registros anteriores sin esa columna; no sustituye la migración necesaria para guardar el texto personalizado.
+**Aplicada el 22 de octubre de 2026**, después de recibir autorización adicional del usuario para configurar Supabase. Quedó registrada en el historial del proyecto `ssgcrrblxmmqurjlwope`; la API pública confirmó la columna con respuesta HTTP 200. La nueva configuración se verificó antes de preparar la publicación en `main`.
 
-No hacen falta cambios de esquema para los puntos 1 y 3.
+El carrusel no necesita cambios de esquema. La edición de imágenes reutiliza `events.image_url`; la revisión remota detectó un permiso faltante de Storage, resuelto con `202610220003_event_flyer_storage_delete.sql`: solo administradores autenticados pueden retirar archivos de `eventos/flyers`.
 
 ## 3. Gestión de imágenes en `/admin/eventos/[id]/editar`
 
@@ -83,4 +83,4 @@ El usuario autorizó crear los commits y subir los cambios primero a la rama `de
 
 Este documento acompaña la entrega. El archivo preexistente sin seguimiento `docs/PLAN_DEMOSTRACION_DUENO.md` no forma parte de estos cambios y debe quedar fuera de los commits.
 
-La autorización de publicación en GitHub no modifica el acuerdo sobre la base de datos: la migración continúa preparada, sin aplicar.
+Después de publicar el código inicialmente en `dev`, el usuario autorizó configurar Supabase y promover los cambios a `main`. Las tres migraciones de esta entrega quedaron aplicadas y verificadas. Consulta el resultado y sus evidencias en [VALIDACION_SUPABASE_2026-10-22.md](VALIDACION_SUPABASE_2026-10-22.md).

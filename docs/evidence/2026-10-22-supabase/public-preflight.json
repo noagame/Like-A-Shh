@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-22",
+  "project_ref": "ssgcrrblxmmqurjlwope",
+  "method": "API pública; SELECT con limit=0 y RPC de lectura con arreglo vacío",
+  "remote_writes": false,
+  "checks": [
+    {
+      "check": "courses",
+      "status": 200
+    },
+    {
+      "check": "courses.link_label",
+      "status": 400,
+      "code": "42703",
+      "message": "column courses.link_label does not exist"
+    },
+    {
+      "check": "events.image_url",
+      "status": 200
+    },
+    {
+      "check": "events.purchase_url",
+      "status": 200
+    },
+    {
+      "check": "blog_posts",
+      "status": 200
+    },
+    {
+      "check": "community_posts",
+      "status": 200
+    },
+    {
+      "check": "community_comments",
+      "status": 200
+    },
+    {
+      "check": "get_blog_reaction_counts",
+      "status": 404,
+      "code": "PGRST202"
+    }
+  ]
+}

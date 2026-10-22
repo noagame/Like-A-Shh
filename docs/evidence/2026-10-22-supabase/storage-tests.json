@@ -1,0 +1,110 @@
+[
+  {
+    "name": "fixture Storage aislado con SELECT público y política DELETE restrictiva",
+    "passed": true
+  },
+  {
+    "name": "SELECT público permite leer fixtures antes de la migración",
+    "passed": true
+  },
+  {
+    "name": "situación original: admin no puede DELETE sin política permisiva",
+    "passed": true
+  },
+  {
+    "name": "aplicar migración003 exclusivamente al cluster desechable",
+    "passed": true
+  },
+  {
+    "name": "aplicar migración no elimina objetos",
+    "passed": true
+  },
+  {
+    "name": "reaplicar migración003 sin error",
+    "passed": true
+  },
+  {
+    "name": "reaplicar no elimina objetos",
+    "passed": true
+  },
+  {
+    "name": "sólo existe una política nueva permisiva DELETE para authenticated",
+    "passed": true
+  },
+  {
+    "name": "políticas originales idénticas tras ambas ejecuciones",
+    "passed": true
+  },
+  {
+    "name": "SELECT público se conserva después de la migración",
+    "passed": true
+  },
+  {
+    "name": "alumno no elimina flyer aun teniendo privilegio DELETE",
+    "passed": true
+  },
+  {
+    "name": "anónimo no elimina flyer aun teniendo privilegio DELETE",
+    "passed": true
+  },
+  {
+    "name": "anónimo no obtiene DELETE aunque uid señale un admin",
+    "passed": true
+  },
+  {
+    "name": "authenticated sin identidad no elimina flyer",
+    "passed": true
+  },
+  {
+    "name": "alumno no elimina objetos en otro bucket",
+    "passed": true
+  },
+  {
+    "name": "admin no elimina carpeta distinta en eventos",
+    "passed": true
+  },
+  {
+    "name": "admin no elimina flyers en galerias ni blog",
+    "passed": true
+  },
+  {
+    "name": "admin no elimina nombres sin carpeta o sin barra",
+    "passed": true
+  },
+  {
+    "name": "admin no elimina prefijos parecidos, slash inicial o mayúsculas",
+    "passed": true
+  },
+  {
+    "name": "admin no elimina objetos con nombre o bucket nulo",
+    "passed": true
+  },
+  {
+    "name": "intentos denegados no modifican objetos",
+    "passed": true
+  },
+  {
+    "name": "admin puede eliminar evento/flyers autorizado",
+    "passed": true
+  },
+  {
+    "name": "admin puede eliminar flyer en subcarpeta de flyers",
+    "passed": true
+  },
+  {
+    "name": "restantes doce objetos externos a flyers se conservan",
+    "passed": true
+  },
+  {
+    "name": "admin tampoco puede borrar el resto mediante DELETE sin filtro",
+    "passed": true
+  },
+  {
+    "name": "lectura pública restante sigue funcionando",
+    "passed": true
+  },
+  {
+    "name": "SQL probado coincide exactamente con archivo actual del repositorio",
+    "passed": true
+  }
+]

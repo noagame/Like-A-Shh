@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-22",
+  "project_ref": "ssgcrrblxmmqurjlwope",
+  "checks": [
+    {
+      "name": "01 courses.link_label disponible y opcional",
+      "passed": true
+    },
+    {
+      "name": "02 RLS de reacciones activo",
+      "passed": true
+    },
+    {
+      "name": "03 Clave única por artículo y alumno",
+      "passed": true
+    },
+    {
+      "name": "04 Ambas referencias con cascada",
+      "passed": true
+    },
+    {
+      "name": "05 Tres políticas de reacciones",
+      "passed": true
+    },
+    {
+      "name": "06 Identidades privadas para visitantes",
+      "passed": true
+    },
+    {
+      "name": "07 Alumnos con SELECT INSERT DELETE",
+      "passed": true
+    },
+    {
+      "name": "08 UPDATE de reacciones bloqueado",
+      "passed": true
+    },
+    {
+      "name": "09 Totales accesibles sin sesión",
+      "passed": true
+    },
+    {
+      "name": "10 Totales con definer y search_path fijo",
+      "passed": true
+    },
+    {
+      "name": "11 Totales limitados a publicados",
+      "passed": true
+    },
+    {
+      "name": "12 Permiso DELETE de flyers solo administradores",
+      "passed": true
+    },
+    {
+      "name": "13 Políticas anteriores de Storage conservadas",
+      "passed": true
+    },
+    {
+      "name": "14 Tres migraciones registradas",
+      "passed": true
+    }
+  ]
+}
