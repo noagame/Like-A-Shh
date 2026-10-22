@@ -86,7 +86,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-8">
           {/* Logo */}
           <m.a
-            href="#inicio"
+            href="/#inicio"
             whileHover={{ scale: 1.05 }}
             className="text-2xl md:text-3xl font-bold text-gold-gradient"
             style={{ fontFamily: "var(--font-serif)" }}
@@ -134,7 +134,14 @@ export default function Footer() {
             Versión {SITE_VERSION}
           </p>
 
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6">
+            <Link
+              href="/blog"
+              className="text-white/40 hover:text-gold text-sm transition-colors"
+              id="footer-blog-link"
+            >
+              Blog
+            </Link>
             <Link
               href="/terminos"
               className="text-white/40 hover:text-gold text-sm transition-colors"

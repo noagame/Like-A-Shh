@@ -6,11 +6,12 @@ import Image from "next/image";
 import Link from "next/link";
 
 const navLinks = [
-  { label: "Inicio", href: "#inicio" },
-  { label: "Cursos Online", href: "#cursos" },
-  { label: "Galería Mystic", href: "#galeria" },
-  { label: "Contacto", href: "#contacto" },
-  { label: "Próximos Eventos", href: "#eventos" },
+  { label: "Inicio", href: "/#inicio" },
+  { label: "Cursos Online", href: "/#cursos" },
+  { label: "Galería Mystic", href: "/#galeria" },
+  { label: "Contacto", href: "/#contacto" },
+  { label: "Próximos Eventos", href: "/#eventos" },
+  { label: "Blog", href: "/blog" },
 ];
 
 export default function Navbar() {
@@ -54,6 +55,7 @@ export default function Navbar() {
         <AnimatePresence>
           {visible && (
             <m.nav
+              aria-label="Navegación principal"
               initial={{ y: -60, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -60, opacity: 0 }}
@@ -66,7 +68,7 @@ export default function Navbar() {
             >
               <div className="flex items-center justify-between h-12 sm:h-14 md:h-20 px-2.5 sm:px-4 md:px-6">
                 {/* Logo */}
-                <a href="#inicio" className="flex items-center gap-2 shrink-0">
+                <Link href="/#inicio" className="flex items-center gap-2 shrink-0">
                   <Image
                     src="/assets/logo/logo_likeashh.jpg"
                     alt="Logo Like a Shh"
@@ -75,18 +77,18 @@ export default function Navbar() {
                     height={38}
                     priority
                   />
-                </a>
+                </Link>
 
                 {/* Enlaces de escritorio */}
-                <div className="hidden md:flex items-center gap-6">
+                <div className="hidden lg:flex items-center gap-5">
                   {navLinks.map((link) => (
-                    <a
+                    <Link
                       key={link.href}
                       href={link.href}
                       className="text-[10px] xl:text-xs uppercase tracking-[0.18em] text-white/80 hover:text-gold transition-colors font-medium"
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   ))}
                 </div>
 
@@ -109,9 +111,10 @@ export default function Navbar() {
                   <button
                     type="button"
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    className="md:hidden flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-gold transition-colors hover:bg-gold/10 focus:outline-none"
+                    className="lg:hidden flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-gold transition-colors hover:bg-gold/10 focus:outline-none"
                     aria-label="Abrir menú"
                     aria-expanded={mobileMenuOpen}
+                    aria-controls="public-mobile-menu"
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       {mobileMenuOpen ? (
@@ -126,17 +129,17 @@ export default function Navbar() {
 
               {/* Menú Desplegable Móvil */}
               {mobileMenuOpen && (
-                <div className="md:hidden border-t border-white/10 bg-black/80 px-3 pb-3 pt-2">
+                <div id="public-mobile-menu" className="lg:hidden border-t border-white/10 bg-black/80 px-3 pb-3 pt-2">
                   <div className="flex flex-col gap-1.5 rounded-2xl border border-white/10 bg-white/5 p-2">
                     {navLinks.map((link) => (
-                      <a
+                      <Link
                         key={link.href}
                         href={link.href}
                         onClick={() => setMobileMenuOpen(false)}
                         className="rounded-xl px-3 py-2.5 text-left text-[10px] uppercase tracking-[0.18em] text-white/80 hover:bg-gold/10 hover:text-gold transition-colors"
                       >
                         {link.label}
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 </div>

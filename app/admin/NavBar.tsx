@@ -16,7 +16,8 @@ const navLinks = [
   { href: "/admin/dashboard", label: "Panel Analitico" },
   { href: "/admin/usuarios", label: "Gestión de Usuarios" },
   { href: "/admin/cursos", label: "Gestión de Cursos Online" },
-  { href: "/admin/blog", label: "Blog" },
+  { href: "/admin/blog", label: "Administrar blog" },
+  { href: "/blog", label: "Blog público" },
   { href: "/admin/comunidad", label: "Moderación Comunidad" },
   { href: "/admin/ajustes", label: "Ajustes" },
 ];
@@ -36,7 +37,9 @@ export default function Navbar() {
                 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="fixed top-4 left-4 z-40 p-1 bg-black/50 backdrop-blur-md border border-gold/40 rounded-full shadow-lg hover:border-gold transition-colors focus:outline-none"
-                arial-label="Abrir menú de administrador"
+                aria-label="Abrir menú de administrador"
+                aria-expanded={isOpen}
+                aria-controls="admin-navigation"
                 >
                     <Image 
                         src="/favicon.ico"
@@ -76,7 +79,7 @@ export default function Navbar() {
                             </div>
 
                             {/* Barra de Navegación*/}
-                            <nav className=" flex flex-col gap-1 flex-grow overflow-y-auto">
+                            <nav id="admin-navigation" aria-label="Navegación de administración" className=" flex flex-col gap-1 flex-grow overflow-y-auto">
                                 {navLinks.map((link) => (
                                     <Link
                                         key={link.href}
