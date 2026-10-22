@@ -13,7 +13,7 @@ export default async function CoursesSection() {
   // 1. Cursos de la base de datos
   const { data: rawCourses } = await supabase
     .from("courses")
-    .select("id, title, description, image_url, url")
+    .select("*")
     .eq("status", "published")
     .order("order_index", { ascending: true });
 
@@ -40,7 +40,7 @@ export default async function CoursesSection() {
   const allCourses: CourseItem[] = rawCourses ?? [];
 
   // 2. Curso Único Destacado de Flexibilidad (Hotmart)
-  const flexCourse =
+  const flexCourse: CourseItem =
     allCourses.find(
       (c) =>
         c.title.toLowerCase().includes("flexibiliza") ||
@@ -127,7 +127,7 @@ export default async function CoursesSection() {
               description={curso.description}
               imageUrl={curso.image_url}
               badgeText="Curso Hotmart"
-              buttonText="Acceder al Curso"
+              buttonText={curso.link_label?.trim() || "Acceder al Curso"}
               url={curso.url}
               courseId={curso.id}
               liked={likedCourseIds.has(curso.id)}
@@ -151,7 +151,7 @@ export default async function CoursesSection() {
                     description={course.description}
                     imageUrl={course.image_url}
                     badgeText="Clase Online"
-                    buttonText="Agenda aquí"
+                    buttonText={course.link_label?.trim() || "Agenda aquí"}
                     url={course.url}
                     courseId={course.id}
                     liked={likedCourseIds.has(course.id)}
@@ -188,7 +188,7 @@ export default async function CoursesSection() {
                     description={course.description}
                     imageUrl={course.image_url}
                     badgeText="Clase Presencial"
-                    buttonText="Agenda aquí"
+                    buttonText={course.link_label?.trim() || "Agenda aquí"}
                     url={course.url}
                     courseId={course.id}
                     liked={likedCourseIds.has(course.id)}

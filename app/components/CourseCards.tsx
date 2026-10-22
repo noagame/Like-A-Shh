@@ -1,5 +1,6 @@
 import Image from "next/image";
 import CourseHeartButton from "@/app/components/CourseHeartButton";
+import { resolveCourseLink } from "@/lib/course-links";
 
 export interface CourseItem {
   id: string;
@@ -7,6 +8,7 @@ export interface CourseItem {
   description: string;
   image_url: string;
   url: string;
+  link_label?: string | null;
 }
 
 export interface ClassItem {
@@ -18,14 +20,6 @@ export interface ClassItem {
   image_url?: string;
   url?: string;
 }
-
-const WHATSAPP_AGENDA_URL_ONLINE =
-  "https://wa.me/56971577711?text=Hola%20Maximiliano,%20vengo%20de%20la%20p%C3%A1gina%20web%20Like%20a%20Shh%20y%20me%20gustar%C3%ADa%20agendar%20una%20clase%20online. ";
-
-const WHATSAPP_AGENDA_URL_PRESENCIAL =
-  "https://wa.me/56971577711?text=Hola%20Maximiliano,%20vengo%20de%20la%20p%C3%A1gina%20web%20Like%20a%20Shh%20y%20me%20gustar%C3%ADa%20agendar%20una%20clase%20presencial. ";
-const WHATSAPP_AGENDA_URL =
-  "https://wa.me/56971577711?text=Hola%20Maximiliano,%20vengo%20de%20la%20p%C3%A1gina%20web%20Like%20a%20Shh%20y%20me%20gustar%C3%ADa%20agendar%20una%20clase.";
 
 const FALLBACK_SUPABASE_IMAGE =
   "https://ssgcrrblxmmqurjlwope.supabase.co/storage/v1/object/public/galerias/cursos/curso_b4285aab-184e-4534-9398-1869ac6dd017.jpg";
@@ -52,9 +46,7 @@ export function StandardProgramCard({
   liked?: boolean;
   likesCount?: number;
 }) {
-  const isHotmart = url.includes("hotmart.com");
-  const targetUrl =
-    isHotmart ? url : url !== "#" && url.trim() !== "" ? url : WHATSAPP_AGENDA_URL;
+  const targetUrl = resolveCourseLink({ title, url }).url;
 
   const isLogo = imageUrl.includes("logo");
 
@@ -101,14 +93,18 @@ export function StandardProgramCard({
           </div>
         )}
 
-        <a
-          href="https://wa.me/56971577711?text=Hola%20Maximiliano,%20vengo%20de%20la%20p%C3%A1gina%20web%20Like%20a%20Shh%20y%20me%20gustar%C3%ADa%20agendar%20una%20clase."
+        {targetUrl !== "#" ? <a
+          href={targetUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="block w-full text-center text-xs font-bold uppercase tracking-wider py-2.5 rounded-xl bg-gold text-black hover:bg-gold-light shadow-lg shadow-gold/10 transition-all cursor-pointer"
         >
           {buttonText} ↗
-        </a>
+        </a> : (
+          <span aria-disabled="true" className="block w-full rounded-xl bg-white/10 py-2.5 text-center text-xs font-bold uppercase tracking-wider text-white/50">
+            Enlace no disponible
+          </span>
+        )}
       </div>
     </div>
   );

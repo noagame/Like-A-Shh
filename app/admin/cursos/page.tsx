@@ -4,11 +4,15 @@ import PanelInfo from "@/app/admin/components/PanelInfo";
 import Image from "next/image";
 import { deleteCourse } from "./actions";
 import CourseModal from "./Course.Modal";
+import { resolveCourseLink } from "@/lib/course-links";
 
-export default async function AdminCursosPage() {
+export default async function AdminCursosPage({ searchParams }: {
+  searchParams?: Promise<{ error?: string }>;
+}) {
   const { supabase } = await requireAdmin();
+  const { error: searchError } = searchParams ? await searchParams : {};
 
-  const { data: courses } = await supabase
+  const { data: courses, error: fetchError } = await supabase
     .from("courses")
     .select("*")
     .order("order_index", { ascending: true })
@@ -21,7 +25,7 @@ export default async function AdminCursosPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white tracking-wide" style={{ fontFamily: "var(--font-serif)" }}>
-            Gestión de Cursos Online
+            Gestión de Cursos y Clases Particulares
           </h1>
           <p className="text-white/50 text-sm mt-1">
             Administra los programas formativos visibles en la página principal.
@@ -31,13 +35,21 @@ export default async function AdminCursosPage() {
       </div>
 
       <PanelInfo
-        title="Cursos y Programas Online"
-        description="Si no adjuntas un afiche personalizado, el sistema asignará automáticamente el logo oficial de Like a Shh como imagen de portada."
+        title="Cursos y Clases Particulares"
+        description="Edita cada curso para personalizar la URL y el texto del enlace. Las clases online y presenciales muestran Enlace a WhatsApp de forma automática. Si no adjuntas una portada al crear, se utiliza la imagen predeterminada."
       />
+
+      {(searchError || fetchError) && (
+        <p role="alert" className="rounded-xl border border-red-400/30 bg-red-500/10 p-4 text-sm text-red-200">
+          {searchError || "No se pudieron cargar los cursos. Intenta nuevamente."}
+        </p>
+      )}
 
       {/* Grid de Cursos */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {(courses ?? []).map((curso) => (
+        {(courses ?? []).map((curso) => {
+          const link = resolveCourseLink(curso);
+          return (
           <div
             key={curso.id}
             className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 flex flex-col justify-between shadow-xl group hover:border-gold/30 transition-all"
@@ -65,16 +77,18 @@ export default async function AdminCursosPage() {
               </p>
             </div>
 
-            <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-2">
-              <a
-                href={curso.url}
+            <div className="pt-4 border-t border-white/10 space-y-3">
+              {link.url !== "#" ? <a
+                href={link.url}
                 target="_blank"
-                rel="noreferrer"
-                className="text-xs text-gold hover:underline truncate max-w-[180px]"
+                rel="noopener noreferrer"
+                className="block text-xs text-gold hover:underline truncate"
               >
-                {curso.url === "#" ? "Sin enlace externo" : "Enlace Hotmart/Web ↗"}
-              </a>
+                {link.label} ↗
+              </a> : <span className="text-xs text-white/50">Sin enlace externo</span>}
 
+              <div className="flex items-center justify-between gap-2">
+              <CourseModal course={curso} />
               <form action={deleteCourse}>
                 <input type="hidden" name="id" value={curso.id} />
                 <button
@@ -84,9 +98,11 @@ export default async function AdminCursosPage() {
                   Eliminar
                 </button>
               </form>
+              </div>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
