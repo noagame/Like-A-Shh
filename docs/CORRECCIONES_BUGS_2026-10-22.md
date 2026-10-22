@@ -63,7 +63,7 @@ Se añadieron pruebas de regresión para paginación adaptable, ausencia de repe
 | `npm run build` | Aprobado; compilación de producción y generación de las 40 páginas completadas |
 | `git diff --check` | Aprobado |
 
-La compilación utilizó las variables ficticias de la CI (`https://example.supabase.co`, clave `test-placeholder` y origen `https://example.com`), sin credenciales de producción. La instalación de dependencias y la compilación necesitaron acceso fuera del sandbox para descargar paquetes/fuentes y ejecutar los procesos del compilador. El proyecto conserva su configuración y su archivo de dependencias sin modificaciones.
+La compilación utilizó las variables ficticias de la CI (`https://example.supabase.co`, clave `test-placeholder` y origen `https://example.com`), sin credenciales de producción. La instalación de dependencias y la compilación necesitaron acceso fuera del sandbox para descargar paquetes/fuentes y ejecutar los procesos del compilador. Las correcciones funcionales conservaron la configuración de dependencias. Después se actualizaron versiones compatibles en `package-lock.json` para atender las alertas de auditoría detectadas en GitHub; el resultado y la alerta de desarrollo pendiente se detallan en [VALIDACION_SUPABASE_2026-10-22.md](VALIDACION_SUPABASE_2026-10-22.md).
 
 Las pruebas de las acciones utilizan servicios simulados: no crean cursos, eventos, cuentas ni objetos de Storage en Supabase. No se realizaron pruebas con escritura en producción.
 
