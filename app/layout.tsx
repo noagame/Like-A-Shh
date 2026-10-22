@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import MotionProvider from "./components/MotionProvider";
+import PublicNavigation from "./components/PublicNavigation";
 import StructuredData from "./components/StructuredData";
 import { SITE_ORIGIN } from "@/lib/seo/site-origin";
 
@@ -88,7 +89,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <StructuredData />
-        <MotionProvider>{children}</MotionProvider>
+        <MotionProvider>
+          <PublicNavigation />
+          {children}
+        </MotionProvider>
       </body>
     </html>
   );

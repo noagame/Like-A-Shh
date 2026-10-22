@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, ReactNode } from "react";
+import { Children, useState, useEffect, useRef, ReactNode } from "react";
 import { m, AnimatePresence } from "framer-motion";
 
 interface AutoplayCarouselProps {
@@ -16,45 +16,44 @@ export default function AutoplayCarousel({
   children,
   interval = 4000,
 }: AutoplayCarouselProps) {
-  const [startIndex, setStartIndex] = useState(0);
+  const [pageIndex, setPageIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [itemsPerPage, setItemsPerPage] = useState(4);
   const touchStartX = useRef<number | null>(null);
 
-  const items = Array.isArray(children) ? children : [children];
+  const items = Children.toArray(children);
   const total = items.length;
+  const pageCount = Math.ceil(total / itemsPerPage);
+  const currentPage = Math.min(pageIndex, Math.max(0, pageCount - 1));
+  const hasMorePages = pageCount > 1;
 
-  // Detectar vista móvil para mostrar 1 tarjeta en celular o 4 en escritorio
+  // La cantidad de tarjetas por página coincide con las columnas del diseño.
   useEffect(() => {
     const checkViewport = () => {
-      setIsMobile(window.innerWidth < 640);
+      setItemsPerPage(window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 4);
     };
     checkViewport();
     window.addEventListener("resize", checkViewport);
     return () => window.removeEventListener("resize", checkViewport);
   }, []);
 
-  const itemsPerPage = isMobile ? 1 : 4;
-
   useEffect(() => {
-    if (total <= 1 || isPaused) return;
+    if (!hasMorePages || isPaused) return;
 
     const timer = setInterval(() => {
-      setStartIndex((prev) => (prev + 1 >= total ? 0 : prev + 1));
+      setPageIndex((prev) => (Math.min(prev, pageCount - 1) + 1) % pageCount);
     }, interval);
 
     return () => clearInterval(timer);
-  }, [total, interval, isPaused]);
+  }, [pageCount, hasMorePages, interval, isPaused]);
 
-  if (!items || total === 0) return null;
+  if (total === 0) return null;
 
-  const prev = () => setStartIndex((c) => (c === 0 ? total - 1 : c - 1));
-  const next = () => setStartIndex((c) => (c + 1 >= total ? 0 : c + 1));
+  const prev = () => setPageIndex((currentPage - 1 + pageCount) % pageCount);
+  const next = () => setPageIndex((currentPage + 1) % pageCount);
 
-  // Generar las tarjetas visibles
-  const visibleItems = Array.from({ length: Math.min(total, itemsPerPage) }, (_, idx) => {
-    return items[(startIndex + idx) % total];
-  });
+  // Cada tarjeta pertenece a una sola página; la última no se rellena repitiendo clases.
+  const visibleItems = items.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
   return (
     <div
@@ -74,7 +73,7 @@ export default function AutoplayCarousel({
           {subtitle && <p className="mt-1 text-[11px] text-white/50 sm:text-xs">{subtitle}</p>}
         </div>
 
-        {total > 1 && (
+        {hasMorePages && (
           <div className="flex items-center gap-2 self-start sm:self-auto">
             <button
               type="button"
@@ -85,7 +84,7 @@ export default function AutoplayCarousel({
               ←
             </button>
             <span className="min-w-10 text-center text-[10px] text-white/40 font-mono sm:text-xs">
-              {startIndex + 1} / {total}
+              {currentPage + 1} / {pageCount}
             </span>
             <button
               type="button"
@@ -108,19 +107,19 @@ export default function AutoplayCarousel({
         onTouchEnd={(e) => {
           if (touchStartX.current === null) return;
           const diff = touchStartX.current - e.changedTouches[0].clientX;
-          if (diff > 40) next();
-          if (diff < -40) prev();
+          if (hasMorePages && diff > 40) next();
+          if (hasMorePages && diff < -40) prev();
           touchStartX.current = null;
         }}
       >
         <AnimatePresence mode="wait">
           <m.div
-            key={startIndex + (isMobile ? "-mob" : "-desk")}
+            key={`${currentPage}-${itemsPerPage}`}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className={`grid gap-3 sm:gap-5 ${isMobile ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"}`}
+            className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4"
           >
             {visibleItems.map((item, idx) => (
               <div key={idx} className="h-full w-full">
@@ -132,17 +131,18 @@ export default function AutoplayCarousel({
       </div>
 
       {/* Indicadores inferiores */}
-      {total > 1 && (
+      {hasMorePages && (
         <div className="mt-4 flex justify-center gap-1.5 sm:mt-5">
-          {items.map((_, idx) => (
+          {Array.from({ length: pageCount }, (_, idx) => (
             <button
               key={idx}
               type="button"
-              onClick={() => setStartIndex(idx)}
+              onClick={() => setPageIndex(idx)}
               className={`h-1.5 rounded-full transition-all duration-300 ${
-                startIndex === idx ? "w-6 bg-gold" : "w-1.5 bg-white/20 hover:bg-white/40"
+                currentPage === idx ? "w-6 bg-gold" : "w-1.5 bg-white/20 hover:bg-white/40"
               }`}
-              aria-label={`Ir a tarjeta ${idx + 1}`}
+              aria-label={`Ir a página ${idx + 1}`}
+              aria-current={currentPage === idx ? "page" : undefined}
             />
           ))}
         </div>

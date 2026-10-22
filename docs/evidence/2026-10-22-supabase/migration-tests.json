@@ -1,0 +1,158 @@
+[
+  {
+    "name": "fixture mínimo y políticas representativas",
+    "passed": true
+  },
+  {
+    "name": "aplicar 202610220001_course_link_label.sql solo al cluster temporal",
+    "passed": true
+  },
+  {
+    "name": "aplicar 202610220002_blog_post_reactions.sql solo al cluster temporal",
+    "passed": true
+  },
+  {
+    "name": "label nuevo opcional conserva filas, títulos y destinos previos",
+    "passed": true
+  },
+  {
+    "name": "label personalizado se puede guardar sin cambiar URL",
+    "passed": true
+  },
+  {
+    "name": "migración de label admite repetición sin pérdida de datos",
+    "passed": true
+  },
+  {
+    "name": "alumno agrega su reacción a publicado",
+    "passed": true
+  },
+  {
+    "name": "duplicado directo no crea segunda reacción",
+    "passed": true
+  },
+  {
+    "name": "upsert ignoreDuplicates idempotente no requiere UPDATE",
+    "passed": true
+  },
+  {
+    "name": "alumno elimina su propia reacción",
+    "passed": true
+  },
+  {
+    "name": "repetir quitar reacción es idempotente",
+    "passed": true
+  },
+  {
+    "name": "alumno puede volver a reaccionar",
+    "passed": true
+  },
+  {
+    "name": "segundo alumno agrega reacción propia",
+    "passed": true
+  },
+  {
+    "name": "alumno no suplanta a otro alumno",
+    "passed": true
+  },
+  {
+    "name": "alumno no ve identidades ajenas",
+    "passed": true
+  },
+  {
+    "name": "otro alumno no elimina reacción ajena",
+    "passed": true
+  },
+  {
+    "name": "reacción ajena permanece tras intento de borrado",
+    "passed": true
+  },
+  {
+    "name": "UPDATE directo no está concedido",
+    "passed": true
+  },
+  {
+    "name": "alumno no reacciona a borrador",
+    "passed": true
+  },
+  {
+    "name": "alumno no reacciona a archivado",
+    "passed": true
+  },
+  {
+    "name": "administrador no agrega reacción propia",
+    "passed": true
+  },
+  {
+    "name": "administrador no ve identidades ajenas",
+    "passed": true
+  },
+  {
+    "name": "administrador no elimina reacción ajena",
+    "passed": true
+  },
+  {
+    "name": "anónimo no inserta reacciones",
+    "passed": true
+  },
+  {
+    "name": "anónimo no lee tabla de identidades",
+    "passed": true
+  },
+  {
+    "name": "autenticado sin identidad no agrega reacciones",
+    "passed": true
+  },
+  {
+    "name": "fixture simula reacción de post anteriormente publicado",
+    "passed": true
+  },
+  {
+    "name": "RPC anónimo devuelve totales publicados y omite borradores/archivados",
+    "passed": true
+  },
+  {
+    "name": "RPC alumno devuelve los totales globales sin limitar al propio alumno",
+    "passed": true
+  },
+  {
+    "name": "RPC no expone user_id ni columnas adicionales",
+    "passed": true
+  },
+  {
+    "name": "RPC vacío no revela ningún artículo",
+    "passed": true
+  },
+  {
+    "name": "borrar reacción reduce total público",
+    "passed": true
+  },
+  {
+    "name": "total público actualizado tras borrado",
+    "passed": true
+  },
+  {
+    "name": "no permite borrar reacción cuando artículo pasa a borrador",
+    "passed": true
+  },
+  {
+    "name": "alumno prepara reacción para cascada de artículo",
+    "passed": true
+  },
+  {
+    "name": "borrar artículo elimina sus reacciones en cascada",
+    "passed": true
+  },
+  {
+    "name": "alumno prepara reacción para cascada de perfil",
+    "passed": true
+  },
+  {
+    "name": "borrar perfil elimina sus reacciones en cascada",
+    "passed": true
+  },
+  {
+    "name": "otros perfiles y reacciones sobreviven a las cascadas",
+    "passed": true
+  }
+]

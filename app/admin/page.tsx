@@ -63,6 +63,18 @@ const cards: AdminCard[] = [
     description: "Próximamente: configuración global y SEO del sitio.",
     emoji: "⚙️",
   },
+  {
+    href: "/admin/blog",
+    title: "Blogs y Noticias",
+    description: "Espacio donde puedes agregar estudios, ayudas o noticias importantes tanto para los alumnos o tu crecimiento.",
+    emoji: "✍️",
+  },
+  {
+    href: "/admin/comunidad",
+    title: "Comunidad",
+    description: "Inicia conversaciones para tus alumnos y revisa sus preguntas y experiencias. Aprueba, rechaza u oculta publicaciones antes de mostrarlas en la comunidad.",
+    emoji: "👥​",
+  },
 ];
 
 export default async function AdminHomePage() {

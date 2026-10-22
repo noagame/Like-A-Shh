@@ -1,22 +1,20 @@
-import { revalidatePath } from "next/cache";
-import { uploadFlyer, rollbackFlyer } from "@/lib/infrastructure/factories/flyer";
-import { parseEventLocation, parsePurchaseUrl } from "@/lib/event-links";
 import ActivityPending from "../../ActivityPending";
 import { requireAdmin } from "@/lib/auth/authorize";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import LocationInput from "../../nuevo/LocationInput";
 import EventWhitelistManager from "../../EventWhitelistManager";
-import { validateEventDateRange } from "@/lib/event-date-validation";
+import EventImageField from "./EventImageField";
+import { updateEvent } from "./actions";
 
 export default async function EditarEventoPage({
     params,
     searchParams,
 }: {
     params: Promise<{ id: string }>;
-    searchParams?: Promise<{ error?: string }>;
+    searchParams?: Promise<{ error?: string; warning?: string }>;
 }) {
     const { id } = await params;
-    const { error: searchError } = searchParams ? await searchParams : { error: undefined };
+    const { error: searchError, warning } = searchParams ? await searchParams : { error: undefined, warning: undefined };
     const { supabase } = await requireAdmin();
 
     // 1. Buscamos el evento actual en la base de datos
@@ -31,94 +29,7 @@ export default async function EditarEventoPage({
     }
 
 
-    async function updateEvent(formData: FormData) {
-        "use server";
-        const { supabase } = await requireAdmin();
-        let errorMessage: string | null = null;
-        let newFlyer: Awaited<ReturnType<typeof uploadFlyer>> = null;
-        let committed = false;
-
-        try {
-            // Leer nuevamente: no confiar en campos ocultos para la imagen anterior.
-            const { data: current, error: readError } = await supabase
-                .from("events")
-                .select("id, image_url, purchase_url, categories(name)")
-                .eq("id", id)
-                .single();
-            if (readError || !current) throw new Error("No se encontró el evento.");
-
-            const title = String(formData.get("title") ?? "").trim();
-            const start_time = String(formData.get("start_time") ?? "");
-            const end_time = String(formData.get("end_time") ?? "");
-            const status = String(formData.get("status") ?? "draft");
-            const capacityText = String(formData.get("capacity") ?? "").trim();
-            const capacity = capacityText ? Number(capacityText) : null;
-            if (!title) throw new Error("El título es obligatorio.");
-            if (!["draft", "published", "cancelled"].includes(status)) {
-                throw new Error("El estado no es válido.");
-            }
-            if (capacity !== null && (!Number.isInteger(capacity) || capacity < 1)) {
-                throw new Error("El cupo debe ser un entero mayor que cero.");
-            }
-            validateEventDateRange(start_time, end_time);
-
-            // El formulario es compartido con clases: no validar una sala online como Maps.
-            const categoryValue = current.categories as unknown;
-            const category = (Array.isArray(categoryValue) ? categoryValue[0] : categoryValue) as
-                { name?: string } | null;
-            const online = ["Clase Particular Online", "Clase Online", "Online"]
-                .includes(category?.name ?? "");
-            const location = online
-                ? String(formData.get("location") ?? "").trim()
-                : parseEventLocation(formData.get("location"));
-            const purchase_url = category?.name === "Evento"
-                ? parsePurchaseUrl(formData.get("purchase_url"))
-                : current.purchase_url;
-
-            const file = formData.get("flyer");
-            if (file instanceof File && file.size > 0) {
-                newFlyer = await uploadFlyer(supabase, file, "eventos", "flyers");
-            }
-
-            const { data: updated, error: updateError } = await supabase
-                .from("events")
-                .update({
-                    title,
-                    description: String(formData.get("description") ?? ""),
-                    start_time,
-                    end_time,
-                    location,
-                    capacity,
-                    status,
-                    purchase_url,
-                    ...(newFlyer ? { image_url: newFlyer.url } : {}),
-                })
-                .eq("id", id)
-                .select("id")
-                .single();
-            if (updateError || !updated) throw new Error("No se pudo actualizar el evento.");
-            committed = true;
-        } catch (error) {
-            errorMessage = error instanceof Error ? error.message : "No se pudo guardar.";
-            if (newFlyer && !committed) {
-                try {
-                    await rollbackFlyer(supabase, newFlyer);
-                } catch {
-                    errorMessage += " No se pudo retirar la imagen recién subida; solicita revisar Storage.";
-                }
-            }
-        }
-
-        // redirect lanza una señal interna: debe quedar fuera del try/catch.
-        if (errorMessage) {
-            redirect(`/admin/eventos/${id}/editar?error=${encodeURIComponent(errorMessage)}`);
-        }
-        revalidatePath("/admin/eventos");
-        revalidatePath(`/admin/eventos/${id}/editar`);
-        revalidatePath("/");
-        revalidatePath("/mi-cuenta");
-        redirect("/admin/eventos");
-    }
+    const updateEventWithId = updateEvent.bind(null, id);
 
     return (
         <div className="max-w-3xl mx-auto p-6 bg-neutral-900 border border-neutral-800 rounded-lg text-white mt-10">
@@ -130,17 +41,15 @@ export default async function EditarEventoPage({
                 </div>
             ) : null}
 
-            <form action={updateEvent} className="space-y-4">
-                <ActivityPending message="Espera, estamos guardando los cambios" />
-                <div>
-                    <p className="text-sm text-neutral-400">Flyer actual</p>
-                    {event.image_url ? (
-                        <a href={event.image_url} target="_blank" rel="noopener noreferrer" className="text-amber-300 underline">Ver imagen actual ↗</a>
-                    ) : <p className="text-sm text-neutral-500">Sin imagen</p>}
-                    <label htmlFor="edit-flyer" className="mt-3 block text-sm text-neutral-400">Reemplazar flyer (PNG, JPEG o WebP; máximo 5 MB)</label>
-                    <input id="edit-flyer" name="flyer" type="file" accept="image/png,image/jpeg,image/webp" className="mt-2 block w-full" />
-                    <p className="mt-1 text-xs text-neutral-500">Sin un archivo nuevo se conserva la imagen actual.</p>
+            {warning ? (
+                <div role="status" className="mb-4 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+                    {warning}
                 </div>
+            ) : null}
+
+            <form action={updateEventWithId} className="space-y-4">
+                <ActivityPending message="Espera, estamos guardando los cambios" />
+                <EventImageField key={event.image_url ?? "no-image"} imageUrl={event.image_url ?? null} />
                 {event.categories?.name === "Evento" && (
                     <div>
                         <label htmlFor="edit-purchase-url" className="block text-sm text-neutral-400">Enlace de compra (opcional)</label>

@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { cache } from "react";
+import { loadBlogReactions } from "@/lib/blog-reactions";
+import BlogReactionButton from "./BlogReactionButton";
 
 type Post = {
   id: string;
@@ -39,9 +41,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function BlogPage() {
   const posts = (await getPublishedPosts()) ?? [];
+  const reactionState = await loadBlogReactions(posts.map((post) => post.id));
 
   return (
-    <main className="min-h-screen bg-[#09090b] px-4 py-24 text-white sm:px-6">
+    <main className="min-h-screen bg-[#09090b] px-4 py-10 text-white sm:px-6 sm:py-12">
       <section className="mx-auto max-w-6xl">
         <p className="text-xs uppercase tracking-[0.25em] text-[#48CAE4]">Like a Shh</p>
         <h1 className="mt-2 text-4xl font-bold sm:text-5xl" style={{ fontFamily: "var(--font-serif)" }}>Blog & bienestar</h1>
@@ -64,6 +67,17 @@ export default async function BlogPage() {
                 <h2 className="mt-2 text-xl font-bold">{post.title}</h2>
                 <p className="mt-2 text-sm leading-relaxed text-white/60">{post.excerpt}</p>
                 <Link className="mt-4 inline-block text-sm font-semibold text-[#48CAE4] hover:underline" href={`/blog/${post.slug}`}>Leer artículo →</Link>
+                <div className="mt-5 border-t border-white/10 pt-4">
+                  <BlogReactionButton
+                    key={`${post.id}:${reactionState.reactions[post.id].liked}:${reactionState.reactions[post.id].count}`}
+                    postId={post.id}
+                    initialLiked={reactionState.reactions[post.id].liked}
+                    initialCount={reactionState.reactions[post.id].count}
+                    loggedIn={reactionState.loggedIn}
+                    canReact={reactionState.canReact}
+                    available={reactionState.available}
+                  />
+                </div>
               </div>
             </article>
           ))}

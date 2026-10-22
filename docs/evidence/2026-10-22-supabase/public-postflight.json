@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-22",
+  "project_ref": "ssgcrrblxmmqurjlwope",
+  "checks": [
+    {
+      "check": "courses.link_label",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "check": "events.image_url",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "check": "blog_posts",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "check": "community_posts",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "check": "reaction_counts",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "check": "reaction_identities_private",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    }
+  ]
+}

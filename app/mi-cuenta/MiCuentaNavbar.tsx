@@ -17,6 +17,7 @@ const navLinks = [
   { href: "/mi-cuenta/perfil", label: "Mi Perfil" },
   { href: "/mi-cuenta/explorar", label: "Explorar" },
   { href: "/mi-cuenta/comunidad", label: "Comunidad" },
+  { href: "/blog", label: "Blog" },
 ];
 
 export default function MiCuentaNavbar({ userName }: MiCuentaNavbarProps) {
@@ -56,8 +57,8 @@ export default function MiCuentaNavbar({ userName }: MiCuentaNavbarProps) {
             </div>
           </div>
 
-          {/* Navegación Escritorio (md en adelante) */}
-          <nav className="hidden md:flex items-center gap-1 sm:gap-2">
+          {/* Navegación de escritorio (lg en adelante) */}
+          <nav aria-label="Navegación de alumnos" className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -81,11 +82,13 @@ export default function MiCuentaNavbar({ userName }: MiCuentaNavbarProps) {
           </nav>
 
           {/* Botón Menú Hamburguesa Móvil */}
-          <div className="flex items-center md:hidden">
+          <div className="flex items-center lg:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2 text-white/70 hover:text-amber-300 hover:bg-white/5 rounded-xl border border-white/10 transition-colors focus:outline-none"
               aria-label="Abrir menú de navegación"
+              aria-expanded={isOpen}
+              aria-controls="student-mobile-menu"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {isOpen ? (
@@ -107,7 +110,8 @@ export default function MiCuentaNavbar({ userName }: MiCuentaNavbarProps) {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="md:hidden border-t border-white/[0.06] bg-[#09090b]/95 backdrop-blur-xl overflow-hidden"
+            id="student-mobile-menu"
+            className="lg:hidden border-t border-white/[0.06] bg-[#09090b]/95 backdrop-blur-xl overflow-hidden"
           >
             <div className="px-4 py-3 space-y-1 flex flex-col">
               {navLinks.map((link) => (
