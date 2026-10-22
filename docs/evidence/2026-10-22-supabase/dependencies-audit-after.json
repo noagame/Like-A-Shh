@@ -1,0 +1,156 @@
+{
+  "date": "2026-10-22",
+  "stage": "compatible_dependency_updates",
+  "commands": [
+    "npm audit --json",
+    "npm audit --omit=dev --json"
+  ],
+  "production_vulnerabilities": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "full_vulnerabilities": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 5,
+    "critical": 0,
+    "total": 5
+  },
+  "installed_packages": [
+    {
+      "name": "next",
+      "version": "16.4.2",
+      "dev": false
+    },
+    {
+      "name": "eslint-config-next",
+      "version": "16.4.2",
+      "dev": true
+    },
+    {
+      "name": "vitest",
+      "version": "4.1.12",
+      "dev": true
+    },
+    {
+      "name": "@vitest/mocker",
+      "version": "4.1.12",
+      "dev": true
+    },
+    {
+      "name": "vite",
+      "version": "8.3.5",
+      "dev": true
+    },
+    {
+      "name": "sharp",
+      "version": "0.35.5",
+      "dev": false
+    },
+    {
+      "name": "source-map-js",
+      "version": "1.2.2",
+      "dev": false
+    },
+    {
+      "name": "braces",
+      "version": "3.0.3",
+      "dev": true
+    }
+  ],
+  "remaining_advisories": [
+    {
+      "name": "@next/eslint-plugin-next",
+      "severity": "high",
+      "direct": false,
+      "via": [
+        "fast-glob"
+      ],
+      "fix_available": {
+        "name": "eslint-config-next",
+        "version": "14.2.35",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "name": "braces",
+      "severity": "high",
+      "direct": false,
+      "via": [
+        {
+          "source": 1240992,
+          "name": "braces",
+          "dependency": "braces",
+          "title": "braces vulnerable to stack-exhaustion denial of service through deeply nested patterns",
+          "url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+          "severity": "high",
+          "cwe": [
+            "CWE-674"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": "<=3.0.3"
+        }
+      ],
+      "fix_available": {
+        "name": "eslint-config-next",
+        "version": "14.2.35",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "name": "eslint-config-next",
+      "severity": "high",
+      "direct": true,
+      "via": [
+        "@next/eslint-plugin-next"
+      ],
+      "fix_available": {
+        "name": "eslint-config-next",
+        "version": "14.2.35",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "name": "fast-glob",
+      "severity": "high",
+      "direct": false,
+      "via": [
+        "micromatch"
+      ],
+      "fix_available": {
+        "name": "eslint-config-next",
+        "version": "14.2.35",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "name": "micromatch",
+      "severity": "high",
+      "direct": false,
+      "via": [
+        "braces"
+      ],
+      "fix_available": {
+        "name": "eslint-config-next",
+        "version": "14.2.35",
+        "isSemVerMajor": true
+      }
+    }
+  ],
+  "remaining_chain": [
+    "eslint-config-next",
+    "@next/eslint-plugin-next",
+    "fast-glob",
+    "micromatch",
+    "braces"
+  ],
+  "workflow_policy": "La auditoría completa conserva su umbral moderate; no se omiten ni silencian alertas."
+}

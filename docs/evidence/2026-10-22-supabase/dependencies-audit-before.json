@@ -1,0 +1,106 @@
+{
+  "date": "2026-10-22",
+  "stage": "initial_main_ci",
+  "vulnerabilities": {
+    "info": 0,
+    "low": 0,
+    "moderate": 2,
+    "high": 9,
+    "critical": 1,
+    "total": 12
+  },
+  "packages": [
+    {
+      "name": "@next/eslint-plugin-next",
+      "severity": "high",
+      "direct": false,
+      "fix_available": {
+        "name": "eslint-config-next",
+        "version": "14.2.35",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "name": "@vitest/mocker",
+      "severity": "moderate",
+      "direct": false,
+      "fix_available": true
+    },
+    {
+      "name": "brace-expansion",
+      "severity": "high",
+      "direct": false,
+      "fix_available": true
+    },
+    {
+      "name": "braces",
+      "severity": "high",
+      "direct": false,
+      "fix_available": {
+        "name": "eslint-config-next",
+        "version": "14.2.35",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "name": "eslint-config-next",
+      "severity": "high",
+      "direct": true,
+      "fix_available": {
+        "name": "eslint-config-next",
+        "version": "14.2.35",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "name": "fast-glob",
+      "severity": "high",
+      "direct": false,
+      "fix_available": {
+        "name": "eslint-config-next",
+        "version": "14.2.35",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "name": "micromatch",
+      "severity": "high",
+      "direct": false,
+      "fix_available": {
+        "name": "eslint-config-next",
+        "version": "14.2.35",
+        "isSemVerMajor": true
+      }
+    },
+    {
+      "name": "next",
+      "severity": "critical",
+      "direct": true,
+      "fix_available": true
+    },
+    {
+      "name": "sharp",
+      "severity": "high",
+      "direct": false,
+      "fix_available": true
+    },
+    {
+      "name": "source-map-js",
+      "severity": "high",
+      "direct": false,
+      "fix_available": true
+    },
+    {
+      "name": "vite",
+      "severity": "high",
+      "direct": false,
+      "fix_available": true
+    },
+    {
+      "name": "vitest",
+      "severity": "moderate",
+      "direct": true,
+      "fix_available": true
+    }
+  ]
+}
